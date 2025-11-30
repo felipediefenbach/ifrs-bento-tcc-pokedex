@@ -1,0 +1,9 @@
+services:
+  pokedex_mysql:
+    container_name: 'pokedex_mysql'
+    image: 'mysql:latest'
+    ports:
+      - 3306:3306
+    environment:
+      MYSQL_ALLOW_EMPTY_PASSWORD: true
+      MYSQL_DATABASE: pokedex

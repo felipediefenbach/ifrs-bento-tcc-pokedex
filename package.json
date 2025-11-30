@@ -1,0 +1,25 @@
+{
+  "name": "ifrs-bento-tcc-pokedex",
+  "version": "1.0.0",
+  "description": "",
+  "main": "index.js",
+  "scripts": {
+    "test": "echo \"Error: no test specified\" && exit 1"
+  },
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/felipediefenbach/ifrs-bento-tcc-pokedex.git"
+  },
+  "author": "",
+  "license": "ISC",
+  "bugs": {
+    "url": "https://github.com/felipediefenbach/ifrs-bento-tcc-pokedex/issues"
+  },
+  "homepage": "https://github.com/felipediefenbach/ifrs-bento-tcc-pokedex#readme",
+  "dependencies": {
+    "express": "^5.1.0",
+    "mysql2-promise": "^0.1.4",
+    "nodemon": "^3.1.11",
+    "pokedex-promise-v2": "^4.2.1"
+  }
+}
