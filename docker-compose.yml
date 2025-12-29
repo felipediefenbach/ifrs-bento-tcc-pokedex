@@ -3,7 +3,33 @@ services:
     container_name: 'pokedex_mysql'
     image: 'mysql:latest'
     ports:
-      - 3306:3306
+      - "0.0.0.0:3306:3306/tcp"
+    networks:
+      - pokenet
     environment:
-      MYSQL_ALLOW_EMPTY_PASSWORD: true
       MYSQL_DATABASE: pokedex
+      MYSQL_ROOT_PASSWORD: pokedex
+
+  pokedex_backend:
+    container_name: pokedex_backend
+    image: pokedex-backend
+    build:
+      context: .
+      dockerfile: ./Dockerfile
+    ports:
+      - "0.0.0.0:3000:3000/tcp"
+    networks:
+      - pokenet
+    volumes:
+      - ./src:/srv/src
+      - ./public:/srv/public
+      - ./views:/srv/views
+      - ./server.js:/srv/server.js
+      - ./.env:/srv/.env
+      - ./package-lock.json:/srv/package-lock.json
+      - ./package.json:/srv/package.json
+
+networks:
+  pokenet:
+    driver: bridge
+    name: pokenet

@@ -1,0 +1,9 @@
+Dockerfile
+docker-compose.yml
+LICENSE
+README
+skel.png
+skel.sql
+executa.yml
+.ansible
+.vscode

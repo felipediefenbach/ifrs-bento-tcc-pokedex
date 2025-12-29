@@ -1,0 +1,14 @@
+# Configuração
+@baseURL = http://127.0.0.1:3000
+
+### Listar todos os pokemons
+GET {{baseURL}}/pokemon
+Accept: application/json
+
+### Criar um novo pokemon
+POST {{baseURL}}/pokemon/add
+Content-Type: application/json
+
+{
+  "pokemonName": "kakuna"
+}

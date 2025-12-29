@@ -1,0 +1,54 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+  <head>
+    <meta charset="utf-8" />
+    <meta
+      name="viewport"
+      content="width=device-width, initial-scale=1, shrink-to-fit=no"
+    />
+    <title>Pokedex</title>
+    <link href="bootstrap/dist/css/bootstrap.min.css" rel="stylesheet" />
+    <link
+      href="bootstrap-table/dist/bootstrap-table.min.css"
+      rel="stylesheet"
+    />
+    <link rel="icon" href="favicon.ico" type="image/x-icon" />
+  </head>
+
+  <body>
+    <div class="container-fluid w-75">
+      
+      <div
+        class="row row-cols-1 row-cols-md-2 g-3 ustify-content-center align-items-center"
+      >
+        <div class="col">
+          <div class="mb-3">
+            <label for="pokemonSelectorTrainer1" class="form-label">Trainer 1</label>
+            <select
+              class="form-select form-select-lg"
+              name="pokemonSelectorTrainer1"
+              id="pokemonSelectorTrainer1"
+            ></select>
+          </div>
+        </div>
+        <div class="col">
+          <div class="mb-3">
+            <label for="pokemonSelectorTrainer2" class="form-label">Trainer 2</label>
+            <select
+              class="form-select form-select-lg"
+              name="pokemonSelectorTrainer2"
+              id="pokemonSelectorTrainer2"
+            ></select>
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <script src="jquery/dist/jquery.min.js"></script>
+    <script src="bootstrap/dist/js/bootstrap.bundle.min.js"></script>
+    <script src="bootstrap-table/dist/bootstrap-table.min.js"></script>
+    <script src="bootstrap-table/dist/locale/bootstrap-table-pt-BR.min.js"></script>
+    <script src="actions.js"></script>
+    <script src="front.js"></script>
+  </body>
+</html>

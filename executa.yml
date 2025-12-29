@@ -1,0 +1,251 @@
+# Como usar:
+#
+# Primeiro instalar o suporte ao docker:
+# ansible-galaxy collection install community.docker
+#
+# Desenvolver localmente com a branch stable do repositório da infra:
+#    ansible-playbook executa.yml --tags dev
+#
+# Desenvolver localmente com a branch especifica do repositório da infra:
+#    ansible-playbook executa.yml -e branch='feat-#325' --tags dev
+#
+# Executar o serviço com uma build especifica do dockerhub:
+#   ansible-playbook executa.yml -e versao=6 -tags dev
+#
+# Executar o serviço com a build mais recente:
+#   ansible-playbook executa.yml --tags run
+#
+# Publicar automaticamente no repositório oficial:
+#   ansible-playbook executa.yml --tags publish
+---
+- hosts: localhost
+  gather_facts: false
+  connection: local
+  collections:
+    - community.docker
+  vars:
+    task: run
+    versao: 'latest'
+    branch: develop
+    dockerhub_usuario: ""
+    dockerhub_token: ""
+    repositorio: "ifrs-bento-tcc-pokedex"
+    projeto: "ifrs-bento-tcc-pokedex"
+    conteiner_systemd: false
+
+    #
+    # - Usadas para executar em desenvolvimento (--tags dev)
+    #
+
+    #dev_comando: '/usr/bin/bash'
+
+    dev_variaveis: 
+      LITTER_INFRA_GIT_BRANCH: "{{ branch }}"
+
+    #dev_extra_hosts:
+
+    dev_portas: [
+      "0.0.0.0:3000:3000/tcp",
+    ]
+
+    dev_diretorios: [
+      { source: "/var/tmp/ifrs-bento-tcc-pokedex.sqlite", target: '/var/lib/ifrs-bento-tcc-pokedex.sqlite', type: 'bind', read_only: 'no' },
+      { source: "{{ lookup('env', 'PWD') }}/src", target: '/srv/src', type: 'bind', read_only: 'no' },
+      { source: "{{ lookup('env', 'PWD') }}/server.js", target: '/srv/server.js', type: 'bind', read_only: 'no' },
+      { source: "{{ lookup('env', 'PWD') }}/package-lock.json", target: '/srv/package-lock.json', type: 'bind', read_only: 'no' },
+      { source: "{{ lookup('env', 'PWD') }}/package.json", target: '/srv/package.json', type: 'bind', read_only: 'no' },
+      
+    ]
+
+    dev_db: '/var/tmp/ifrs-bento-tcc-pokedex.sqlite'
+
+    #
+    # - Usadas para executar em produção (--tags run)
+    #
+    
+    #run_comando:
+    
+    #run_variaveis:
+    
+    #run_extra_hosts:
+    
+    run_portas: [
+      "0.0.0.0:3000:3000/tcp"
+    ]
+    
+    run_diretorios: [
+      { source: "/var/tmp/ifrs-bento-tcc-pokedex.sqlite", target: '/var/lib/ifrs-bento-tcc-pokedex.sqlite', type: 'bind', read_only: 'no' },
+    ]
+
+  tasks:
+
+    - ansible.builtin.debug:
+        msg: "Para duvidas use: ansible-playbook executa.yml --tags help"
+      tags: [ always ]
+
+  # - DESENVOLVIMENTO
+    - ansible.builtin.copy:
+        dest: "{{ dev_db }}"
+        content: ""
+        force: true
+      when: >
+        dev_db is defined and 
+        dev_db | length > 0
+      tags: [ 'always' ]
+
+    - community.docker.docker_image_build:
+        name: "{{ projeto }}:dev"
+        path: .
+        rebuild: always
+      tags: [ 'dev' ]
+
+    - community.docker.docker_container:
+        name: "{{ projeto }}-dev"
+        hostname: "{{ projeto }}-dev"
+        image: "{{ projeto }}:dev"
+        state: started
+        restart_policy: "always"
+        privileged: "{{ conteiner_systemd }}"
+        detach: true
+        tty: true
+        dns_servers:
+          - "8.8.8.8"
+        command: "{{ dev_comando | default(omit) }}"
+        env: "{{ dev_variaveis | default(omit) }}"
+        ports: "{{ dev_portas | default(omit) }}"
+        mounts: "{{ dev_diretorios | default(omit) }}"
+        etc_hosts: "{{ dev_extra_hosts | default(omit) }}"
+      tags: [ 'dev' ]
+      
+    # - EXECUÇÃO
+    - community.docker.docker_login:
+        username: "{{ dockerhub_usuario }}"
+        password: "{{ dockerhub_token }}"
+        reauthorize: yes
+      tags: [ 'run', 'publish' ]
+
+    - community.docker.docker_container:
+        name: "{{ projeto }}-{{ versao }}"
+        hostname: "{{ projeto }}-{{ versao }}"
+        image: "{{ dockerhub_usuario }}/{{ projeto }}:{{ versao }}"
+        state: started
+        restart_policy: "always"
+        privileged: "{{ conteiner_systemd }}"
+        detach: true
+        tty: true
+        dns_servers:
+          - "8.8.8.8"
+        command: "{{ run_comando | default(omit) }}"
+        env: "{{ run_variaveis | default(omit) }}"
+        ports: "{{ run_portas | default(omit) }}"
+        mounts: "{{ run_diretorios | default(omit) }}"
+        etc_hosts: "{{ run_extra_hosts | default(omit) }}"
+      tags: [ 'run' ]
+
+    # - PUBLICAÇÃO
+    - ansible.builtin.uri:
+        url: "https://hub.docker.com/v2/users/login/"
+        method: POST
+        headers:
+          Content-Type: "application/json"
+        body_format: json
+        body:
+          username: "{{ dockerhub_usuario }}"
+          password: "{{ dockerhub_token }}"
+        return_content: yes
+      register: auth_response
+      tags: [ 'publish' ]
+
+    - ansible.builtin.set_fact:
+        jwt_token: "{{ auth_response.json.token }}"
+      tags: [ 'publish' ]
+
+    - ansible.builtin.uri:
+        url: "https://hub.docker.com/v2/repositories/{{ dockerhub_usuario }}/{{ repositorio }}/tags/?page_size=100"
+        method: GET
+        headers:
+          Authorization: "Bearer {{ jwt_token }}"
+        return_content: yes
+      register: tags_encontradas
+      tags: [ 'publish' ]
+      
+    - ansible.builtin.set_fact:
+        ultima_tag: "{{ tags_encontradas.json.results | sort(attribute='last_updated', reverse=True) | first | default({}) | json_query('name') }}"
+      tags: [ 'publish' ]
+      
+    - ansible.builtin.debug:
+        msg: "Não encontramos nenhuma versão mais atual no repositório: {{ repositorio }}"
+      when: ultima_tag == ''
+      tags: [ 'publish' ]
+      
+    - ansible.builtin.debug:
+        msg: "A versão mais atual no repositório: {{ repositorio }}, é a tag: {{ ultima_tag }}"
+      when: ultima_tag != ''
+      tags: [ 'publish' ]
+
+    - ansible.builtin.set_fact:
+        ultima_tag: '0'
+      when: ultima_tag == ''
+      tags: [ 'publish' ]
+
+    - ansible.builtin.set_fact:
+        ultima_tag: "{{ ultima_tag|int + 1 }}"
+      tags: [ 'publish' ]
+
+    - ansible.builtin.debug:
+        msg: "A Nova versão que será disponibilizada no repositório: {{ repositorio }}, é a tag: {{ ultima_tag }}"
+      tags: [ 'publish' ]
+      
+    - ansible.builtin.pause:
+        prompt: "Você deseja executar o BUILD e PUSH das tags: {{ ultima_tag }} e latest, para o repositório: {{ repositorio }} ? (S/N)"
+      register: decisao_de_build
+      tags: [ 'publish' ]
+
+    - community.docker.docker_image_build:
+        path: .
+        rebuild: always
+        name: "{{ dockerhub_usuario }}/{{ repositorio }}"
+        tag: "{{ item }}"
+      with_items:
+        - 'latest'
+        - "{{ ultima_tag }}"
+      when: decisao_de_build.user_input == 'S'
+      tags: [ 'publish' ]    
+
+    - community.docker.docker_image:
+        name: "{{ dockerhub_usuario }}/{{ repositorio }}:{{ item }}"
+        repository: "{{ dockerhub_usuario }}/{{ repositorio }}:{{ item }}"
+        push: true
+        source: local
+      with_items:
+        - 'latest'
+        - "{{ ultima_tag }}"
+      when: decisao_de_build.user_input == 'S'
+      tags: [ 'publish' ]
+
+    - ansible.builtin.set_fact:
+        ajuda: |
+          Como usar:
+          
+          Primeiro instalar o suporte ao docker:
+          ansible-galaxy collection install community.docker
+          
+          Desenvolver localmente com a branch stable do repositório da infra:
+             ansible-playbook executa.yml --tags dev
+          
+          Desenvolver localmente com a branch especifica do repositório da infra:
+             ansible-playbook executa.yml -e branch='feat-#325' --tags dev
+          
+          Executar o serviço com uma build especifica do dockerhub:
+            ansible-playbook executa.yml -e versao=6 --tags dev
+          
+          Executar o serviço com a build mais recente:
+            ansible-playbook executa.yml --tags run
+          
+          Publicar automaticamente no repositório oficial:
+            ansible-playbook executa.yml --tags publish
+      tags: [ help ]
+
+    - ansible.builtin.debug:
+        msg: "{{ ajuda.split('\n') }}"
+      tags: [ help ]

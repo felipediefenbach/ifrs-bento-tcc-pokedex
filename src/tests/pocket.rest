@@ -1,0 +1,29 @@
+# Configuração
+@baseURL = http://127.0.0.1:3000
+
+### lista todos os bolsos do treinador
+POST {{baseURL}}/pocket/list
+Content-Type: application/json
+
+{
+    "trainerName": "felipedie"
+}
+
+### lista todos os pokemons no bolso do treinador
+POST {{baseURL}}/pocket/content
+Content-Type: application/json
+
+{
+    "trainerName": "felipedie",
+    "pocketName": "padrao"
+}
+
+### Insere um pokemon em um dos espaços no bolso do treinador
+POST {{baseURL}}/pocket/add
+Content-Type: application/json
+
+{
+    "trainerId": 1,
+    "pocketId": 1,
+    "pokemonName": "pikachu"
+}
