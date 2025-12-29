@@ -1,29 +1,27 @@
 const db = require("../config/Database");
 
-//+-----------+------------+-------------+------------+---------------+
-//| pocket_id | trainer_id | slot_number | pokemon_id | pokemon_state |
-//+-----------+------------+-------------+------------+---------------+
 class PocketModel {
   static async allPockets(fulldata) {
     const { trainerName } = fulldata;
     const [rows] = await db.query(
       `SELECT 
-        pocket.name as pocket_name
+        pocket.name AS pocket_name
       FROM pocket
       INNER JOIN trainer ON pocket.trainer_id = trainer.id
       WHERE trainer.name = ?`,
       [trainerName]
     );
+
     return rows;
-  }
+  };
 
   static async allInThePocket(fulldata) {
     const { trainerName, pocketName } = fulldata;
     const [rows] = await db.query(
       `SELECT
-        pocket_content.slot_number as slot_number,
-        pokemon.name as pokemon_name,
-        pokemon_state.name as pokemon_state
+        pocket_content.slot_number AS slot_number,
+        pokemon.name AS pokemon_name,
+        pokemon_state.name AS pokemon_state
       FROM pocket_content
       INNER JOIN pocket ON pocket_content.pocket_id = pocket.id
       INNER JOIN trainer ON pocket_content.trainer_id = trainer.id
@@ -32,50 +30,74 @@ class PocketModel {
       WHERE 
         trainer.name = ?
         AND pocket.name = ?`,
-        [trainerName, pocketName]
+      [trainerName, pocketName]
     );
 
     return rows;
-  }
+  };
 
-  //   static async getTotalUsedSlots(trainerId, pocketId) {
-  //     const [rows] = await db.query(
-  //       "SELECT slot_number FROM pocket_content WHERE trainer_id = ? AND pocket_id = ?",
-  //       [trainerId, pocketId]
-  //     );
-  //     return rows
-  //   }
+  static async findPocketIdByName(fulldata) {
+    const { pocketName, trainerName } = fulldata;
+    const [rows] = await db.query(
+    `SELECT 
+      pocket.id AS pocket_id
+    FROM pocket
+    INNER JOIN trainer ON pocket.trainer_id = trainer.id
+    WHERE
+      pocket.name = ?
+      AND trainer.name = ?`,
+      [pocketName, trainerName]
+    );
+   
+    return rows[0]['pocket_id'];
+  };
 
-  //   static async populateSlotData(fulldata) {
+  static async getUsedSlots(fulldata) {
+    const { trainerName, pocketName } = fulldata;
+    const [rows] = await db.query(
+      `SELECT
+        pocket_content.slot_number AS slot_number
+      FROM pocket_content
+      INNER JOIN pocket ON pocket_content.pocket_id = pocket.id
+      INNER JOIN trainer ON pocket_content.trainer_id = trainer.id
+      WHERE 
+        trainer.name = ?
+        AND pocket.name = ?`,
+      [trainerName, pocketName]
+    );
 
-  //     const { pocket_id, trainer_id, slot_number, pokemon_id, pokemon_state } = fulldata;
-  //     const result = await db.query(
-  //       "INSERT INTO pocket_content values (?, ?, ?, ?, ?)",
-  //       [pocket_id, trainer_id, slot_number, pokemon_id, pokemon_state]
-  //     );
-  //     return result.affectedRows
+    return rows;
+  };
 
-  //   }
+  static async addInThePocketSlot(fulldata) {
+    const { pocketId, trainerId, slotNumber, pokemonId, stateId } = fulldata;
+    const [rows] = await db.query(
+      `INSERT INTO pocket_content 
+        VALUES (?, ?, ?, ?, ?)`,
+      [pocketId, trainerId, slotNumber, pokemonId, stateId]
+    );
 
-  //   static async populatePokemon(fulldata) {
-  //     const {pokemon_id, name} = fulldata;
-  //     const result = await db.query (
-  //       "INSERT INTO pokemon values (?, ?)",
-  //       [pokemon_id, name]
-  //     );
-  //     return result.affectedRows;
+    return rows.affectedRows;
+  };
 
-  //   }
+  static async delInThePocketSlot(fulldata) {
+    const { trainerName, pocketName, slotNumber } = fulldata;
+    const [rows] = await db.query(
+      `DELETE pocket_content
+      FROM pocket_content AS pocket_content
+      INNER JOIN pocket ON pocket_content.pocket_id = pocket.id
+      INNER JOIN trainer ON pocket_content.trainer_id = trainer.id
+      WHERE 
+        trainer.name = ?
+        AND pocket.name = ?
+        AND pocket_content.slot_number = ?`,
+      [trainerName, pocketName, slotNumber]
+    );
 
-  //   static async populateBasicInfoData(fulldata) {
-  //     const {pokemon_id, height, weight, base_exp} = fulldata;
-  //     const result = await db.query(
-  //       "INSERT INTO pokemon_base_info values (?, ?, ?, ?)",
-  //       [pokemon_id, height, weight, base_exp]
-  //     )
-  //     return result.affectedRows
+    console.log(rows);
+    return rows.affectedRows;
+  };
 
-  //   }
 }
 
 module.exports = PocketModel;

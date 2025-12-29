@@ -40,14 +40,52 @@ class PocketController {
     }
   }
 
-  // static async insertPokemonInSlot(req, res) {
-  //   try {
-  //     await PocketService.insertIntoNewSlot(req.body);
-  //   } catch {
-  //     res.status(500).json({ error: error.message });      
-  //   }
-  // }
-}
+  static async addInThePocketSlot(req, res) {
+    try {
+      const result = await PocketService.addInThePocketSlot(req.body);
+      if (result) {
+        res.status(200).json(
+          {
+            "result": "Pokemon adicionado ao bolso",
+            "status": true,
+          }
+        );
+      } else {
+        res.status(200).json(
+          {
+            "result": "O bolso já está cheio de pokemons",
+            "status": false,
+          }
+        );
+      }
+    } catch {
+      res.status(500).json({ error: error.message });      
+    }
+  }
 
+    static async delInThePocketSlot(req, res) {
+    try {
+      const result = await PocketService.delInThePocketSlot(req.body);
+      if (result) {
+        res.status(200).json(
+          {
+            "result": "Pokemon removido com sucesso",
+            "status": true,
+          }
+        );
+      } else {
+          res.status(200).json(
+          {
+            "result": "O Slot está vázio",
+            "status": false,
+          }
+        );
+      }
+    } catch (error) {
+      res.status(500).json({ error: error.message });
+    }
+  }
+
+}
 
 module.exports = PocketController;

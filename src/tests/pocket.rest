@@ -23,7 +23,17 @@ POST {{baseURL}}/pocket/add
 Content-Type: application/json
 
 {
-    "trainerId": 1,
-    "pocketId": 1,
+    "trainerName": "felipedie",
+    "pocketName": "padrao",
     "pokemonName": "pikachu"
+}
+
+### Remove um pokemon em um dos espaços no bolso do treinador
+POST {{baseURL}}/pocket/del
+Content-Type: application/json
+
+{
+    "trainerName": "felipedie",
+    "pocketName": "padrao",
+    "slotNumber": 3
 }

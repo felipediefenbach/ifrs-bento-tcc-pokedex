@@ -1,4 +1,7 @@
 const PocketModel = require("../models/PocketModel");
+const PokemonModel = require("../models/PokemonModel");
+const TrainerModel = require("../models/TrainerModel");
+const checkSlots = require("../utils/checkSlots");
 
 class PocketService {
   static async allPockets(fulldata) {
@@ -12,64 +15,48 @@ class PocketService {
     });
 
     return names;
-  }
+  };
 
   static async allInThePocket(fulldata) {
     return await PocketModel.allInThePocket(fulldata);
-  }
+  };
 
-  // static async insertIntoNewSlot(callPocket) {
+  static async addInThePocketSlot(fulldata) {
+    
+    const { trainerName, pocketName, pokemonName } = fulldata;
 
-  //   const trainerId = callPocket.trainerId;
-  //   const pocketId = callPocket.pocketId;
-  //   const pokemonName = callPocket.pokemonName;
-  //   const defaultState = 1; // o estado padrão é normal(id=1)
+    const pocketId = await PocketModel.findPocketIdByName({pocketName, trainerName});
+    const pokemonId = await PokemonModel.findPokemonIdByName({pokemonName});
+    const trainerId = await TrainerModel.findTrainerIdByName({trainerName});
+    const stateId = 1; // o estado padrão é normal(id=1)
 
-  //   const brute_slots = await PocketModel.getTotalUsedSlots(trainerId, pocketId);
-  //   const basicInfo = await pokeBasicInfo(pokemonName);
+    const vacancySlots = await checkSlots(fulldata);
+    const slotNumber = vacancySlots[0];
 
-  //   const possibleSlots = [1, 2, 3, 4, 5, 6]
-  //   const usedSlots = brute_slots.map(item => item.slot_number);
-  //   const vacancySlots = possibleSlots.filter(slot => !usedSlots.includes(slot));
+    let slotData = { pocketId, trainerId, slotNumber, pokemonId, stateId };
 
-  //   try {
+    if (vacancySlots && vacancySlots.length > 0) {
+      const result = await PocketModel.addInThePocketSlot(slotData);
+      return result === 1;
+    } else {
+      return false;
+    };
+      
+  };
 
-  //     if (vacancySlots.length > 0) {
+  static async delInThePocketSlot(fulldata) {
+    
+    const vacancySlots = await checkSlots(fulldata);
 
-  //       try {
+    if (vacancySlots && vacancySlots.length < 6) {
+      const result = await PocketModel.delInThePocketSlot(fulldata);
+      return result === 1;
+    } else {
+      return false;
+    };
 
-  //         await PocketModel.populatePokemon(basicInfo);
-  //         await PocketModel.populateBasicInfoData(basicInfo);
+  };
 
-  //         try {
-
-  //           let slotData = {
-  //             "pocket_id": pocketId,
-  //             "trainer_id": trainerId,
-  //             "slot_number": vacancySlots[0],
-  //             "pokemon_id": basicInfo['pokemon_id'],
-  //             "pokemon_state": defaultState,
-  //           }
-
-  //           PocketModel.populateSlotData(slotData);
-
-  //         } catch (error) {
-  //           throw new Error(error.message);
-  //         }
-
-  //       } catch (error) {
-  //         throw new Error(error.message);
-  //       }
-
-  //     } else {
-  //       throw new Error("Seu bolso já esstá cheio de pekemons!");
-  //     }
-
-  //   } catch (error) {
-  //     throw new Error(error.message);
-  //   }
-
-  // }
-}
+};
 
 module.exports = PocketService;

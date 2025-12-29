@@ -1,17 +1,46 @@
 -- bolsos pelo nome do treinador
 SELECT 
-  pocket.name as pocket_name
+  pocket.name AS pocket_name
 FROM pocket
 INNER JOIN trainer ON pocket.trainer_id = trainer.id
 WHERE trainer.name = 'felipedie';
 
+-- static ASync findPocketIdByName
+SELECT 
+  pocket.id AS pocket_id
+FROM pocket
+INNER JOIN trainer ON pocket.trainer_id = trainer.id
+WHERE
+  trainer.name = 'felipedie'
+  AND pocket.name = 'padrao';
+
+-- slot livres
+SELECT
+  pocket_content.slot_number AS slot_number
+FROM pocket_content
+INNER JOIN pocket ON pocket_content.pocket_id = pocket.id
+INNER JOIN trainer ON pocket_content.trainer_id = trainer.id
+WHERE 
+  trainer.name = 'felipedie'
+  AND pocket.name = 'padrao';
+
+-- remove slot
+DELETE pocket_content
+FROM pocket_content AS pocket_content
+INNER JOIN pocket ON pocket_content.pocket_id = pocket.id
+INNER JOIN trainer ON pocket_content.trainer_id = trainer.id
+WHERE 
+  trainer.name = 'felipedie'
+  AND pocket.name = 'padrao'
+  AND pocket_content.slot_number = 3;
+
 -- conteudo dos bolsos
 SELECT
-  pocket_content.slot_number as slot_number,
-  pocket.name as pocket_name,
-  trainer.name as trainer_name, 
-  pokemon.name as pokemon_name,
-  pokemon_state.name as pokemon_state
+  pocket_content.slot_number AS slot_number,
+  pocket.name AS pocket_name,
+  trainer.name AS trainer_name, 
+  pokemon.name AS pokemon_name,
+  pokemon_state.name AS pokemon_state
 FROM pocket_content
 INNER JOIN pocket ON pocket_content.pocket_id = pocket.id
 INNER JOIN trainer ON pocket_content.trainer_id = trainer.id
@@ -22,9 +51,9 @@ WHERE
   AND pocket.name = 'padrao';
 
 SELECT
-  pocket_content.slot_number as slot_number, 
-  pokemon.name as pokemon_name,
-  pokemon_state.name as pokemon_state
+  pocket_content.slot_number AS slot_number, 
+  pokemon.name AS pokemon_name,
+  pokemon_state.name AS pokemon_state
 FROM pocket_content
 INNER JOIN pocket ON pocket_content.pocket_id = pocket.id
 INNER JOIN trainer ON pocket_content.trainer_id = trainer.id
