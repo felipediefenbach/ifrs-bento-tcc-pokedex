@@ -19,9 +19,8 @@ async function pokeBasicInfo(fulldata) {
     return basicInfo;
 
   } catch (error) {  
-    console.error("Error fetching pokeBasicInfo:", error.message);
     throw new Error(
-      `Failed to fetch data for ${pokemonName}: ${error.message}`
+      `Failed to fetch data for ${pokemonName}: ${error}`
     );
   }
 

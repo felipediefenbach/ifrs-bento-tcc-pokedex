@@ -7,6 +7,8 @@ const frontPageRoute = require("./routes/FrontPageRoute")
 const pokemonRoute = require("./routes/PokemonRoute");
 const pocketRoute = require("./routes/PocketRoute");
 const infoRoute = require("./routes/InfoRoute");
+const typeRoute = require("./routes/TypeRoute");
+const evoRoute = require("./routes/EvoRoute");
 
 const errorMiddleware = require("./middlewares/errorMiddleware");
 const app = express();
@@ -21,6 +23,8 @@ app.use("/", frontPageRoute);
 app.use("/pokemon", pokemonRoute);
 app.use("/pocket", pocketRoute);
 app.use("/info", infoRoute);
+app.use("/type", typeRoute);
+app.use("/evo", evoRoute);
 
 app.use(errorMiddleware);
 

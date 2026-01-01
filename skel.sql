@@ -35,7 +35,7 @@ CREATE TABLE pokemon_base_info (
 -- create table types
 CREATE TABLE pokemon_type (
     pokemon_id INT,
-    type_name VARCHAR(200),
+    type VARCHAR(200),
     FOREIGN KEY (pokemon_id) REFERENCES pokemon(id)
 );
 
@@ -67,7 +67,7 @@ CREATE TABLE pokemon_stat (
 -- create table evolutions
 CREATE TABLE pokemon_evolution (
     pokemon_id INT,
-    evolution_name VARCHAR(200),
+    name VARCHAR(200),
     FOREIGN KEY (pokemon_id) REFERENCES pokemon(id)
 );
 

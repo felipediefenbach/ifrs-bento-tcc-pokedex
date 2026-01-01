@@ -1,0 +1,7 @@
+# Configuração
+@baseURL = http://127.0.0.1:3000
+@pokemonName = bulbasaur
+
+### lista todos os pokemons no bolso do treinador
+GET {{baseURL}}/type/{{pokemonName}}
+Accept: application/json

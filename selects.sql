@@ -64,7 +64,6 @@ WHERE
   AND pocket.name = 'padrao';
 
 -- informações base do pokemon pelo nome
-
 SELECT
   pokemon_base_info.base_exp AS base_exp,
   pokemon_base_info.height AS height,
@@ -74,6 +73,21 @@ INNER JOIN pokemon ON pokemon_base_info.pokemon_id = pokemon.id
 WHERE 
   pokemon.name = 'pikachu';
 
+-- tipos do pokemon por nome
+SELECT
+  pokemon_type.type
+FROM pokemon_type
+INNER JOIN pokemon ON pokemon_type.pokemon_id = pokemon.id
+WHERE
+  pokemon.name = 'pikachu';
+
+-- evoluções pelo nome
+SELECT
+  pokemon_evolution.name
+FROM pokemon_evolution
+INNER JOIN pokemon ON pokemon_evolution.pokemon_id = pokemon.id
+WHERE
+  pokemon.name = 'pikachu';
 
 -- adiciona mais bolsos
 INSERT INTO pocket (trainer_id, name) VALUES 

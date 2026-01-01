@@ -108,6 +108,33 @@ async function showPokemonInfo(pokemonName) {
   }
 }
 
+async function showPokemonType(pokemonName) {
+  try {
+    const response = await $.ajax({
+      type: "GET",
+      url: `/type/${pokemonName}`,
+      dataType: "json",
+    });
+
+    return response;
+  } catch (error) {
+    return error;
+  }
+}
+
+async function showPokemonEvo(pokemonName) {
+  try {
+    const response = await $.ajax({
+      type: "GET",
+      url: `/evo/${pokemonName}`,
+      dataType: "json",
+    });
+
+    return response;
+  } catch (error) {
+    return error;
+  }
+}
 function infoChoice(title, message) {
   const MODAL = `
     <div class="modal fade" 

@@ -86,10 +86,16 @@ $(document).ready(function () {
 
   $(document).on("click", ".btn-info", async function() {
     let pokemonName = $(this).data("pokemon");
-    const result = await showPokemonInfo(pokemonName);
+    const resultInfo = await showPokemonInfo(pokemonName);
+    const resultType = await showPokemonType(pokemonName);
+    const resultEvo = await showPokemonEvo(pokemonName);
     infoChoice(
       `Basic Status:`,
-      `Experience: ${result["base_exp"]}<br \>Height: ${result["height"]}<br \>Weight: ${result["weight"]}`
+      `Types: ${resultType["type"]}
+      <br \>Height: ${resultInfo["height"]}
+      <br \>Weight: ${resultInfo["weight"]}
+      <br \>Experience: ${resultInfo["base_exp"]}
+      <br \>Evolutions: ${resultEvo["evolutions"]}`
     );
   });
 
