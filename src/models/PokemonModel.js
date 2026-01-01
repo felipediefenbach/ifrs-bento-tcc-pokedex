@@ -1,7 +1,6 @@
 const db = require("../config/Database");
 
 class PokemonModel {
-
   static async allPokemonNames() {
     const [rows] = await db.query(
       `SELECT 
@@ -11,7 +10,7 @@ class PokemonModel {
     return rows;
   }
 
-  static async findPokemonByName(fulldata){
+  static async findPokemonByName(fulldata) {
     const { pokemonName } = fulldata;
     const [rows] = await db.query(
       `SELECT 
@@ -24,7 +23,7 @@ class PokemonModel {
     return rows;
   }
 
-  static async findPokemonIdByName(fulldata){
+  static async findPokemonIdByName(fulldata) {
     const { pokemonName } = fulldata;
     const [rows] = await db.query(
       `SELECT 
@@ -34,19 +33,18 @@ class PokemonModel {
         name = ?`,
       [pokemonName]
     );
-    return rows[0]['id'];
+    return rows[0]["id"];
   }
 
   static async addPokemon(fulldata) {
     const { pokemonId, pokemonName } = fulldata;
     const [rows] = await db.query(
       `INSERT INTO pokemon (id, name) 
-        VALUES (?, ?)`, 
+        VALUES (?, ?)`,
       [pokemonId, pokemonName]
     );
-    return rows.insertId;
+    return rows.affectedRows;
   }
-
 }
 
 module.exports = PokemonModel;

@@ -1,7 +1,6 @@
 const db = require("../config/Database");
 
 class TrainerModel {
-
   static async allTrainerNames() {
     const [rows] = await db.query(
       `SELECT
@@ -11,7 +10,7 @@ class TrainerModel {
     return rows;
   }
 
-  static async findTrainerByName(fulldata){
+  static async findTrainerByName(fulldata) {
     const { trainerName } = fulldata;
     const [rows] = await db.query(
       `SELECT 
@@ -24,7 +23,7 @@ class TrainerModel {
     return rows;
   }
 
-  static async findTrainerIdByName(fulldata){
+  static async findTrainerIdByName(fulldata) {
     const { trainerName } = fulldata;
     const [rows] = await db.query(
       `SELECT 
@@ -34,19 +33,18 @@ class TrainerModel {
         name = ?`,
       [trainerName]
     );
-    return rows[0]['id'];
+    return rows[0]["id"];
   }
 
   static async addTrainer(fulldata) {
-      const { trainerName } = fulldata;
-      const [rows] = await db.query(
-        `INSERT INTO trainer (name)
-          VALUES (?)`, 
-        [trainerName]
-      );
-      return rows.insertId;
+    const { trainerName } = fulldata;
+    const [rows] = await db.query(
+      `INSERT INTO trainer (name)
+          VALUES (?)`,
+      [trainerName]
+    );
+    return rows.insertId;
   }
-
 }
 
 module.exports = TrainerModel;

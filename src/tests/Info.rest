@@ -1,0 +1,7 @@
+# Configuração
+@baseURL = http://127.0.0.1:3000
+@pokemonName = raichu
+
+### lista todos os pokemons no bolso do treinador
+GET {{baseURL}}/info/basic/{{pokemonName}}
+Accept: application/json

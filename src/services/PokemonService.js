@@ -7,13 +7,13 @@ class PokemonService {
   }
 
   static async addPokemon(fulldata) {
+
     const existingPokemon = await PokemonModel.findPokemonByName(fulldata);
+
     if (existingPokemon.length === 0) {
-      const basicInfo = await pokeBasicInfo(fulldata.pokemonName);
+      const basicInfo = await pokeBasicInfo(fulldata);
       const result = await PokemonModel.addPokemon(basicInfo);
-      if (Number.isInteger(result)) {
-        return true;
-      }
+      return result === 1;
     } else {
       return false;
     }

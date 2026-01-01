@@ -1,5 +1,7 @@
 # Configuração
 @baseURL = http://127.0.0.1:3000
+@trainerName = felipedie
+@pocketName = padrao
 
 ### lista todos os bolsos do treinador
 POST {{baseURL}}/pocket/list
@@ -10,13 +12,8 @@ Content-Type: application/json
 }
 
 ### lista todos os pokemons no bolso do treinador
-POST {{baseURL}}/pocket/content
-Content-Type: application/json
-
-{
-    "trainerName": "felipedie",
-    "pocketName": "padrao"
-}
+GET {{baseURL}}/pocket/content/{{trainerName}}/{{pocketName}}
+Accept: application/json
 
 ### Insere um pokemon em um dos espaços no bolso do treinador
 POST {{baseURL}}/pocket/add

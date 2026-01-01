@@ -12,24 +12,24 @@ class PokemonController {
 
   static async addPokemon(req, res) {
     try {
-      const pokemonName = await PokemonService.addPokemon(req.body);
-      if (pokemonName) {
+      const result = await PokemonService.addPokemon(req.body);
+      if (result) {
         res.status(200).json(
           { 
-            "message": "Pokemon criado com sucesso.", 
-            "result": true,
+            "result": "Pokemon criado com sucesso.", 
+            "status": true,
           }
         );
       } else {
         res.status(200).json(
           { 
-            "message": "Pokemon já está cadastrado.",
-            "result": false,
+            "result": "Pokemon já está cadastrado.",
+            "status": false,
           }
         );
       }
     } catch (error) {
-      res.status(400).json({ error: error.message });
+      res.status(500).json({ error: error.message });
     }
   }
 

@@ -13,13 +13,15 @@ class PocketModel {
     );
 
     return rows;
-  };
+  }
 
   static async allInThePocket(fulldata) {
     const { trainerName, pocketName } = fulldata;
     const [rows] = await db.query(
       `SELECT
         pocket_content.slot_number AS slot_number,
+        pocket.name AS pocket_name,
+        trainer.name AS trainer_name, 
         pokemon.name AS pokemon_name,
         pokemon_state.name AS pokemon_state
       FROM pocket_content
@@ -34,12 +36,12 @@ class PocketModel {
     );
 
     return rows;
-  };
+  }
 
   static async findPocketIdByName(fulldata) {
     const { pocketName, trainerName } = fulldata;
     const [rows] = await db.query(
-    `SELECT 
+      `SELECT 
       pocket.id AS pocket_id
     FROM pocket
     INNER JOIN trainer ON pocket.trainer_id = trainer.id
@@ -48,9 +50,9 @@ class PocketModel {
       AND trainer.name = ?`,
       [pocketName, trainerName]
     );
-   
-    return rows[0]['pocket_id'];
-  };
+
+    return rows[0]["pocket_id"];
+  }
 
   static async getUsedSlots(fulldata) {
     const { trainerName, pocketName } = fulldata;
@@ -67,7 +69,7 @@ class PocketModel {
     );
 
     return rows;
-  };
+  }
 
   static async addInThePocketSlot(fulldata) {
     const { pocketId, trainerId, slotNumber, pokemonId, stateId } = fulldata;
@@ -78,7 +80,7 @@ class PocketModel {
     );
 
     return rows.affectedRows;
-  };
+  }
 
   static async delInThePocketSlot(fulldata) {
     const { trainerName, pocketName, slotNumber } = fulldata;
@@ -93,11 +95,8 @@ class PocketModel {
         AND pocket_content.slot_number = ?`,
       [trainerName, pocketName, slotNumber]
     );
-
-    console.log(rows);
     return rows.affectedRows;
-  };
-
+  }
 }
 
 module.exports = PocketModel;

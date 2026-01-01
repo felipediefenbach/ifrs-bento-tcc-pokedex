@@ -15,19 +15,21 @@ class PocketService {
     });
 
     return names;
-  };
+  }
 
   static async allInThePocket(fulldata) {
     return await PocketModel.allInThePocket(fulldata);
-  };
+  }
 
   static async addInThePocketSlot(fulldata) {
-    
     const { trainerName, pocketName, pokemonName } = fulldata;
 
-    const pocketId = await PocketModel.findPocketIdByName({pocketName, trainerName});
-    const pokemonId = await PokemonModel.findPokemonIdByName({pokemonName});
-    const trainerId = await TrainerModel.findTrainerIdByName({trainerName});
+    const pocketId = await PocketModel.findPocketIdByName({
+      pocketName,
+      trainerName,
+    });
+    const pokemonId = await PokemonModel.findPokemonIdByName({ pokemonName });
+    const trainerId = await TrainerModel.findTrainerIdByName({ trainerName });
     const stateId = 1; // o estado padrão é normal(id=1)
 
     const vacancySlots = await checkSlots(fulldata);
@@ -40,12 +42,10 @@ class PocketService {
       return result === 1;
     } else {
       return false;
-    };
-      
-  };
+    }
+  }
 
   static async delInThePocketSlot(fulldata) {
-    
     const vacancySlots = await checkSlots(fulldata);
 
     if (vacancySlots && vacancySlots.length < 6) {
@@ -53,10 +53,8 @@ class PocketService {
       return result === 1;
     } else {
       return false;
-    };
-
-  };
-
-};
+    }
+  }
+}
 
 module.exports = PocketService;

@@ -5,7 +5,7 @@ FROM pocket
 INNER JOIN trainer ON pocket.trainer_id = trainer.id
 WHERE trainer.name = 'felipedie';
 
--- static ASync findPocketIdByName
+-- pocket id pelo nome e treinedor
 SELECT 
   pocket.id AS pocket_id
 FROM pocket
@@ -62,6 +62,17 @@ INNER JOIN pokemon_state ON pocket_content.state_id = pokemon_state.id
 WHERE 
   trainer.name = 'felipedie'
   AND pocket.name = 'padrao';
+
+-- informações base do pokemon pelo nome
+
+SELECT
+  pokemon_base_info.base_exp AS base_exp,
+  pokemon_base_info.height AS height,
+  pokemon_base_info.weight AS weight
+FROM pokemon_base_info
+INNER JOIN pokemon ON pokemon_base_info.pokemon_id = pokemon.id
+WHERE 
+  pokemon.name = 'pikachu';
 
 
 -- adiciona mais bolsos

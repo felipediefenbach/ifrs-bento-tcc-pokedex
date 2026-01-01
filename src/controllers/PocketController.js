@@ -2,7 +2,6 @@ const PocketService = require("../services/PocketService");
 
 class PocketController {
 
-
   static async allPockets(req, res) {
     try {
       const pockets = await PocketService.allPockets(req.body);
@@ -18,8 +17,10 @@ class PocketController {
   }
 
   static async allInThePocket(req, res) {
+    const trainerName = req.params.trainerName; 
+    const pocketName = req.params.pocketName; 
     try {
-      const slots = await PocketService.allInThePocket(req.body);
+      const slots = await PocketService.allInThePocket({trainerName, pocketName});
       if (slots.length > 0) {
         res.status(200).json(
           {

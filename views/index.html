@@ -12,12 +12,16 @@
       href="bootstrap-table/dist/bootstrap-table.min.css"
       rel="stylesheet"
     />
+    <link rel="stylesheet" href="pokesprite-spritesheet/assets/pokesprite-pokemon-gen8.css" />
+    <link rel="stylesheet" href="pokesprite-spritesheet/assets/pokesprite-inventory.css" />
+    <link rel="stylesheet" href="pokesprite-spritesheet/assets/pokesprite-misc.css" />
     <link rel="icon" href="favicon.ico" type="image/x-icon" />
   </head>
 
   <body>
+    <div class="toast-container position-fixed bottom-0 end-0 p-3"></div>
+
     <div class="container-fluid w-75">
-      
       <div
         class="row row-cols-1 row-cols-md-2 g-3 ustify-content-center align-items-center"
       >
@@ -29,6 +33,9 @@
               name="pokemonSelectorTrainer1"
               id="pokemonSelectorTrainer1"
             ></select>
+            <br />
+            <br />
+            <table id="pocketViewTrainer1"></table>
           </div>
         </div>
         <div class="col">
@@ -39,10 +46,14 @@
               name="pokemonSelectorTrainer2"
               id="pokemonSelectorTrainer2"
             ></select>
+            <br />
+            <br />
+            <table id="pocketViewTrainer2"></table>
           </div>
         </div>
       </div>
     </div>
+
 
     <script src="jquery/dist/jquery.min.js"></script>
     <script src="bootstrap/dist/js/bootstrap.bundle.min.js"></script>
