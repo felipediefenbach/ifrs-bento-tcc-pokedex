@@ -9,6 +9,7 @@ const pocketRoute = require("./routes/PocketRoute");
 const infoRoute = require("./routes/InfoRoute");
 const typeRoute = require("./routes/TypeRoute");
 const evoRoute = require("./routes/EvoRoute");
+const statRoute = require("./routes/StatRoute");
 
 const errorMiddleware = require("./middlewares/errorMiddleware");
 const app = express();
@@ -25,6 +26,7 @@ app.use("/pocket", pocketRoute);
 app.use("/info", infoRoute);
 app.use("/type", typeRoute);
 app.use("/evo", evoRoute);
+app.use("/stat", statRoute);
 
 app.use(errorMiddleware);
 

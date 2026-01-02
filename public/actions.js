@@ -135,6 +135,21 @@ async function showPokemonEvo(pokemonName) {
     return error;
   }
 }
+
+async function showPokemonStat(pokemonName) {
+  try {
+    const response = await $.ajax({
+      type: "GET",
+      url: `/stat/${pokemonName}`,
+      dataType: "json",
+    });
+
+    return response;
+  } catch (error) {
+    return error;
+  }
+}
+
 function infoChoice(title, message) {
   const MODAL = `
     <div class="modal fade" 

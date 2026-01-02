@@ -55,19 +55,24 @@ CREATE TABLE pokemon_ability (
     FOREIGN KEY (pokemon_id) REFERENCES pokemon(id)
 );
 
--- create table stats
+-- create table stats 
+-- two values by field "base_stat,effort" = base + multiplicator
+-- sattack & sdefense means special-attack & special-defense
 CREATE TABLE pokemon_stat (
     pokemon_id INT,
-    stat_name VARCHAR(200),
-    base_stat INT,
-    effort INT,
+    hp VARCHAR(200),
+    attack VARCHAR(200),
+    defense VARCHAR(200),
+    sattack VARCHAR(200),
+    sdefense VARCHAR(200),
+    speed VARCHAR(200),
     FOREIGN KEY (pokemon_id) REFERENCES pokemon(id)
 );
 
 -- create table evolutions
 CREATE TABLE pokemon_evolution (
     pokemon_id INT,
-    name VARCHAR(200),
+    evolutions VARCHAR(200),
     FOREIGN KEY (pokemon_id) REFERENCES pokemon(id)
 );
 

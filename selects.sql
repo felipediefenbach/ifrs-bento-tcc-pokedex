@@ -75,7 +75,7 @@ WHERE
 
 -- tipos do pokemon por nome
 SELECT
-  pokemon_type.type
+  pokemon_type.type AS type
 FROM pokemon_type
 INNER JOIN pokemon ON pokemon_type.pokemon_id = pokemon.id
 WHERE
@@ -83,9 +83,22 @@ WHERE
 
 -- evoluções pelo nome
 SELECT
-  pokemon_evolution.name
+  pokemon_evolution.name AS name
 FROM pokemon_evolution
 INNER JOIN pokemon ON pokemon_evolution.pokemon_id = pokemon.id
+WHERE
+  pokemon.name = 'pikachu';
+
+-- stats pelo nome
+SELECT
+  pokemon_stat.hp AS hp,
+  pokemon_stat.attack AS attack,
+  pokemon_stat.defense AS defense,
+  pokemon_stat.sattack AS sattack,
+  pokemon_stat.sdefense AS sdefense,
+  pokemon_stat.speed AS speed
+FROM pokemon_stat
+INNER JOIN pokemon ON pokemon_stat.pokemon_id = pokemon.id
 WHERE
   pokemon.name = 'pikachu';
 

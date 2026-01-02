@@ -89,13 +89,23 @@ $(document).ready(function () {
     const resultInfo = await showPokemonInfo(pokemonName);
     const resultType = await showPokemonType(pokemonName);
     const resultEvo = await showPokemonEvo(pokemonName);
+    const resultStat = await showPokemonStat(pokemonName);
     infoChoice(
-      `Basic Status:`,
-      `Types: ${resultType["type"]}
-      <br \>Height: ${resultInfo["height"]}
-      <br \>Weight: ${resultInfo["weight"]}
-      <br \>Experience: ${resultInfo["base_exp"]}
-      <br \>Evolutions: ${resultEvo["evolutions"]}`
+      `Basic Info:`,
+      `<strong>Characteristics:</strong>
+      <br />Types: ${resultType["type"]}
+      <br />Height: ${resultInfo["height"]}
+      <br />Weight: ${resultInfo["weight"]}
+      <br />Experience: ${resultInfo["base_exp"]}
+      <br />Evolutions: ${resultEvo["evolutions"]}
+      <br />
+      <br /><strong>Basic Stat:</strong>
+      <br />HP: ${resultStat["hp"].split(',')[0]}
+      <br />Attack: ${resultStat["attack"].split(',')[0]}
+      <br />Defense: ${resultStat["defense"].split(',')[0]}
+      <br />Speed: ${resultStat["speed"].split(',')[0]}
+      <br />Especial Attack: ${resultStat["sattack"].split(',')[0]}
+      <br />Especial Defense: ${resultStat["sdefense"].split(',')[0]}`
     );
   });
 
