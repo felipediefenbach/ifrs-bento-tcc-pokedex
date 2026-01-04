@@ -1,6 +1,6 @@
 const db = require("../config/Database");
 
-class InfoModel {
+class TypeModel {
 
   static async findPokemonTypeByName(fulldata) {
     const { pokemonName } = fulldata;
@@ -28,4 +28,4 @@ class InfoModel {
   }
 }
 
-module.exports = InfoModel;
+module.exports = TypeModel;

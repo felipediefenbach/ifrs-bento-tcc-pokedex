@@ -1,6 +1,6 @@
 const StatService = require("../services/StatService");
 
-class TypeController {
+class StatController {
   static async statInfo(req, res) {
     try {
       const pokemonName = req.params.pokemonName;
@@ -13,4 +13,4 @@ class TypeController {
 
 }
 
-module.exports = TypeController;
+module.exports = StatController;

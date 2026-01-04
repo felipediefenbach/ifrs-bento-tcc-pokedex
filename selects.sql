@@ -34,13 +34,34 @@ WHERE
   AND pocket.name = 'padrao'
   AND pocket_content.slot_number = 3;
 
+-- move pokemon to another slot
+UPDATE pocket_content AS pocket_content
+JOIN pocket ON pocket_content.pocket_id = pocket.id
+JOIN trainer ON pocket_content.trainer_id = trainer.id
+SET pocket_content.pocket_id = 2
+WHERE 
+  trainer.name = 'felipedie'
+  AND pocket.name = 'padrao'
+  AND pocket_content.slot_number = 1;
+
+-- set move config in pocket_content
+UPDATE pocket_content AS pocket_content
+JOIN pocket ON pocket_content.pocket_id = pocket.id
+JOIN trainer ON pocket_content.trainer_id = trainer.id
+SET pocket_content.moves = 'one,two'
+WHERE 
+  trainer.name = 'felipedie'
+  AND pocket.name = 'padrao'
+  AND pocket_content.slot_number = 1;
+
 -- conteudo dos bolsos
 SELECT
-  pocket_content.slot_number AS slot_number,
-  pocket.name AS pocket_name,
-  trainer.name AS trainer_name, 
-  pokemon.name AS pokemon_name,
-  pokemon_state.name AS pokemon_state
+  pocket_content.slot_number AS slotNumber,
+  pokemon.name AS pokemonName,
+  pocket_content.level AS pokemonLevel,
+  pokemon_state.name AS pokemonState,
+  pocket.name AS pocketName,
+  trainer.name AS trainerName
 FROM pocket_content
 INNER JOIN pocket ON pocket_content.pocket_id = pocket.id
 INNER JOIN trainer ON pocket_content.trainer_id = trainer.id
@@ -83,9 +104,18 @@ WHERE
 
 -- evoluções pelo nome
 SELECT
-  pokemon_evolution.name AS name
+  pokemon_evolution.evolutions AS evolutions
 FROM pokemon_evolution
 INNER JOIN pokemon ON pokemon_evolution.pokemon_id = pokemon.id
+WHERE
+  pokemon.name = 'pikachu';
+
+-- moves por nome
+SELECT
+  pokemon_move.moves AS moves,
+  pokemon_move.level AS level
+FROM pokemon_move
+INNER JOIN pokemon ON pokemon_move.pokemon_id = pokemon.id
 WHERE
   pokemon.name = 'pikachu';
 
@@ -120,3 +150,32 @@ INSERT INTO pocket_content VALUES
 (1, 1, 2, 14, 1),
 (1, 1, 3, 25, 1),
 (1, 1, 4, 26, 1);
+
+-- seta atributos iniciais
+UPDATE 
+  pocket_content
+SET 
+  hp = 2,
+  attack = 3,
+  defense = 4,
+  sattack = 5,
+  sdefense = 6,
+  speed = 7
+WHERE
+  pokemon_id = 1;
+
+-- seta experiencia inicial
+UPDATE 
+  pocket_content
+SET 
+  curr_exp = 1
+WHERE
+  pokemon_id = 1;
+
+-- define qnt xp pro prox nivel
+UPDATE 
+  pocket_content
+SET 
+  level_exp = 1
+WHERE
+  pokemon_id = 1;

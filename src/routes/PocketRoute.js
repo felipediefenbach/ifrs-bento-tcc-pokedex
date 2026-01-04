@@ -4,12 +4,11 @@ const PocketController = require("../controllers/PocketController");
 
 const pocket = express.Router();
 
-pocket.post("/list", PocketController.allPockets);
-pocket.get(
-  "/content/:trainerName/:pocketName",
-  PocketController.allInThePocket
-);
-pocket.post("/add", PocketController.addInThePocketSlot);
-pocket.post("/del", PocketController.delInThePocketSlot);
+pocket.get("/list/:trainerName", PocketController.allPockets);
+pocket.get("/slots/:trainerName/:pocketName", PocketController.freeSlotInThePocket);
+pocket.get("/content/:trainerName/:pocketName", PocketController.allInThePocket);
+pocket.post("/pokemon/add", PocketController.addInThePocketSlot);
+pocket.delete("/pokemon/del", PocketController.delInThePocketSlot);
+pocket.put("/pokemon/move", PocketController.moveToOtherPocket);
 
 module.exports = pocket;

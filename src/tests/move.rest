@@ -1,0 +1,23 @@
+# Configuração
+@baseURL = http://127.0.0.1:3000
+@pokemonName = pikachu
+@pokemonLevel = 1
+
+### lista de todos os movimentos deste pokemon
+GET {{baseURL}}/move/{{pokemonName}}
+Accept: application/json
+
+### lista dos movimentos "por nível"
+GET {{baseURL}}/move/{{pokemonName}}/{{pokemonLevel}}
+Accept: application/json
+
+### configura os movimentos do pokemon
+PUT {{baseURL}}/move/set/attack
+Content-Type: application/json
+
+{
+  "moveList": "tree,four",
+  "trainerName": "felipedie", 
+  "pocketName": "padrao", 
+  "slotNumber": 3
+}

@@ -16,9 +16,9 @@ async function pokeType(fulldata) {
     return typesList;
   
   } catch (error) {
-    throw new Error(`Houve um erro ao retornar a lista de formas do pokemon solicitado: ${error}`);
-  };
-
+    throw new Error(error);
+  
+  }
 }
 
 module.exports = pokeType;

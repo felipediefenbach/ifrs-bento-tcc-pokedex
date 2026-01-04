@@ -1,19 +1,19 @@
 const InfoModel = require("../models/InfoModel");
 const pokeBasicInfo = require("../utils/pokeBasicInfo");
 
-class PokemonService {
+class InfoService {
   static async basicInfo(fulldata) {
 
-    const existingPokemon = await InfoModel.findPokemonInfoByName(fulldata);
+    const existingInfo = await InfoModel.findPokemonInfoByName(fulldata);
 
-    if (existingPokemon.length === 0) {
+    if (existingInfo.length === 0) {
       const basicInfo = await pokeBasicInfo(fulldata);
-      const result = await InfoModel.addPokemonBasicInfo(basicInfo);
-      return result === 1 ? await InfoModel.findPokemonInfoByName(fulldata) : null;
+      const basicInforesult = await InfoModel.addPokemonBasicInfo(basicInfo);
+      return basicInforesult === 1 ? await InfoModel.findPokemonInfoByName(fulldata) : null;
     } else {
-      return existingPokemon
+      return existingInfo
     }
   }
 }
 
-module.exports = PokemonService;
+module.exports = InfoService;

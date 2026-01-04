@@ -2,7 +2,7 @@ const TypeModel = require("../models/TypeModel");
 const PokemonModel = require("../models/PokemonModel");
 const pokeType = require("../utils/pokeType");
 
-class PokemonService {
+class TypeService {
   static async typeInfo(fulldata) {
 
     const existingPokemon = await TypeModel.findPokemonTypeByName(fulldata);
@@ -20,4 +20,4 @@ class PokemonService {
   }
 }
 
-module.exports = PokemonService;
+module.exports = TypeService;

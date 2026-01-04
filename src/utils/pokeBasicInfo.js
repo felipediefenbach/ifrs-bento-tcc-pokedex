@@ -18,12 +18,10 @@ async function pokeBasicInfo(fulldata) {
 
     return basicInfo;
 
-  } catch (error) {  
-    throw new Error(
-      `Failed to fetch data for ${pokemonName}: ${error}`
-    );
+  } catch (error) {
+    throw new Error(error);
+  
   }
-
 }
 
 module.exports = pokeBasicInfo;

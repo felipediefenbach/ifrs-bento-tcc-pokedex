@@ -4,19 +4,30 @@
 @pocketName = padrao
 
 ### lista todos os bolsos do treinador
-POST {{baseURL}}/pocket/list
-Content-Type: application/json
+GET {{baseURL}}/pocket/list/{{trainerName}}
+Accept: application/json
 
-{
-    "trainerName": "felipedie"
-}
+### lista o numero de slots nos bolsos do treinador
+GET {{baseURL}}/pocket/slots/{{trainerName}}/{{pocketName}}
+Accept: application/json
 
 ### lista todos os pokemons no bolso do treinador
 GET {{baseURL}}/pocket/content/{{trainerName}}/{{pocketName}}
 Accept: application/json
 
+### move um pokemon para outro bolso do treinador
+PUT {{baseURL}}/pocket/pokemon/move
+Content-Type: application/json
+
+{
+    "trainerName": "felipedie",
+    "pocketName": "padrao",
+    "destinationPocket": "laboratorio",
+    "slotNumber": 1
+}
+
 ### Insere um pokemon em um dos espaços no bolso do treinador
-POST {{baseURL}}/pocket/add
+POST {{baseURL}}/pocket/pokemon/add
 Content-Type: application/json
 
 {
@@ -26,7 +37,7 @@ Content-Type: application/json
 }
 
 ### Remove um pokemon em um dos espaços no bolso do treinador
-POST {{baseURL}}/pocket/del
+POST {{baseURL}}/pocket/pokemon/del
 Content-Type: application/json
 
 {

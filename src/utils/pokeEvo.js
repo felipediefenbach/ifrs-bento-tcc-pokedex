@@ -29,9 +29,9 @@ async function pokeEvo(fulldata) {
     const species = speciesNames.join('-> ');
     return species;
 
-  } catch (err) {
-    throw new Error(`Houve um erro ao retornar a lista de evoluções do pokemon solicitado: ${err}`);
+  } catch (error) {
+    throw new Error(error);
+  
   }
-
 }
 module.exports = pokeEvo;

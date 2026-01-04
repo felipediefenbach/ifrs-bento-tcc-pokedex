@@ -1,6 +1,6 @@
 const db = require("../config/Database");
 
-class EvoModel {
+class StatModel {
 
   static async findPokemonStatByName(fulldata) {
     const { pokemonName } = fulldata;
@@ -33,4 +33,4 @@ class EvoModel {
   }
 }
 
-module.exports = EvoModel;
+module.exports = StatModel;

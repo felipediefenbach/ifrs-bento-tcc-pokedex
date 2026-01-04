@@ -21,6 +21,26 @@ class PocketService {
     return await PocketModel.allInThePocket(fulldata);
   }
 
+  static async freeSlotInThePocket(fulldata) {
+    const vacancySlots = await checkSlots(fulldata);
+    return vacancySlots.length
+  }
+  
+  static async moveToOtherPocket(fulldata) {
+
+    const { destinationPocket, trainerName, slotNumber } = fulldata;
+
+    const oldPocketName = fulldata["pocketName"];
+    const pocketName = destinationPocket;
+    
+    const newPocketId = await PocketModel.findPocketIdByName({pocketName, trainerName});
+    const freeSlots = await this.freeSlotInThePocket({pocketName, trainerName});
+
+    if (freeSlots && freeSlots > 0) {
+      return await PocketModel.moveToOtherPocket({newPocketId, trainerName, oldPocketName, slotNumber})
+    }
+  }
+
   static async addInThePocketSlot(fulldata) {
     const { trainerName, pocketName, pokemonName } = fulldata;
 

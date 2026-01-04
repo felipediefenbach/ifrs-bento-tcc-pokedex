@@ -2,7 +2,7 @@ const EvoModel = require("../models/EvoModel");
 const PokemonModel = require("../models/PokemonModel");
 const pokeEvo = require("../utils/pokeEvo");
 
-class PokemonService {
+class EvoService {
   static async evoSequence(fulldata) {
 
     const existingPokemon = await EvoModel.findPokemonEvoByName(fulldata);
@@ -21,4 +21,4 @@ class PokemonService {
   }
 }
 
-module.exports = PokemonService;
+module.exports = EvoService;

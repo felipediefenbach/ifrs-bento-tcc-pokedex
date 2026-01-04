@@ -10,6 +10,7 @@ const infoRoute = require("./routes/InfoRoute");
 const typeRoute = require("./routes/TypeRoute");
 const evoRoute = require("./routes/EvoRoute");
 const statRoute = require("./routes/StatRoute");
+const moveRoute = require("./routes/MoveRoute");
 
 const errorMiddleware = require("./middlewares/errorMiddleware");
 const app = express();
@@ -27,6 +28,7 @@ app.use("/info", infoRoute);
 app.use("/type", typeRoute);
 app.use("/evo", evoRoute);
 app.use("/stat", statRoute);
+app.use("/move", moveRoute);
 
 app.use(errorMiddleware);
 

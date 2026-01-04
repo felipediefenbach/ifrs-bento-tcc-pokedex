@@ -1,6 +1,6 @@
 const EvoService = require("../services/EvoService");
 
-class TypeController {
+class EvoController {
   static async evoSequence(req, res) {
     try {
       const pokemonName = req.params.pokemonName;
@@ -13,4 +13,4 @@ class TypeController {
 
 }
 
-module.exports = TypeController;
+module.exports = EvoController;

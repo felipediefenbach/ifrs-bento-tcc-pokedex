@@ -1,3 +1,4 @@
+const rollRandom = () => Math.random().toString(36).substring(2, 10);
 function populatePokemonSelector() {
   let pokemonsToSelect = ["<option selected>Select one Pokemon</option>"];
 
@@ -17,6 +18,126 @@ function populatePokemonSelector() {
 
   $("#pokemonSelectorTrainer1").append(pokemonsToSelect);
   $("#pokemonSelectorTrainer2").append(pokemonsToSelect);
+}
+
+async function emptySlotsInMyPockets(trainerName, pocketName) {
+  
+  const slotsResponse = await $.ajax({
+      type: "GET",
+      url: `/pocket/slots/${trainerName}/${pocketName}`,
+      dataType: "json",
+  });
+
+  return slotsResponse["result"];
+
+}
+
+async function listAllMyPockets(fulldata) {
+  
+  const { trainerName, pocketName, pokemonName } = fulldata;
+
+  const pocketResponse = await $.ajax({
+      type: "GET",
+      url: `/pocket/list/${trainerName}`,
+      dataType: "json",
+  });
+  
+  const allPockets = pocketResponse["result"];
+  const skipCurrentPocket = allPockets.filter(i => i !== pocketName);
+  let pocketsToSelect = "<option selected>Select destionation</option>";
+
+  for (const element of skipCurrentPocket) {
+    const free = await emptySlotsInMyPockets(trainerName, element);
+    pocketsToSelect += `<option value="${element}">${element} -> Free slots: ${free}</option>`;
+  }
+
+  const SELECT = `
+    <label for="pocketSelectorTrainer1" class="form-label">${pokemonName}</label>
+        <select id="pocketSelectorTrainer1" class="form-select form-select-sm" name="pocketSelectorTrainer1">
+        ${pocketsToSelect}
+    </select>`
+
+  return SELECT
+
+}
+
+async function selectPokemonMoves(fulldata) {
+  
+  const { pokemonName, pokemonLevel } = fulldata;
+
+  const moveInsertResponse = await $.ajax({
+      type: "GET",
+      url: `/move/${pokemonName}`,
+      dataType: "json",
+  });
+
+  const { result, status } = moveInsertResponse;
+
+  if (status) {
+  
+    const moveLevelResponse = await $.ajax({
+        type: "GET",
+        url: `/move/${pokemonName}/${pokemonLevel}`,
+        dataType: "json",
+    });
+    
+    const { result, status } = moveLevelResponse;
+
+    if (status) {
+
+      let moveToSelect = `<option value="empty" selected>Select Attack</option>`;
+
+      for (const element of result) {
+        moveToSelect += `<option value="${element}">${element}</option>`;
+      }
+
+      const SELECT = `
+        <label for="moveSlot1Trainer1" class="form-label">Slot 1</label>
+          <select id="moveSlot1Trainer1" class="form-select form-select-sm" name="moveSlot1Trainer1">
+            ${moveToSelect}
+          </select>
+        <br />
+        <label for="moveSlot2Trainer1" class="form-label">Slot 2</label>
+          <select id="moveSlot2Trainer1" class="form-select form-select-sm" name="moveSlot2Trainer1">
+            ${moveToSelect}
+          </select>
+        <br />
+        <label for="moveSlot3Trainer1" class="form-label">Slot 3</label>
+          <select id="moveSlot3Trainer1" class="form-select form-select-sm" name="moveSlot3Trainer1">
+            ${moveToSelect}
+          </select>
+        <br />
+        <label for="moveSlot4Trainer1" class="form-label">Slot 4</label>
+          <select id="moveSlot4Trainer1" class="form-select form-select-sm" name="moveSlot4Trainer1">
+            ${moveToSelect}
+          </select>
+        <br />
+        <button id="btnSaveMoves" type="button" class="btn btn-primary">Save Config</button>`
+        
+      return SELECT
+
+    } else {
+      throw new Error(`${result}`)
+    }
+  } else {
+    throw new Error(`${result}`)
+  }
+}
+
+async function setPokemonMoves(fulldata) {
+  console.log(fulldata);
+  try {
+    const response = await $.ajax({
+      type: "PUT",
+      url: "/move/set/attack",
+      data: JSON.stringify(fulldata),
+      contentType: "application/json",
+    });
+
+    return response;
+  } catch (error) {
+    return error;
+  }
 }
 
 async function addPokemon(pokemonName) {
@@ -40,15 +161,11 @@ async function addPokemon(pokemonName) {
   }
 }
 
-async function handleAddPokemonResult(pokemonName) {
-  return await addPokemon(pokemonName);
-}
-
 async function addPokemonInMyPocket(trainerName, pocketName, pokemonName) {
   try {
     const response = await $.ajax({
       type: "POST",
-      url: "/pocket/add",
+      url: "/pocket/pokemon/add",
       data: JSON.stringify({ trainerName, pocketName, pokemonName }),
       contentType: "application/json",
     });
@@ -65,16 +182,12 @@ async function addPokemonInMyPocket(trainerName, pocketName, pokemonName) {
   }
 }
 
-async function handleAddInMyPocketResult(trainerName, pocketName, pokemonName) {
-  return await addPokemonInMyPocket(trainerName, pocketName, pokemonName);
-}
-
-async function removePokemonInMyPocket(slotNumber, trainerName, pocketName) {
+async function movePokemonToOtherPocket(fulldata) {
   try {
     const response = await $.ajax({
-      type: "POST",
-      url: "/pocket/del",
-      data: JSON.stringify({ slotNumber, trainerName, pocketName }),
+      type: "PUT",
+      url: "/pocket/pokemon/move",
+      data: JSON.stringify(fulldata),
       contentType: "application/json",
     });
 
@@ -88,10 +201,6 @@ async function removePokemonInMyPocket(slotNumber, trainerName, pocketName) {
       status: "error",
     };
   }
-}
-
-async function handleDelInMyPocketResult(slotNumber, trainerName, pocketName) {
-  return await removePokemonInMyPocket(slotNumber, trainerName, pocketName);
 }
 
 async function showPokemonInfo(pokemonName) {
@@ -202,3 +311,46 @@ function infoToast(title, message) {
   $(".toast-container").append(TOAST);
   $("#infoToast").toast("show");
 }
+
+// vai para uma parte separada na gerencia de bolsos
+// const response = await handleDelInMyPocketResult(slotNumber, trainerName, pocketName);
+
+// const { result, status } = response;
+
+// $("#pokemonSelectorTrainer1").prop("selectedIndex", 0);
+
+// switch(status) {
+  
+//   case true:
+//     $("#pocketViewTrainer1").bootstrapTable('refresh');
+//     infoToast(`Ok!!`,`${result}`);
+//     break;
+
+//   case false:
+//     infoToast(`Ops!!`,`${result}`);
+//     break;
+
+//   default:
+//     infoToast(`Erro`,`${result}`)
+
+// }
+// async function removePokemonInMyPocket(slotNumber, trainerName, pocketName) {
+//   try {
+//     const response = await $.ajax({
+//       type: "POST",
+//       url: "/pocket/del",
+//       data: JSON.stringify({ slotNumber, trainerName, pocketName }),
+//       contentType: "application/json",
+//     });
+
+//     return {
+//       result: response.result,
+//       status: response.status,
+//     };
+//   } catch (error) {
+//     return {
+//       result: error,
+//       status: "error",
+//     };
+//   }
+// }

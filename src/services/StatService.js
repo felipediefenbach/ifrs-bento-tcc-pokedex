@@ -2,7 +2,7 @@ const StatModel = require("../models/StatModel");
 const PokemonModel = require("../models/PokemonModel");
 const pokeStat = require("../utils/pokeStat");
 
-class PokemonService {
+class StatService {
   static async statInfo(fulldata) {
 
     const existingPokemon = await StatModel.findPokemonStatByName(fulldata);
@@ -36,8 +36,6 @@ class PokemonService {
 
       });
 
-      //console.log({ pokemonId, pokemonHp, pokemonAttack, pokemonDefense, pokemonSattack, pokemonSdefense, pokemonSpeed });
-
       const result = await StatModel.addPokemonStat({pokemonId, pokemonHp, pokemonAttack, pokemonDefense, pokemonSattack, pokemonSdefense, pokemonSpeed});
       return result === 1 ? await StatModel.findPokemonStatByName(fulldata) : null;
       
@@ -48,4 +46,4 @@ class PokemonService {
   }
 }
 
-module.exports = PokemonService;
+module.exports = StatService;

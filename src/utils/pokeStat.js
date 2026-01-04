@@ -24,8 +24,9 @@ async function pokeStat(fulldata) {
     
     return arrayPersonalStatus;
 
-  } catch (err) {
-    throw new Error(`Houve um erro ao retornar a lista de status do pokemon solicitado: ${err}`);
+  } catch (error) {
+    throw new Error(error);
+  
   }
 
 }
