@@ -16,14 +16,14 @@ class PokemonController {
       if (result) {
         res.status(200).json(
           { 
-            "result": "Pokemon criado com sucesso.", 
+            "result": "New Pokemon Inserted !!", 
             "status": true,
           }
         );
       } else {
         res.status(200).json(
           { 
-            "result": "Pokemon já está cadastrado.",
+            "result": "Pokemon exists !!",
             "status": false,
           }
         );

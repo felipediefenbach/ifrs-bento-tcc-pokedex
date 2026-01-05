@@ -1,0 +1,10 @@
+# Configuração
+@baseURL = http://127.0.0.1:3000
+
+### player1
+GET {{baseURL}}/battle/0/felipedie
+Accept: application/json
+
+### player2
+GET {{baseURL}}/battle/0/machine
+Accept: application/json

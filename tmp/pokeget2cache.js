@@ -4,6 +4,7 @@ const P = new Pokedex();
 const searchedPokemon = ['pikachu'];
 //const searchedPokemon = ['dragonite'];
 //const searchedPokemon = ['nidoran'];
+const searchedMove = "vice-grip";
 const defaultTrainerId = 1;
 
 async function dumpPokemon() {
@@ -166,11 +167,24 @@ async function pokeEvoltutions(pokemonName) {
 
 }
 
+async function getMovePP(searchedMove) {
+
+  try {
+
+    const move = await P.getMoveByName("tackle");
+    return move;
+
+  } catch (error) {
+    throw new Error(error.message);
+  }
+}
+
+
 //await dumpPokemon()
 //await pokeEvoltutions(searchedPokemon);
 //await pokeBasicInfo(searchedPokemon);
 //await pokeType(searchedPokemon);
 //await pokeStats(searchedPokemon);
 //await pokeAbilities(searchedPokemon);
-//await pokeMoves(searchedPokemon);
-
+await pokeMoves(searchedPokemon);
+//await getMovePP(searchedMove);

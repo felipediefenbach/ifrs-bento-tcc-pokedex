@@ -84,6 +84,21 @@ WHERE
   trainer.name = 'felipedie'
   AND pocket.name = 'padrao';
 
+-- cruza a informação dos dados do pokemon com o pokemon do bolso
+UPDATE pocket_content AS pocket_content
+INNER JOIN pokemon_base_info ON pocket_content.pokemon_id = pokemon_base_info.pokemon_id
+INNER JOIN pokemon_stat ON pocket_content.pokemon_id = pokemon_stat.pokemon_id
+SET
+  pocket_content.curr_exp = pokemon_base_info.base_exp,
+  pocket_content.hp = pokemon_stat.hp,
+  pocket_content.attack = pokemon_stat.attack,
+  pocket_content.defense = pokemon_stat.defense,
+  pocket_content.sattack = pokemon_stat.sattack,
+  pocket_content.sdefense = pokemon_stat.sdefense,
+  pocket_content.speed = pokemon_stat.speed
+WHERE
+  pocket_content.pokemon_id = 7;
+  
 -- informações base do pokemon pelo nome
 SELECT
   pokemon_base_info.base_exp AS base_exp,
@@ -151,27 +166,6 @@ INSERT INTO pocket_content VALUES
 (1, 1, 3, 25, 1),
 (1, 1, 4, 26, 1);
 
--- seta atributos iniciais
-UPDATE 
-  pocket_content
-SET 
-  hp = 2,
-  attack = 3,
-  defense = 4,
-  sattack = 5,
-  sdefense = 6,
-  speed = 7
-WHERE
-  pokemon_id = 1;
-
--- seta experiencia inicial
-UPDATE 
-  pocket_content
-SET 
-  curr_exp = 1
-WHERE
-  pokemon_id = 1;
-
 -- define qnt xp pro prox nivel
 UPDATE 
   pocket_content
@@ -179,3 +173,31 @@ SET
   level_exp = 1
 WHERE
   pokemon_id = 1;
+
+-- level by name
+SELECT 
+  pocket_content.level AS level
+FROM pocket_content
+INNER JOIN pokemon ON pocket_content.pokemon_id = pokemon.id
+WHERE
+  pokemon.name = 'bulbasaur';
+
+
+SELECT
+  pocket_content.slot_number AS slot_number
+FROM pocket_content
+INNER JOIN pocket ON pocket_content.pocket_id = pocket.id
+INNER JOIN trainer ON pocket_content.trainer_id = trainer.id
+WHERE 
+  trainer.name = 'felipedie'
+  AND pocket.name = 'padrao';
+
+
+SELECT
+  pocket_content.slot_number AS slot_number
+FROM pocket_content
+INNER JOIN pocket ON pocket_content.pocket_id = pocket.id
+INNER JOIN trainer ON pocket_content.trainer_id = trainer.id
+WHERE 
+  trainer.name = 'machine'
+  AND pocket.name = 'padrao';

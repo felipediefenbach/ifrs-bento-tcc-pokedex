@@ -1,9 +1,13 @@
 Dockerfile
 docker-compose.yml
 LICENSE
-README
+README.md
 skel.png
 skel.sql
+selects.sql
 executa.yml
 .ansible
 .vscode
+.env
+.gitignore
+tmp

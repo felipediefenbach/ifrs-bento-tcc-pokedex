@@ -1,4 +1,5 @@
 const rollRandom = () => Math.random().toString(36).substring(2, 10);
+
 function populatePokemonSelector() {
   let pokemonsToSelect = ["<option selected>Select one Pokemon</option>"];
 
@@ -51,13 +52,7 @@ async function listAllMyPockets(fulldata) {
     pocketsToSelect += `<option value="${element}">${element} -> Free slots: ${free}</option>`;
   }
 
-  const SELECT = `
-    <label for="pocketSelectorTrainer1" class="form-label">${pokemonName}</label>
-        <select id="pocketSelectorTrainer1" class="form-select form-select-sm" name="pocketSelectorTrainer1">
-        ${pocketsToSelect}
-    </select>`
-
-  return SELECT
+  return pocketsToSelect
 
 }
 
@@ -90,31 +85,8 @@ async function selectPokemonMoves(fulldata) {
       for (const element of result) {
         moveToSelect += `<option value="${element}">${element}</option>`;
       }
-
-      const SELECT = `
-        <label for="moveSlot1Trainer1" class="form-label">Slot 1</label>
-          <select id="moveSlot1Trainer1" class="form-select form-select-sm" name="moveSlot1Trainer1">
-            ${moveToSelect}
-          </select>
-        <br />
-        <label for="moveSlot2Trainer1" class="form-label">Slot 2</label>
-          <select id="moveSlot2Trainer1" class="form-select form-select-sm" name="moveSlot2Trainer1">
-            ${moveToSelect}
-          </select>
-        <br />
-        <label for="moveSlot3Trainer1" class="form-label">Slot 3</label>
-          <select id="moveSlot3Trainer1" class="form-select form-select-sm" name="moveSlot3Trainer1">
-            ${moveToSelect}
-          </select>
-        <br />
-        <label for="moveSlot4Trainer1" class="form-label">Slot 4</label>
-          <select id="moveSlot4Trainer1" class="form-select form-select-sm" name="moveSlot4Trainer1">
-            ${moveToSelect}
-          </select>
-        <br />
-        <button id="btnSaveMoves" type="button" class="btn btn-primary">Save Config</button>`
         
-      return SELECT
+      return moveToSelect;
 
     } else {
       throw new Error(`${result}`)
@@ -125,7 +97,6 @@ async function selectPokemonMoves(fulldata) {
 }
 
 async function setPokemonMoves(fulldata) {
-  console.log(fulldata);
   try {
     const response = await $.ajax({
       type: "PUT",

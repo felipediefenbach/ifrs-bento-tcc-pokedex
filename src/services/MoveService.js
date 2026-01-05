@@ -1,6 +1,7 @@
 const MoveModel = require("../models/MoveModel");
 const PokemonModel = require("../models/PokemonModel");
 const pokeMove = require("../utils/pokeMove");
+const movePp = require("../utils/movePp");
 
 class MoveService {
   static async moveList(fulldata) {
@@ -48,6 +49,17 @@ class MoveService {
   }
 
   static async setAttackConfig(fulldata) {
+    
+    let moveWithPp = []
+    let { moveList } = fulldata;
+    const arrayMoves = moveList.split(',');
+    
+    for ( const element of arrayMoves ) {
+      moveWithPp.push(`${element}|${await movePp(element)}`);
+    }
+
+    fulldata['moveList'] = moveWithPp.join(',');
+    console.log(fulldata);
     return MoveModel.setAttackConfig(fulldata);
   }
 

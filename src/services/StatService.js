@@ -16,22 +16,22 @@ class StatService {
       statList.forEach(element => {
         
         if (element.stat_name === 'hp') {
-          pokemonHp = `${element.base_stat},${element.effort}`
+          pokemonHp = element.base_stat
 
         } else if (element.stat_name === 'attack') {
-          pokemonAttack = `${element.base_stat},${element.effort}`
+          pokemonAttack = element.base_stat
         
         } else if (element.stat_name === 'defense') {
-          pokemonDefense = `${element.base_stat},${element.effort}`
+          pokemonDefense = element.base_stat
         
         } else if (element.stat_name === 'special-attack') {
-          pokemonSattack = `${element.base_stat},${element.effort}`
+          pokemonSattack = element.base_stat
         
         } else if (element.stat_name === 'special-defense') {
-          pokemonSdefense = `${element.base_stat},${element.effort}`
+          pokemonSdefense = element.base_stat
         
         } else if (element.stat_name === 'speed') {
-          pokemonSpeed = `${element.base_stat},${element.effort}`
+          pokemonSpeed = element.base_stat
         }
 
       });

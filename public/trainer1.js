@@ -1,10 +1,8 @@
 $(document).ready(function () {
-  // build a pokemon list for trainer select
-  populatePokemonSelector();
 
-  // catch the select to build the poket os each trainer
   const trainerName = "felipedie";
   const pocketName = "padrao";
+  populatePokemonSelector();
 
   $("#pokemonSelectorTrainer1").change(() => {
     const pokemonName = $("#pokemonSelectorTrainer1").val();
@@ -37,7 +35,6 @@ $(document).ready(function () {
       } else {
 
         const response = await addPokemonInMyPocket(trainerName, pocketName, pokemonName);
-        console.log(response);
         const { result, status } = response;
        
         $("#pokemonSelectorTrainer1").prop("selectedIndex", 0);
@@ -61,16 +58,22 @@ $(document).ready(function () {
     });
   });
 
-  $(document).on("click", ".btn-move", async function() {
+  $(document).on("click", ".btn-move-Trainer1", async function() {
 
     let slotNumber = $(this).data("slot");
     let trainerName = $(this).data("trainer");
     let pocketName = $(this).data("pocket");
     let pokemonName = $(this).data("pokemon");
     
+    const POCKET_SELECT = `
+    <label for="pocketSelectorTrainer1" class="form-label">${pokemonName}</label>
+        <select id="pocketSelectorTrainer1" class="form-select form-select-sm" name="pocketSelectorTrainer1">
+        ${await listAllMyPockets({trainerName, pocketName, pokemonName})}
+    </select>`
+
     infoChoice(
       `Select Destion Pocket`,
-      `${await listAllMyPockets({trainerName, pocketName, pokemonName})}`
+      `${POCKET_SELECT}`
     )
 
     $("#btnSuccess").click(async () => { 
@@ -105,7 +108,7 @@ $(document).ready(function () {
 
   });
 
-  $(document).on("click", ".btn-inform", async function() {
+  $(document).on("click", ".btn-inform-Trainer1", async function() {
     let pokemonName = $(this).data("pokemon");
     const resultInfo = await showPokemonInfo(pokemonName);
     const resultType = await showPokemonType(pokemonName);
@@ -130,7 +133,7 @@ $(document).ready(function () {
     );
   });
 
-  $(document).on("click", ".btn-attack", async function() {
+  $(document).on("click", ".btn-attack-Trainer1", async function() {
 
     let slotNumber = $(this).data("slot");
     let trainerName = $(this).data("trainer");
@@ -138,9 +141,33 @@ $(document).ready(function () {
     let pokemonName = $(this).data("pokemon");
     let pokemonLevel = $(this).data("level");
 
+    const moveToSelect = await selectPokemonMoves({pokemonName, pokemonLevel})
+    const MOVES_SELECT = `
+      <label for="moveSlot1Trainer1" class="form-label">Slot 1</label>
+        <select id="moveSlot1Trainer1" class="form-select form-select-sm" name="moveSlot1Trainer1">
+          ${moveToSelect}
+        </select>
+      <br />
+      <label for="moveSlot2Trainer1" class="form-label">Slot 2</label>
+        <select id="moveSlot2Trainer1" class="form-select form-select-sm" name="moveSlot2Trainer1">
+          ${moveToSelect}
+        </select>
+      <br />
+      <label for="moveSlot3Trainer1" class="form-label">Slot 3</label>
+        <select id="moveSlot3Trainer1" class="form-select form-select-sm" name="moveSlot3Trainer1">
+          ${moveToSelect}
+        </select>
+      <br />
+      <label for="moveSlot4Trainer1" class="form-label">Slot 4</label>
+        <select id="moveSlot4Trainer1" class="form-select form-select-sm" name="moveSlot4Trainer1">
+          ${moveToSelect}
+        </select>
+      <br />
+      <button id="btnSaveMoves" type="button" class="btn btn-primary" data-bs-dismiss="modal">Save Config</button>`
+
     infoChoice(
       `Pokemon Moves`,
-      `${await selectPokemonMoves({pokemonName, pokemonLevel})}`
+      `${MOVES_SELECT}`
     )
 
     $("#btnSaveMoves").click(async () => { 
@@ -186,7 +213,7 @@ $(document).ready(function () {
     return `
     <button 
       type="button" 
-      class="btn btn-sm btn-danger g-3 btn-move"
+      class="btn btn-sm btn-danger g-3 btn-move-Trainer1"
       data-slot="${row['slotNumber']}"
       data-trainer="${row['trainerName']}"
       data-pocket="${row['pocketName']}"
@@ -194,12 +221,12 @@ $(document).ready(function () {
     >Move</button>
     <button 
       type="button" 
-      class="btn btn-sm btn-secondary g-3 btn-inform"
+      class="btn btn-sm btn-secondary g-3 btn-inform-Trainer1"
       data-pokemon="${row['pokemonName']}"
     >Info</button>
     <button 
       type="button" 
-      class="btn btn-sm btn-primary g-3 btn-attack"
+      class="btn btn-sm btn-primary g-3 btn-attack-Trainer1"
       data-pokemon="${row['pokemonName']}"
       data-level="${row['pokemonLevel']}"
       data-slot="${row['slotNumber']}"
@@ -242,22 +269,6 @@ $(document).ready(function () {
         formatter: actionsPocketFormatter,
       },
     ],
-  });
-
-  /*
-    ADVERSARY
-  */
- 
-  $("#pokemonSelectorTrainer2").change(() => {
-    const selectedPokemon = $("#pokemonSelectorTrainer2").val();
-
-    infoToast(
-      `nailedit`,
-      `chat gtp is stupid`,
-    )
-    
-    console.log(`trainer2 got: ${selectedPokemon}`);
-  
   });
 
 });

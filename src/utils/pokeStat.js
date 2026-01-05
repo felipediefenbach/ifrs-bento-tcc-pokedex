@@ -17,7 +17,6 @@ async function pokeStat(fulldata) {
         {
           'stat_name': element.stat.name,
           'base_stat': element.base_stat,
-          'effort': element.effort,
         }
       )
     });

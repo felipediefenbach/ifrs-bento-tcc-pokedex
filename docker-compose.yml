@@ -21,6 +21,7 @@ services:
     networks:
       - pokenet
     volumes:
+      - ./tmp:/srv/tmp
       - ./src:/srv/src
       - ./public:/srv/public
       - ./views:/srv/views

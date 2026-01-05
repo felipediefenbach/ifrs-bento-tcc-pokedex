@@ -1,4 +1,5 @@
 const db = require("../config/Database");
+const levelUpFormula = require("../utils/levelUpFormula");
 
 class PocketModel {
   static async allPockets(fulldata) {
@@ -55,6 +56,20 @@ class PocketModel {
     return rows[0]["pocket_id"];
   }
 
+  static async findPokemonLevelByName(fulldata) {
+    const { pokemonName } = fulldata;
+      const [rows] = await db.query(`
+      SELECT 
+        pocket_content.level AS currentLevel
+      FROM pocket_content
+      INNER JOIN pokemon ON pocket_content.pokemon_id = pokemon.id
+      WHERE
+        pokemon.name = ?`,
+      [pokemonName]
+    );
+    return rows[0];
+  }
+
   static async getUsedSlots(fulldata) {
     const { trainerName, pocketName } = fulldata;
     const [rows] = await db.query(
@@ -85,7 +100,6 @@ class PocketModel {
 
   static async moveToOtherPocket(fulldata) {
     const { newPocketId, trainerName, oldPocketName, slotNumber } = fulldata;
-    console.log(fulldata);
     const [rows] = await db.query(
       `UPDATE pocket_content AS pocket_content
         JOIN pocket ON pocket_content.pocket_id = pocket.id
@@ -97,7 +111,6 @@ class PocketModel {
           AND pocket_content.slot_number = ?`,
       [newPocketId, trainerName, oldPocketName, slotNumber]
     );
-
     return rows.affectedRows
 
   }
@@ -118,25 +131,31 @@ class PocketModel {
     return rows.affectedRows;
   }
 
-  // Esse é o insert incial no pocket_content
+  // Insert incial no pocket_content
   // Com o passar do tempo os dados do pocket_content mudam 
   // Conforme o pokemon batalha e evolui
-  static async addPocketContentBasicInfo(fulldata) {
-    const { pokemonBaseExp, pokemonId } = fulldata;
+  static async setPocketPokemonBaseStats(fulldata) {
+    const { nextLevelExp, pocketId, trainerId, slotNumber, pokemonId } = fulldata;
+
     const [rows] = await db.query(
-      `UPDATE 
-          pocket_content
-        SET 
-          curr_exp = ?,
-          hp = ?,
-          attack = ?,
-          defense = ?,
-          sattack = ?,
-          sdefense = ?,
-          speed = ?,
-        WHERE
-          pokemon_id = ?`,
-      [pokemonBaseExp, pokemonHp, pokemonAttack, pokemonDefense, pokemonSattack, pokemonSdefense, pokemonSpeed, pokemonId]
+      `UPDATE pocket_content AS pocket_content
+          INNER JOIN pokemon_base_info ON pocket_content.pokemon_id = pokemon_base_info.pokemon_id
+          INNER JOIN pokemon_stat ON pocket_content.pokemon_id = pokemon_stat.pokemon_id
+          SET
+            pocket_content.curr_exp = pokemon_base_info.base_exp,
+            pocket_content.hp = pokemon_stat.hp,
+            pocket_content.attack = pokemon_stat.attack,
+            pocket_content.defense = pokemon_stat.defense,
+            pocket_content.sattack = pokemon_stat.sattack,
+            pocket_content.sdefense = pokemon_stat.sdefense,
+            pocket_content.speed = pokemon_stat.speed,
+            pocket_content.level_exp = ?
+          WHERE
+            pocket_content.pocket_id = ?
+            AND pocket_content.trainer_id = ?
+            AND pocket_content.slot_number = ?
+            AND pocket_content.pokemon_id = ?`,
+      [ nextLevelExp, pocketId, trainerId, slotNumber, pokemonId ]
     );
 
     return rows.affectedRows;

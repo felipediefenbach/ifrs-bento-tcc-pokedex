@@ -93,12 +93,12 @@ class PocketController {
       const result = await PocketService.addInThePocketSlot(req.body);
       if (result) {
         res.status(200).json({
-          result: "Pokemon adicionado ao bolso",
+          result: "Pokemon added to the pocket !!",
           status: true,
         });
       } else {
         res.status(200).json({
-          result: "O bolso já está cheio de pokemons",
+          result: "The pocket is full !!",
           status: false,
         });
       }
