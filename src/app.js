@@ -11,7 +11,7 @@ const typeRoute = require("./routes/TypeRoute");
 const evoRoute = require("./routes/EvoRoute");
 const statRoute = require("./routes/StatRoute");
 const moveRoute = require("./routes/MoveRoute");
-const battleRoute = require("./routes/battleRoute");
+const battleRoute = require("./routes/BattleRoute");
 
 const errorMiddleware = require("./middlewares/errorMiddleware");
 const app = express();

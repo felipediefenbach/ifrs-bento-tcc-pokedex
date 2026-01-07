@@ -4,6 +4,6 @@ const BattleController = require("../controllers/BattleController");
 
 const battle = express.Router();
 
-battle.get("/load/:cycle/:trainer/:pocket", BattleController.loadAdversaries);
+battle.get("/load/:battleCycle/:trainerName/:pocketName", BattleController.loadAdversaries);
 
 module.exports = battle;

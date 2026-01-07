@@ -22,12 +22,11 @@
     <div class="toast-container position-fixed bottom-0 end-0 p-3"></div>
 
     <div class="container-fluid w-75">
-      <div
-        class="row row-cols-1 row-cols-md-2 g-3 justify-content-center align-items-center"
-      >
+      <br />
+      <div class="row row-cols-1 row-cols-md-2 g-3 justify-content-center align-items-center">
         <div class="col">
           <div class="mb-3">
-            <label for="pokemonSelectorTrainer1" class="form-label">Trainer 1</label>
+            <label for="pokemonSelectorTrainer1" class="form-label"><strong>Trainer 1</strong></label>
             <select
               class="form-select form-select-sm"
               name="pokemonSelectorTrainer1"
@@ -40,7 +39,7 @@
         </div>
         <div class="col">
           <div class="mb-3">
-            <label for="pokemonSelectorTrainer2" class="form-label">Trainer 2</label>
+            <label for="pokemonSelectorTrainer2" class="form-label"><strong>Trainer 2</strong></label>
             <select
               class="form-select form-select-sm"
               name="pokemonSelectorTrainer2"
@@ -49,6 +48,22 @@
             <br />
             <br />
             <table id="pocketViewTrainer2"></table>
+          </div>
+        </div>
+      </div>
+      <div class="row row-cols-1 row-cols-md-2 g-3 justify-content-center align-items-center">
+        <button id="btn-start-battle" type="button" class="btn btn-danger"><strong>!! Let's Battle Begin !!</strong></button>
+      </div>
+      <br /> 
+      <div class="row row-cols-1 row-cols-md-2 g-3 justify-content-center align-items-center">
+        <div class="col">
+          <div class="mb-3">
+            <div class="card-container-left"></div>
+          </div>
+        </div>
+        <div class="col">
+          <div class="mb-3">
+            <div class="card-container-right"></div>
           </div>
         </div>
       </div>
@@ -62,5 +77,6 @@
     <script src="actions.js"></script>
     <script src="trainer1.js"></script>
     <script src="trainer2.js"></script>
+    <script src="battle.js"></script>
   </body>
 </html>

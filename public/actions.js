@@ -1,5 +1,3 @@
-const rollRandom = () => Math.random().toString(36).substring(2, 10);
-
 function populatePokemonSelector() {
   let pokemonsToSelect = ["<option selected>Select one Pokemon</option>"];
 
@@ -230,6 +228,23 @@ async function showPokemonStat(pokemonName) {
   }
 }
 
+async function pickPokemonToBattle(fulldata) {
+  
+  const { battleCycle, trainerName, pocketName } = fulldata
+  
+  try {
+    const response = await $.ajax({
+      type: "GET",
+      url: `battle/load/${battleCycle}/${trainerName}/${pocketName}`,
+      dataType: "json",
+    });
+    return response;
+
+  } catch (error) {
+    return error;
+  }
+}
+
 function infoChoice(title, message) {
   const MODAL = `
     <div class="modal fade" 
@@ -282,6 +297,67 @@ function infoToast(title, message) {
   $(".toast-container").append(TOAST);
   $("#infoToast").toast("show");
 }
+
+function infoCard(trainer, pokemonName, pokemonLevel, pokemonActHp, pokemonMaxHp) {
+  const CARD = `
+      <div id="infoCard${trainer}" class="card border-primary shadow">
+        <!-- Card Header -->
+        <div class="card-header bg-primary text-white d-flex justify-content-between align-items-center">
+          <h5 class="card-title mb-0">
+            <i class="fas fa-paw me-2"></i>${capFirst(trainer === 'left' ? 'trainer 1' : 'trainer 2')} - Pokémon Details
+          </h5>
+        </div>
+        
+        <!-- Card Body -->
+        <div class="card-body">
+          <!-- Basic Info Row -->
+          <div class="row mb-3">
+            <div class="col-md-6">
+
+              <div class="row">
+                <div class="col-6">
+                  <p class="mb-1"><strong>HP:</strong></p>
+                  <div class="progress" style="height: 20px;">
+                    <div class="progress-bar bg-success" 
+                      role="progressbar" 
+                      style="width: ${(pokemonActHp/pokemonMaxHp) * 100}%">${pokemonActHp}/${pokemonMaxHp}
+                    </div>
+                  </div>
+                </div>
+              </div>
+              <div class="mt-3">
+                <div class="input-group">
+                  <select id="select-move-${trainer}" class="form-select">
+                  </select>
+                  <button id="btn-attack-${trainer}" class="btn btn-danger">Attack!</button>
+                </div>
+              </div>
+            </div>
+            <div class="col-md-6">
+              <div class="border rounded p-2 bg-light">
+                <!-- Sprite - centered -->
+                <div class="text-center mb-1">
+                  <span class="pokesprite pokemon ${pokemonName}"></span>
+                </div>
+                
+                <!-- Name and badge - centered -->
+                <div class="text-center">
+                  <div class="d-inline-flex align-items-center">
+                    <h5 class="text-capitalize mb-0">${pokemonName}</h5>
+                    <span class="badge bg-info ms-2">Lv${pokemonLevel}</span>
+                  </div>
+                </div>
+              </div>
+            </div>
+        </div>
+      </div>`
+  
+  $("#infoCard").remove();
+  $(`.card-container-${trainer}`).append(CARD);
+}
+
+const rollRandom = () => Math.random().toString(36).substring(2, 10);
+const capFirst = (str) => str.charAt(0).toUpperCase() + str.slice(1);
 
 // vai para uma parte separada na gerencia de bolsos
 // const response = await handleDelInMyPocketResult(slotNumber, trainerName, pocketName);

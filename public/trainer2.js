@@ -260,8 +260,8 @@ $(document).ready(function () {
         title: "Level",
       },
       {
-        field: "pokemonState",
-        title: "State",
+        field: "pokemonHp",
+        title: "Life",
       },
       {
         field: "pocketAction",

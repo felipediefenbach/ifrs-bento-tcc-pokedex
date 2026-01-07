@@ -2,9 +2,9 @@
 @baseURL = http://127.0.0.1:3000
 
 ### player1
-GET {{baseURL}}/battle/0/felipedie
+GET {{baseURL}}/battle/load/1/felipedie/padrao
 Accept: application/json
 
 ### player2
-GET {{baseURL}}/battle/0/machine
+GET {{baseURL}}/battle/load/1/machine/padrao
 Accept: application/json

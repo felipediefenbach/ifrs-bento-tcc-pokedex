@@ -88,7 +88,6 @@ CREATE TABLE pocket_content (
     trainer_id INT,
     slot_number INT,
     pokemon_id INT,
-    state_id INT,
     moves VARCHAR(200) DEFAULT 'none,none,none,none',
     rm_moves VARCHAR(200) DEFAULT '',
     hp VARCHAR(200) DEFAULT '0,0',
@@ -103,17 +102,7 @@ CREATE TABLE pocket_content (
     FOREIGN KEY (trainer_id) REFERENCES trainer(id),
     FOREIGN KEY (pokemon_id) REFERENCES pokemon(id),
     FOREIGN KEY (pocket_id) REFERENCES pocket(id),
-    FOREIGN KEY (state_id) REFERENCES pokemon_state(id)
 );
-
-INSERT INTO pokemon_state (id, name) VALUES 
-(1, 'normal'),
-(2, 'burn'),
-(3, 'freeze'), 
-(4, 'paralysis'),
-(5, 'poison'),
-(6, 'sleep'),
-(7, 'fainted');
 
 INSERT INTO trainer (name) VALUES 
 ('felipedie'),
