@@ -217,3 +217,76 @@ WHERE
   pocket_content.slot_number = 1
   AND trainer.name = 'machine'
   AND pocket.name = 'padrao';
+
+-- update by order to avoid increment batlle cycles 
+SELECT
+  pokemon.name AS pokemonName,
+  pocket_content.slot_number AS slotNumber,
+  pocket_content.level AS pokemonLevel, 
+  pocket_content.curr_exp AS pokemonXp, 
+  pocket_content.hp AS pokemonHp, 
+  pocket_content.attack AS pokemonAttack, 
+  pocket_content.defense AS pokemonDefense, 
+  pocket_content.moves AS pokemonMoves
+FROM pocket_content
+INNER JOIN pocket ON pocket_content.pocket_id = pocket.id
+INNER JOIN trainer ON pocket_content.trainer_id = trainer.id
+INNER JOIN pokemon ON pocket_content.pokemon_id = pokemon.id
+WHERE 
+  pocket_content.hp != 0  
+  AND trainer.name = 'felipedie'
+  AND pocket.name = 'padrao'
+ORDER BY pocket_content.slot_number ASC;
+
+-- level and xp
+SELECT
+  pocket_content.level AS pokemonLevel, 
+  pocket_content.level_exp AS pokemonLevelExp, 
+  pocket_content.curr_exp AS pokemonXp
+FROM pocket_content
+INNER JOIN pocket ON pocket_content.pocket_id = pocket.id
+INNER JOIN trainer ON pocket_content.trainer_id = trainer.id
+WHERE 
+  pocket_content.slot_number = 2  
+  AND trainer.name = 'felipedie'
+  AND pocket.name = 'padrao'
+
+-- set remainHp and XP in pocket_content for loser
+UPDATE pocket_content AS pocket_content
+JOIN pocket ON pocket_content.pocket_id = pocket.id
+JOIN trainer ON pocket_content.trainer_id = trainer.id
+SET 
+  pocket_content.hp = 0
+WHERE 
+  trainer.name = 'felipedie'
+  AND pocket.name = 'padrao'
+  AND pocket_content.slot_number = 1;
+
+-- set remainHp and XP in pocket_content for winer
+UPDATE pocket_content AS pocket_content
+JOIN pocket ON pocket_content.pocket_id = pocket.id
+JOIN trainer ON pocket_content.trainer_id = trainer.id
+SET 
+  pocket_content.hp = 0
+WHERE 
+  trainer.name = 'felipedie'
+  AND pocket.name = 'padrao'
+  AND pocket_content.slot_number = 1;
+
+UPDATE pocket_content AS pocket_content
+  JOIN pocket ON pocket_content.pocket_id = pocket.id
+  JOIN trainer ON pocket_content.trainer_id = trainer.id
+  SET 
+    pocket_content.curr_hp = pocket_content.full_hp
+  WHERE 
+    trainer.name = 'felipedie'
+    AND pocket.name = 'padrao'
+    AND pocket_content.slot_number = 2;
+
+SELECT
+    pokemon_move.moves AS pokemonMoves
+  FROM pokemon_move
+  INNER JOIN pokemon ON pokemon_move.pokemon_id = pokemon.id
+  WHERE
+    pokemon.name = 'charmander'
+    AND pokemon_move.level = 1;

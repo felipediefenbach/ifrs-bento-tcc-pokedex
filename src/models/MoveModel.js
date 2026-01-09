@@ -17,6 +17,21 @@ class MoveModel {
     return rows;
   }
 
+  static async findPokemonMoveByLevel(fulldata) {
+    const { pokemonName, pokemonLevel } = fulldata;
+    const [rows] = await db.query(
+      `SELECT
+          pokemon_move.moves AS pokemonMoves
+        FROM pokemon_move
+        INNER JOIN pokemon ON pokemon_move.pokemon_id = pokemon.id
+        WHERE
+          pokemon.name = ?
+          AND pokemon_move.level = ?`,
+      [pokemonName, pokemonLevel]
+    );
+    return rows;
+  }
+
   static async addPokemonMove(fulldata) {
     const { pokemonId, pokemonLevel, pokemonMoves } = fulldata;
     const [rows] = await db.query(

@@ -32,8 +32,33 @@ async function emptySlotsInMyPockets(trainerName, pocketName) {
 }
 
 async function listAllMyPockets(fulldata) {
+  const { trainerName } = fulldata;
+  try {
+    const response = await $.ajax({
+      type: "GET",
+      url: `/pocket/list/${trainerName}`,
+      dataType: "json",
+    });
+    
+    const { result, status } = response;
+    
+    if (status) {
+      let pocketsToSelect = "<option selected>Select pocket</option>";
+      result.forEach(element => {
+        pocketsToSelect += `<option value="${element}">${element}</option>`;
+      });
+      return pocketsToSelect;
+    }
+
+  } catch (error) {
+    return error;
+
+  }
+}
+
+async function listTransferPockets(fulldata) {
   
-  const { trainerName, pocketName, pokemonName } = fulldata;
+  const { trainerName, pocketName } = fulldata;
 
   const pocketResponse = await $.ajax({
       type: "GET",
@@ -89,8 +114,26 @@ async function selectPokemonMoves(fulldata) {
     } else {
       throw new Error(`${result}`)
     }
+
   } else {
     throw new Error(`${result}`)
+  }
+  
+}
+
+async function checkFirstCombatblePokemons(fulldata) {
+  const { trainerName, pocketName } = fulldata;
+  try {
+    const response = await $.ajax({
+      type: "GET",
+      url: `/battle/check/${trainerName}/${pocketName}`,
+      dataType: "json",
+    });
+    return response;
+
+  } catch (error) {
+    return error;
+
   }
 }
 
@@ -102,10 +145,51 @@ async function setPokemonMoves(fulldata) {
       data: JSON.stringify(fulldata),
       contentType: "application/json",
     });
-
     return response;
+
   } catch (error) {
     return error;
+
+  }
+}
+
+async function getConfigedMoves(fulldata) {
+  const { trainerName, pocketName, slotNumber } = fulldata;
+  try {
+    const response = await $.ajax({
+      type: "GET",
+      url: `/pocket/moves/${trainerName}/${pocketName}/${slotNumber}`,
+      dataType: "json",
+    });
+
+    const { result, status } = response;
+    if (status){
+      return result;
+    }
+
+  } catch (error) {
+    return error;
+
+  }
+}
+
+async function selectPokemonMovesByLevel(fulldata) {
+  const { pokemonName, pokemonLevel } = fulldata;
+  try {
+    const response = await $.ajax({
+        type: "GET",
+        url: `/move/${pokemonName}/${pokemonLevel}`,
+        dataType: "json",
+    });
+
+    const { result, status } = response;
+    if (status){
+      return result;
+    }
+  
+  } catch (error) {
+    return error;
+
   }
 }
 
@@ -122,6 +206,44 @@ async function addPokemon(pokemonName) {
       result: response.result,
       status: response.status,
     };
+  } catch (error) {
+    return {
+      result: error,
+      status: "error",
+    };
+  }
+}
+
+async function delPokemon(fulldata) {
+  try {
+    const response = await $.ajax({
+      type: "DELETE",
+      url: "/pocket/pokemon/del",
+      data: JSON.stringify(fulldata),
+      contentType: "application/json",
+    });
+
+    return response
+
+  } catch (error) {
+    return {
+      result: error,
+      status: "error",
+    };
+  }
+}
+
+async function revivePokemon(fulldata) {
+  try {
+    const response = await $.ajax({
+      type: "PUT",
+      url: "/pocket/pokemon/rev",
+      data: JSON.stringify(fulldata),
+      contentType: "application/json",
+    });
+
+    return response
+
   } catch (error) {
     return {
       result: error,
@@ -230,18 +352,98 @@ async function showPokemonStat(pokemonName) {
 
 async function pickPokemonToBattle(fulldata) {
   
-  const { battleCycle, trainerName, pocketName } = fulldata
+  const { trainerName, pocketName } = fulldata
   
   try {
     const response = await $.ajax({
       type: "GET",
-      url: `battle/load/${battleCycle}/${trainerName}/${pocketName}`,
+      url: `/battle/load/${trainerName}/${pocketName}`,
       dataType: "json",
     });
     return response;
 
   } catch (error) {
     return error;
+  }
+}
+
+async function pickPokemonToBattleByCycle(fulldata) {
+  
+  const { battleCycle, trainerName, pocketName } = fulldata
+  
+  try {
+    const response = await $.ajax({
+      type: "GET",
+      url: `/battle/load/${battleCycle}/${trainerName}/${pocketName}`,
+      dataType: "json",
+    });
+    return response;
+
+  } catch (error) {
+    return error;
+  }
+}
+
+async function pokemonLoser(fulldata) {
+  
+  const { defenderTrainer, defenderPocket, defenderSlot } = fulldata
+
+  let translateData = {
+    slotNumber: defenderSlot,
+    trainerName: defenderTrainer,
+    pocketName: defenderPocket
+  }
+  
+  try {
+    const response = await $.ajax({
+      type: "PUT",
+      url: "/battle/upd/loser",
+      data: JSON.stringify(translateData),
+      contentType: "application/json",
+    });
+
+    return {
+      result: response.result,
+      status: response.status,
+    };
+  } catch (error) {
+    return {
+      result: error,
+      status: "error",
+    };
+  }
+}
+
+async function pokemonWinner(fulldata) {
+  
+  const { attackerTrainer, attackerPocket, attackerSlot, attackerHp, gainedXp  } = fulldata
+
+  let translateData = {
+    slotNumber: attackerSlot,
+    trainerName: attackerTrainer,
+    pocketName: attackerPocket,
+    remainingHp: attackerHp,
+    gainedXp: gainedXp,
+  }
+  
+  try {
+    const response = await $.ajax({
+      type: "PUT",
+      url: "/battle/upd/winner",
+      data: JSON.stringify(translateData),
+      contentType: "application/json",
+    });
+    return {
+      result: response.result,
+      status: response.status,
+    };
+
+  } catch (error) {
+    return {
+      result: error,
+      status: "error",
+    };
+    
   }
 }
 
@@ -258,16 +460,16 @@ function infoChoice(title, message) {
       <div class="modal-dialog">
         <div class="modal-content">
           <div class="modal-header">
+            <img src="favicon.png" class="rounded me-2" style="width: 32px; height: 32px;" alt="">
             <h1 class="modal-title fs-5" id="staticBackdropLabel">${title}</h1>
             <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
           </div>
           <div class="modal-body">
           ${message}
           </div>
-          <div class="modal-footer">
-            <button id="btnIgnore" type="button" class="btn btn-secondary" data-bs-dismiss="modal">Ignore</button>
-            <button id="btnSuccess" type="button" class="btn btn-success" data-bs-dismiss="modal">Confirm</button>
-          </div>
+            <div class="modal-footer">
+              <button id="btnIgnore" type="button" class="btn btn-secondary" data-bs-dismiss="modal">Dismiss</button>
+            </div>
         </div>
       </div>
     </div>
@@ -282,7 +484,7 @@ function infoToast(title, message) {
   const TOAST = `
     <div id="infoToast" class="toast" role="alert" aria-live="assertive" aria-atomic="true">
       <div class="toast-header">
-        <img src="favicon.png" class="rounded me-2" style="width: 32px; height: 32px;" alt="Info">
+        <img src="favicon.png" class="rounded me-2" style="width: 32px; height: 32px;" alt="">
         <strong class="me-auto">${title}</strong>
         <small>Info</small>
         <button type="button" class="btn-close" data-bs-dismiss="toast" aria-label="Close"></button>
@@ -298,7 +500,7 @@ function infoToast(title, message) {
   $("#infoToast").toast("show");
 }
 
-function infoCard(trainer, pokemonName, pokemonLevel, pokemonActHp, pokemonMaxHp) {
+function infoCard(trainer, pokemonName, pokemonLevel, pokemonCurrHp, pokemonFullHp) {
   const CARD = `
       <div id="infoCard${trainer}" class="card border-primary shadow">
         <!-- Card Header -->
@@ -317,10 +519,10 @@ function infoCard(trainer, pokemonName, pokemonLevel, pokemonActHp, pokemonMaxHp
               <div class="row">
                 <div class="col-6">
                   <p class="mb-1"><strong>HP:</strong></p>
-                  <div class="progress" style="height: 20px;">
+                  <div id="hp-bar-${trainer}" class="progress" style="height: 20px;">
                     <div class="progress-bar bg-success" 
                       role="progressbar" 
-                      style="width: ${(pokemonActHp/pokemonMaxHp) * 100}%">${pokemonActHp}/${pokemonMaxHp}
+                      style="width: ${Math.floor((pokemonCurrHp/pokemonFullHp) * 100)}%">${pokemonCurrHp}/${pokemonFullHp}
                     </div>
                   </div>
                 </div>

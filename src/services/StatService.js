@@ -9,7 +9,7 @@ class StatService {
 
     if (existingPokemon.length === 0) {
 
-      let pokemonHp, pokemonAttack, pokemonDefense, pokemonSattack, pokemonSdefense, pokemonSpeed;
+      let pokemonHp, pokemonAttack, pokemonDefense;
       const pokemonId = await PokemonModel.findPokemonIdByName(fulldata);
       const statList = await pokeStat(fulldata);
 
@@ -24,19 +24,11 @@ class StatService {
         } else if (element.stat_name === 'defense') {
           pokemonDefense = element.base_stat
         
-        } else if (element.stat_name === 'special-attack') {
-          pokemonSattack = element.base_stat
-        
-        } else if (element.stat_name === 'special-defense') {
-          pokemonSdefense = element.base_stat
-        
-        } else if (element.stat_name === 'speed') {
-          pokemonSpeed = element.base_stat
         }
 
       });
 
-      const result = await StatModel.addPokemonStat({pokemonId, pokemonHp, pokemonAttack, pokemonDefense, pokemonSattack, pokemonSdefense, pokemonSpeed});
+      const result = await StatModel.addPokemonStat({pokemonId, pokemonHp, pokemonAttack, pokemonDefense});
       return result === 1 ? await StatModel.findPokemonStatByName(fulldata) : null;
       
     } else {

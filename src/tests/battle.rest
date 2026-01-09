@@ -1,10 +1,40 @@
 # Configuração
 @baseURL = http://127.0.0.1:3000
 
-### player1
-GET {{baseURL}}/battle/load/1/felipedie/padrao
+### player1 - combatble pokemon
+GET {{baseURL}}/battle/check/felipedie/padrao
+Accept: application/json
+
+### player2 - combatble pokemon
+GET {{baseURL}}/battle/check/machine/padrao
+Accept: application/json
+
+### player1 - slot6
+GET {{baseURL}}/battle/load/6/felipedie/padrao
 Accept: application/json
 
 ### player2
-GET {{baseURL}}/battle/load/1/machine/padrao
+GET {{baseURL}}/battle/load/machine/padrao
 Accept: application/json
+
+### update winner
+PUT {{baseURL}}/battle/upd/winner
+Content-Type: application/json
+
+{
+  "trainerName": "felipedie",
+  "pocketName": "padrao",
+  "slotNumber": 1,
+  "gainedXp": 100,
+  "remainingHp": 20
+}
+
+### update loser
+PUT {{baseURL}}/battle/upd/loser
+Content-Type: application/json
+
+{
+  "trainerName": "machine",
+  "pocketName": "padrao",
+  "slotNumber": 5
+}

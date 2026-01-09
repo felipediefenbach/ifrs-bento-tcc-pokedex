@@ -1,6 +1,6 @@
 # Configuração
 @baseURL = http://127.0.0.1:3000
-@pokemonName = pikachu
+@pokemonName = dratini
 @pokemonLevel = 1
 
 ### lista de todos os movimentos deste pokemon

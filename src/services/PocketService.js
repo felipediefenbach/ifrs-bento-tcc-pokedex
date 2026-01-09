@@ -22,6 +22,12 @@ class PocketService {
     return await PocketModel.allInThePocket(fulldata);
   }
 
+  static async getConfigedMoves(fulldata) {
+    const config = await PocketModel.getConfigedMoves(fulldata);
+    const { pokemonMoves } = config;
+    return pokemonMoves;
+  }
+
   static async freeSlotInThePocket(fulldata) {
     const vacancySlots = await checkSlots(fulldata);
     return vacancySlots.length
@@ -68,16 +74,14 @@ class PocketService {
     }
   }
 
-  static async delInThePocketSlot(fulldata) {
-    const vacancySlots = await checkSlots(fulldata);
-
-    if (vacancySlots && vacancySlots.length < 6) {
-      const result = await PocketModel.delInThePocketSlot(fulldata);
-      return result === 1;
-    } else {
-      return false;
-    }
+  static async reviveInThePocketSlot(fulldata) {
+    return await PocketModel.reviveInThePocketSlot(fulldata);
   }
+
+  static async delInThePocketSlot(fulldata) {
+    return await PocketModel.delInThePocketSlot(fulldata);
+  }
+
 }
 
 module.exports = PocketService;

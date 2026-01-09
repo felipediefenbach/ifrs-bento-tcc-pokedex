@@ -2,6 +2,7 @@
 @baseURL = http://127.0.0.1:3000
 @trainerName = felipedie
 @pocketName = padrao
+@slotNumber = 1
 
 ### lista todos os bolsos do treinador
 GET {{baseURL}}/pocket/list/{{trainerName}}
@@ -11,8 +12,16 @@ Accept: application/json
 GET {{baseURL}}/pocket/slots/{{trainerName}}/{{pocketName}}
 Accept: application/json
 
+### lista a config dos movimentos do pokemon
+GET {{baseURL}}/pocket/moves/{{trainerName}}/{{pocketName}}/{{slotNumber}}
+Accept: application/json
+
 ### lista todos os pokemons no bolso do treinador
-GET {{baseURL}}/pocket/content/{{trainerName}}/{{pocketName}}
+GET {{baseURL}}/pocket/content/felipedie/{{pocketName}}
+Accept: application/json
+
+### lista todos os pokemons no bolso do treinador
+GET {{baseURL}}/pocket/content/machine/{{pocketName}}
 Accept: application/json
 
 ### move um pokemon para outro bolso do treinador

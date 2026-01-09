@@ -8,7 +8,7 @@ class MoveService {
 
     const existingMoves = await MoveModel.findPokemonMoveByName(fulldata);
 
-    if (existingMoves.length === 0) {
+    if (!existingMoves || existingMoves.length === 0) {
 
       let listSize = 0;
       const pokemonId = await PokemonModel.findPokemonIdByName(fulldata);
@@ -32,34 +32,45 @@ class MoveService {
 
   static async moveListByLevel(fulldata) {
 
-    const { pokemonLevel } = fulldata;
-    
-    let arrayMoves = [];
-    const getedMovesAndLevels = await MoveModel.findPokemonMoveByName(fulldata);
+    const existingMoves = await MoveModel.findPokemonMoveByLevel(fulldata);
 
-    getedMovesAndLevels.map(moves => {
-      if (moves.level <= pokemonLevel) {
-        arrayMoves = arrayMoves.concat(moves.moves.split(','));
+    if (!existingMoves || existingMoves.length === 0) {
+
+      let listSize = 0;
+      const pokemonId = await PokemonModel.findPokemonIdByName(fulldata);
+      const getedMoves = await pokeMove(fulldata);
+
+      for (const element of getedMoves) {
+        const { pokemonMoves, pokemonLevel } = element;
+        const result = await MoveModel.addPokemonMove({ pokemonId, pokemonMoves, pokemonLevel });
+        listSize += result;
+      };
+
+      if (listSize === getedMoves.length) {
+        return await MoveModel.findPokemonMoveByLevel(fulldata);
       }
-    });
 
-    const resultMoves = arrayMoves.map(element => element.trim());
-    return resultMoves
+    } else {
+      return existingMoves
+   
+    }
     
   }
 
   static async setAttackConfig(fulldata) {
-    
+    console.log(fulldata);
+
     let moveWithPp = []
     let { moveList } = fulldata;
     const arrayMoves = moveList.split(',');
     
     for ( const element of arrayMoves ) {
-      moveWithPp.push(`${element}|${await movePp(element)}`);
+      const movePpPower = await movePp(element.trim());
+      console.log(movePpPower);
+      moveWithPp.push(`${element.trim()}|${movePpPower}`);
     }
 
     fulldata['moveList'] = moveWithPp.join(',');
-    console.log(fulldata);
     return MoveModel.setAttackConfig(fulldata);
   }
 

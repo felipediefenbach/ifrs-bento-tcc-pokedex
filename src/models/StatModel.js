@@ -8,10 +8,7 @@ class StatModel {
       `SELECT
         pokemon_stat.hp AS hp,
         pokemon_stat.attack AS attack,
-        pokemon_stat.defense AS defense,
-        pokemon_stat.sattack AS sattack,
-        pokemon_stat.sdefense AS sdefense,
-        pokemon_stat.speed AS speed
+        pokemon_stat.defense AS defense
       FROM pokemon_stat
       INNER JOIN pokemon ON pokemon_stat.pokemon_id = pokemon.id
       WHERE
@@ -22,11 +19,11 @@ class StatModel {
   }
 
   static async addPokemonStat(fulldata) {
-    const { pokemonId, pokemonHp, pokemonAttack, pokemonDefense, pokemonSattack, pokemonSdefense, pokemonSpeed } = fulldata;
+    const { pokemonId, pokemonHp, pokemonAttack, pokemonDefense } = fulldata;
     const [rows] = await db.query(
       `INSERT INTO pokemon_stat 
-        VALUES (?, ?, ?, ?, ?, ?, ?)`,
-      [pokemonId, pokemonHp, pokemonAttack, pokemonDefense, pokemonSattack, pokemonSdefense, pokemonSpeed]
+        VALUES (?, ?, ?, ?)`,
+      [pokemonId, pokemonHp, pokemonAttack, pokemonDefense]
     );
 
     return rows.affectedRows;

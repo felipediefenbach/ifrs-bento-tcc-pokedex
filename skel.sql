@@ -56,16 +56,11 @@ CREATE TABLE pokemon_move (
 );
 
 -- create table stats 
--- two values by field "base_stat,effort" = base + multiplicator
--- sattack & sdefense means special-attack & special-defense
 CREATE TABLE pokemon_stat (
     pokemon_id INT,
-    hp VARCHAR(200),
-    attack VARCHAR(200),
-    defense VARCHAR(200),
-    sattack VARCHAR(200),
-    sdefense VARCHAR(200),
-    speed VARCHAR(200),
+    hp INT,
+    attack INT,
+    defense INT,
     FOREIGN KEY (pokemon_id) REFERENCES pokemon(id)
 );
 
@@ -86,22 +81,20 @@ CREATE TABLE pokemon_state (
 CREATE TABLE pocket_content (
     pocket_id INT,
     trainer_id INT,
-    slot_number INT,
     pokemon_id INT,
+    slot_number INT,
     moves VARCHAR(200) DEFAULT 'none,none,none,none',
-    rm_moves VARCHAR(200) DEFAULT '',
-    hp VARCHAR(200) DEFAULT '0,0',
-    attack VARCHAR(200) DEFAULT '0,0',
-    defense VARCHAR(200) DEFAULT '0,0',
-    sattack VARCHAR(200) DEFAULT '0,0',
-    sdefense VARCHAR(200) DEFAULT '0,0',
-    speed VARCHAR(200) DEFAULT '0,0',
+    rm_moves VARCHAR(200) DEFAULT 'none',
+    full_hp INT DEFAULT 0,
+    curr_hp INT DEFAULT 0,
+    attack INT DEFAULT 0,
+    defense INT DEFAULT 0,
     curr_exp INT DEFAULT 0,
     level_exp INT DEFAULT 0,
     level INT DEFAULT 1,
     FOREIGN KEY (trainer_id) REFERENCES trainer(id),
     FOREIGN KEY (pokemon_id) REFERENCES pokemon(id),
-    FOREIGN KEY (pocket_id) REFERENCES pocket(id),
+    FOREIGN KEY (pocket_id) REFERENCES pocket(id)
 );
 
 INSERT INTO trainer (name) VALUES 
