@@ -26,6 +26,18 @@ $(document).ready(function () {
         >Delete</button>`
       }
      
+      function lifeFormatter(value, row){
+        const pokemonCurrHp = row['pokemonCurrHp']
+        const pokemonFullHp = row['pokemonFullHp']
+        return `
+          <div class="progress" style="height: 20px;">
+            <div class="progress-bar bg-success" 
+              role="progressbar" 
+              style="width: ${Math.floor((pokemonCurrHp/pokemonFullHp) * 100)}%">${pokemonCurrHp}/${pokemonFullHp}
+            </div>
+          </div>`
+      }
+
       $("#pocketEditTrainer2").bootstrapTable({
       url: `/pocket/content/${trainer}/${pocket}`,
       ajax: function(params) {
@@ -53,6 +65,7 @@ $(document).ready(function () {
           {
             field: "pokemonCurrHp",
             title: "Life",
+            formatter: lifeFormatter,
           },
           {
             field: "pocketAction",
@@ -79,6 +92,10 @@ $(document).ready(function () {
       <div class="pocket-div-trainer2"></div>`
     );
 
+    $(document).on("click", "#btnIgnore", function () {
+      $("#pocketViewTrainer2").bootstrapTable('refresh');
+    });
+  
   });
 
   $(document).on("click", ".btn-revive-Trainer2", async function () {
@@ -376,6 +393,18 @@ $(document).ready(function () {
     >Attack</button>`
   }
 
+  function lifeFormatter(value, row){
+    const pokemonCurrHp = row['pokemonCurrHp']
+    const pokemonFullHp = row['pokemonFullHp']
+    return `
+      <div class="progress" style="height: 20px;">
+        <div class="progress-bar bg-success" 
+          role="progressbar" 
+          style="width: ${Math.floor((pokemonCurrHp/pokemonFullHp) * 100)}%">${pokemonCurrHp}/${pokemonFullHp}
+        </div>
+      </div>`
+  }
+
   $("#pocketViewTrainer2").bootstrapTable({
     url: `/pocket/content/${trainerName}/${pocketName}`,
     ajax: function(params) {
@@ -403,6 +432,7 @@ $(document).ready(function () {
       {
         field: "pokemonCurrHp",
         title: "Life",
+        formatter: lifeFormatter,
       },
       {
         field: "pocketAction",

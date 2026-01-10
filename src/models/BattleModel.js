@@ -9,6 +9,7 @@ class BattleModel {
         pokemon.name AS pokemonName,
         pocket_content.slot_number AS slotNumber,
         pocket_content.level AS pokemonLevel, 
+        pocket_content.curr_xp AS pokemonCurrXp, 
         pocket_content.curr_hp AS pokemonCurrHp, 
         pocket_content.full_hp AS pokemonFullHp, 
         pocket_content.attack AS pokemonAttack, 
@@ -47,26 +48,6 @@ class BattleModel {
     return rows;
   }
 
-  static async getXpsAndLevelBySlot(fulldata) {
-    const { trainerName, pocketName, slotNumber } = fulldata;
-    const [rows] = await db.query(
-      `SELECT
-          pocket_content.level AS pokemonLevel, 
-          pocket_content.level_exp AS pokemonLevelExp, 
-          pocket_content.curr_exp AS pokemonXp
-        FROM pocket_content
-        INNER JOIN pocket ON pocket_content.pocket_id = pocket.id
-        INNER JOIN trainer ON pocket_content.trainer_id = trainer.id
-        WHERE 
-          pocket_content.slot_number = ?  
-          AND trainer.name = ?
-          AND pocket.name = ?`,
-        [trainerName, pocketName, slotNumber]
-    );
-    return rows[0];
-
-  }
-
   static async updWinner(fulldata) {
     const {remainingHp, gainedXp, trainerName, pocketName, slotNumber} = fulldata;
     const [rows] = await db.query(
@@ -75,7 +56,7 @@ class BattleModel {
         JOIN trainer ON pocket_content.trainer_id = trainer.id
         SET 
           pocket_content.curr_hp = ?,
-          pocket_content.curr_exp = pocket_content.curr_exp + ?
+          pocket_content.curr_xp = pocket_content.curr_xp + ?
         WHERE 
           trainer.name = ?
           AND pocket.name = ?
@@ -86,29 +67,47 @@ class BattleModel {
 
   }
 
-  static async updWinnerLevel(fulldata) {
-    const {trainerName, pocketName, slotNumber } = fulldata;
+  static async getWinnerLevelUpStats(fulldata) {
+    const {trainerName, pocketName, slotNumber} = fulldata;
     const [rows] = await db.query(
-      `UPDATE pocket_content AS pocket_content
+      `SELECT 
+          pocket_content.full_hp AS pokemonFullHp,
+          pocket_content.attack AS pokemonAttack,
+          pocket_content.defense AS pokemonDefense
+        FROM pocket_content
         JOIN pocket ON pocket_content.pocket_id = pocket.id
         JOIN trainer ON pocket_content.trainer_id = trainer.id
-        SET
-          pocket_content.moves = pocket_content.moves + ?,
-          pocket_content.rm_moves = CONCAT(pocket_content.rm_moves, '?'),
-          pocket_content.full_hp = pocket_content.full_hp + ?,
-          pocket_content.curr_hp = pocket_content.curr_hp + ?,
-          pocket_content.attack = pocket_content.attack + ?,
-          pocket_content.defense = pocket_content.defense + ?,
-          pocket_content.curr_exp = pocket_content.curr_exp + ?,
-          pocket_content.level_exp = pocket_content.level_exp + ?,
-          pocket_content.level = pocket_content.level + ?
         WHERE 
           trainer.name = ?
           AND pocket.name = ?
           AND pocket_content.slot_number = ?`,
         [trainerName, pocketName, slotNumber]
     );
+    return rows[0];
+
+  }
+
+  static async updWinnerLevel(fulldata) {
+    const {newHp, newAttack, newDefense, pokemonLevel, pokemonCurrXp, trainerName, pocketName, slotNumber} = fulldata;
+    const [rows] = await db.query(
+      `UPDATE pocket_content AS pocket_content
+        JOIN pocket ON pocket_content.pocket_id = pocket.id
+        JOIN trainer ON pocket_content.trainer_id = trainer.id
+        SET
+          pocket_content.curr_hp = pocket_content.curr_hp + ?,
+          pocket_content.full_hp = pocket_content.full_hp + ?,
+          pocket_content.attack = pocket_content.attack + ?,
+          pocket_content.defense = pocket_content.defense + ?,
+          pocket_content.level = ?,
+          pocket_content.curr_xp = ?
+        WHERE 
+          trainer.name = ?
+          AND pocket.name = ?
+          AND pocket_content.slot_number = ?`,
+        [newHp, newHp, newAttack, newDefense, pokemonLevel, pokemonCurrXp, trainerName, pocketName, slotNumber]
+    );
     return rows.affectedRows;
+    
   }
 
   static async updLoser(fulldata) {

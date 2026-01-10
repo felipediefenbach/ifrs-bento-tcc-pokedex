@@ -74,6 +74,25 @@ class BattleController {
     }
   }
 
+  static async updWinnerLevel(req, res) {
+    try {
+      const result = await BattleService.updWinnerLevel(req.body);
+      if (result > 0) {
+        res.status(200).json({
+          result: result,
+          status: true,
+        });
+      } else {
+        res.status(200).json({
+          result: result,
+          status: false,
+        });
+      }
+    } catch (error) {
+      res.status(500).json({ error: error.message });
+    }
+  }
+
 }
 
 module.exports = BattleController;

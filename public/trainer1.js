@@ -4,6 +4,9 @@ $(document).ready(function () {
   const pocketName = "padrao";
   populatePokemonSelector();
 
+/////////////////////////////////////////////////////////////////////////////////////
+// Pocket                                                                          //
+/////////////////////////////////////////////////////////////////////////////////////
   async function editTrainerPockets(trainer, pocket) {
 
     function pocketEditFormatter(value, row){
@@ -23,7 +26,19 @@ $(document).ready(function () {
           data-pocket="${row['pocketName']}"
         >Delete</button>`
       }
-     
+
+      function lifeFormatter(value, row){
+        const pokemonCurrHp = row['pokemonCurrHp']
+        const pokemonFullHp = row['pokemonFullHp']
+        return `
+          <div class="progress" style="height: 20px;">
+            <div class="progress-bar bg-success" 
+              role="progressbar" 
+              style="width: ${Math.floor((pokemonCurrHp/pokemonFullHp) * 100)}%">${pokemonCurrHp}/${pokemonFullHp}
+            </div>
+          </div>`
+      }
+
       $("#pocketEditTrainer1").bootstrapTable({
       url: `/pocket/content/${trainer}/${pocket}`,
       ajax: function(params) {
@@ -51,6 +66,7 @@ $(document).ready(function () {
           {
             field: "pokemonCurrHp",
             title: "Life",
+            formatter: lifeFormatter,
           },
           {
             field: "pocketAction",
@@ -77,6 +93,10 @@ $(document).ready(function () {
       <div class="pocket-div-trainer1"></div>`
     );
 
+    $(document).on("click", "#btnIgnore", function () {
+      $("#pocketViewTrainer1").bootstrapTable('refresh');
+    });
+  
   });
 
   $(document).on("click", ".btn-revive-Trainer1", async function () {
@@ -139,8 +159,10 @@ $(document).ready(function () {
     await editTrainerPockets(trainerName, $(this).val());
   });
 
-/////////////////////////////////////////////////////////////////////////////////////
 
+/////////////////////////////////////////////////////////////////////////////////////
+// Front                                                                           //
+/////////////////////////////////////////////////////////////////////////////////////
   $("#pokemonSelectorTrainer1").change(() => {
     const pokemonName = $("#pokemonSelectorTrainer1").val();
 
@@ -350,28 +372,40 @@ $(document).ready(function () {
 
   function actionsPocketFormatter(value, row){
     return `
-    <button 
-      type="button" 
-      class="btn btn-sm btn-danger g-3 btn-move-Trainer1"
-      data-slot="${row['slotNumber']}"
-      data-trainer="${row['trainerName']}"
-      data-pocket="${row['pocketName']}"
-      data-pokemon="${row['pokemonName']}"
-    >Move</button>
-    <button 
-      type="button" 
-      class="btn btn-sm btn-secondary g-3 btn-inform-Trainer1"
-      data-pokemon="${row['pokemonName']}"
-    >Info</button>
-    <button 
-      type="button" 
-      class="btn btn-sm btn-primary g-3 btn-attack-Trainer1"
-      data-pokemon="${row['pokemonName']}"
-      data-level="${row['pokemonLevel']}"
-      data-slot="${row['slotNumber']}"
-      data-trainer="${row['trainerName']}"
-      data-pocket="${row['pocketName']}"
-    >Attack</button>`
+      <button 
+        type="button" 
+        class="btn btn-sm btn-danger g-3 btn-move-Trainer1"
+        data-slot="${row['slotNumber']}"
+        data-trainer="${row['trainerName']}"
+        data-pocket="${row['pocketName']}"
+        data-pokemon="${row['pokemonName']}"
+      >Move</button>
+      <button 
+        type="button" 
+        class="btn btn-sm btn-secondary g-3 btn-inform-Trainer1"
+        data-pokemon="${row['pokemonName']}"
+      >Info</button>
+      <button 
+        type="button" 
+        class="btn btn-sm btn-primary g-3 btn-attack-Trainer1"
+        data-pokemon="${row['pokemonName']}"
+        data-level="${row['pokemonLevel']}"
+        data-slot="${row['slotNumber']}"
+        data-trainer="${row['trainerName']}"
+        data-pocket="${row['pocketName']}"
+      >Attack</button>`
+  }
+
+  function lifeFormatter(value, row){
+    const pokemonCurrHp = row['pokemonCurrHp']
+    const pokemonFullHp = row['pokemonFullHp']
+    return `
+      <div class="progress" style="height: 20px;">
+        <div class="progress-bar bg-success" 
+          role="progressbar" 
+          style="width: ${Math.floor((pokemonCurrHp/pokemonFullHp) * 100)}%">${pokemonCurrHp}/${pokemonFullHp}
+        </div>
+      </div>`
   }
 
   $("#pocketViewTrainer1").bootstrapTable({
@@ -401,6 +435,7 @@ $(document).ready(function () {
       {
         field: "pokemonCurrHp",
         title: "Life",
+        formatter: lifeFormatter,
       },
       {
         field: "pocketAction",

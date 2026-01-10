@@ -9,5 +9,6 @@ battle.get("/load/:trainerName/:pocketName", BattleController.loadAdversaries);
 battle.get("/load/:battleCycle/:trainerName/:pocketName", BattleController.loadAdversariesByCycle);
 battle.put("/upd/loser", BattleController.updLoser);
 battle.put("/upd/winner", BattleController.updWinner);
+battle.put("/upd/lvl", BattleController.updWinnerLevel);
 
 module.exports = battle;

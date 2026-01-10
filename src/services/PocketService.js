@@ -2,7 +2,6 @@ const PocketModel = require("../models/PocketModel");
 const PokemonModel = require("../models/PokemonModel");
 const TrainerModel = require("../models/TrainerModel");
 const checkSlots = require("../utils/checkSlots");
-const levelUpFormula = require("../utils/levelUpFormula");
 
 class PocketService {
   static async allPockets(fulldata) {
@@ -65,9 +64,7 @@ class PocketService {
     let slotData = { pocketId, trainerId, slotNumber, pokemonId, stateId };
     if (vacancySlots && vacancySlots.length > 0) {
       const resultAdd = await PocketModel.addInThePocketSlot(slotData);
-      const currentLevel = await PocketModel.findPokemonLevelByName(fulldata);
-      const nextLevelExp = levelUpFormula(currentLevel);
-      const resultStat = await PocketModel.setPocketPokemonBaseStats({nextLevelExp, pocketId, trainerId, slotNumber, pokemonId})
+      const resultStat = await PocketModel.setPocketPokemonBaseStats({pocketId, trainerId, slotNumber, pokemonId})
       return resultAdd  === 1 && resultStat === 1;
     } else {
       return false;

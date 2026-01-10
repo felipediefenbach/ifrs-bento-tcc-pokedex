@@ -1,6 +1,7 @@
 const calculateDamage = (level, power, attack, defense) => Math.floor((((2 * level / 5 + 2) * power * attack / defense) / 50) + 2);
 const barPercentage = (actHp, maxHp) => Math.floor((actHp/maxHp) * 100);
-//const calculateXp = (xp, level) => Math.floor((xp * level) / 5);
+const calculateXp = (xp, level) => Math.floor((xp * level) / 5);
+const calculateNextLevel = (level) => Math.floor(((level + 1) ** 3) - (level ** 3));
 
 async function checkFirstTurn(trainers, pockets) {    
   
@@ -28,8 +29,8 @@ async function checkFirstTurn(trainers, pockets) {
         return null;
       })
       .filter(slot => slot !== null);
-    console.log('ret-turn', firstTurn[0]);
-    return firstTurn[0];
+
+      return firstTurn[0];
   }
 
 }
@@ -82,6 +83,30 @@ async function checkMovesConfig(pokemonName, trainerName, pocketName, slotNumber
 
 }
 
+async function checkLevelUp(trainerName, pocketName, slotNumber, level, currentXp, gainedXp) {
+
+  // primeiro quanto de experiencia
+  const calculatedXpToLevelUp = calculateNextLevel(level);
+  console.log("calc-next", calculatedXpToLevelUp);
+  console.log("curr-xp", currentXp);
+  console.log("recv-xp", gainedXp);
+
+  let totalXpByCycle = currentXp + gainedXp
+  
+  // when we not level up -- updWinner do the job
+  if (totalXpByCycle > calculatedXpToLevelUp) {
+
+    let pokemonLevel = level + 1;
+    let pokemonCurrXp = totalXpByCycle - calculatedXpToLevelUp;
+
+    console.log(`level up:`, {trainerName, pocketName, slotNumber, pokemonLevel, pokemonCurrXp});
+    
+    await levelUpPokemon({trainerName, pocketName, slotNumber, pokemonLevel, pokemonCurrXp});
+
+  }
+
+}
+
 async function pokemonByCycle(cycles, trainers, pockets) {    
   
   let battleAdversaries = [];
@@ -105,29 +130,45 @@ async function checkBattleEnd(
   attackerPocket, 
   attackerSlot, 
   attackerHp,
+  attackerLvl,
+  attackerXp,
   defenderTrainer, 
   defenderPocket, 
   defenderSlot,
   defenderHp,
   currentAttacker, 
-  currentDefender
+  currentDefender,
+  currentXp,
+  currentLvl
 ) {
   if (attackerHp === 0 || defenderHp === 0) {
 
-    //const gainedXp = calculateXp(currentXp, curentLevel)
-    const gainedXp = 10;
+    let gainedXp = 1;
+    gainedXp += calculateXp(currentXp, currentLvl);
+
+    
 
     const winner = await pokemonWinner({attackerTrainer, attackerPocket, attackerSlot, attackerHp, gainedXp});
+    const winnerLevelUp = await checkLevelUp(attackerTrainer, attackerPocket, attackerSlot, attackerLvl, attackerXp, gainedXp);
     const loser = await pokemonLoser({defenderTrainer, defenderPocket, defenderSlot});
 
     if (loser['status'] && winner['status']) {
+
       battleActive = false;
+      
       infoToast(
         `Battle Over!`,
         `${capFirst(currentAttacker)} Wins !!<br \>${capFirst(currentDefender)} Fainted !!<br \>${capFirst(currentAttacker)} gained: ${gainedXp} XP`
       );
+      
+      if ( $("#infoCardleft").length ) { $("#infoCardleft").remove(); };
+      if ( $("#infoCardright").length ) { $("#infoCardright").remove(); };
+      $("#pocketViewTrainer1").bootstrapTable('refresh');
+      $("#pocketViewTrainer2").bootstrapTable('refresh');
+
+
     } else {
-      console.error(loser['result'], winner['result'])
+      console.error(loser['result'], winner['result']);
     }
   }
 }
@@ -138,6 +179,7 @@ async function checkBattleEnd(
 
 $("#btn-start-battle").click(async () => { 
 
+  const DM = 5; // Damage multiplier, default is 0
   const battleTrainers = ["felipedie", "machine"];
   const battlePockets = ["padrao", "padrao"];
   let battleActive = true;
@@ -153,7 +195,7 @@ $("#btn-start-battle").click(async () => {
   if (!await checkPoketSize(battleTrainers, battlePockets)) { return };
 
   const givenPokemons = await pokemonByCycle(battleRoundCycle, battleTrainers, battlePockets);
-
+  //console.log(givenPokemons);
   let leftPokemon = givenPokemons[0];
   let rightPokemon = givenPokemons[1];
 
@@ -166,7 +208,7 @@ $("#btn-start-battle").click(async () => {
   const leftFullHp = leftPokemon['pokemonFullHp'];
   let leftLocalHp = leftPokemon['pokemonCurrHp'];
   const leftLevel = leftPokemon['pokemonLevel'];
-  const leftBaseExp = leftPokemon['pokemonXp'];
+  const leftXp = leftPokemon['pokemonCurrXp'];
   const leftAttack = leftPokemon['pokemonAttack'];
   const leftDefense = leftPokemon['pokemonDefense'];
   const leftMoves = leftPokemon['pokemonMoves'];
@@ -189,7 +231,7 @@ $("#btn-start-battle").click(async () => {
   const rightFullHp = rightPokemon['pokemonFullHp'];
   let rightLocalHp = rightPokemon['pokemonCurrHp'];
   const rightLevel = rightPokemon['pokemonLevel'];
-  const rightBaseExp = rightPokemon['pokemonXp'];
+  const rightXp = rightPokemon['pokemonCurrXp'];
   const rightAttack = rightPokemon['pokemonAttack'];
   const rightDefense = rightPokemon['pokemonDefense'];
   const rightMoves = rightPokemon['pokemonMoves'];
@@ -203,8 +245,9 @@ $("#btn-start-battle").click(async () => {
     rightSelect += `<option value="${moveName},${movePoints},${movePower}">${moveName} PP:${movePoints}</option>`;
   }
 
-  if ( $("#infoCardleft").length ) { $("#infoCardleft").remove(); }
-  if ( $("#infoCardright").length ) { $("#infoCardright").remove(); }
+  if ( $("#infoCardleft").length ) { $("#infoCardleft").remove(); };
+  if ( $("#infoCardright").length ) { $("#infoCardright").remove(); };
+
   infoCard("left", leftName, leftLevel, leftCurrHp, leftFullHp);
   infoCard("right", rightName, rightLevel, rightCurrHp, rightFullHp);
 
@@ -216,15 +259,15 @@ $("#btn-start-battle").click(async () => {
       || (leftSlot === 3 && rightSlot === 3)
       || (leftSlot === 5 && rightSlot === 5)
   ) { 
-    $("#select-move-left").prop('disabled', false) 
-    $("#btn-attack-left").prop('disabled', false) 
-    $("#select-move-right").prop('disabled', true) 
-    $("#btn-attack-right").prop('disabled', true) 
+    $("#select-move-left").prop('disabled', false); 
+    $("#btn-attack-left").prop('disabled', false); 
+    $("#select-move-right").prop('disabled', true); 
+    $("#btn-attack-right").prop('disabled', true); 
   } else {
-    $("#select-move-left").prop('disabled', true) 
-    $("#btn-attack-left").prop('disabled', true) 
-    $("#select-move-right").prop('disabled', false) 
-    $("#btn-attack-right").prop('disabled', false) 
+    $("#select-move-left").prop('disabled', true); 
+    $("#btn-attack-left").prop('disabled', true); 
+    $("#select-move-right").prop('disabled', false); 
+    $("#btn-attack-right").prop('disabled', false);
   }
 
   $("#btn-attack-left").click(() => { 
@@ -232,7 +275,7 @@ $("#btn-start-battle").click(async () => {
     if (!battleActive) return
 
     const leftUsedMove = $("#select-move-left").val();
-    const leftMoveProperties = leftUsedMove.split(',')
+    const leftMoveProperties = leftUsedMove.split(',');
     const leftMovePp = leftMoveProperties[1];
     const leftMovePower = leftMoveProperties[2];
 
@@ -248,10 +291,10 @@ $("#btn-start-battle").click(async () => {
       )
     } else {
     
-      //const leftDamageDone = calculateDamage(leftLevel, leftMovePower, leftAttack, leftDefense)
-      const leftDamageDone = 30;
-      (rightLocalHp -= leftDamageDone) < 0 ? rightLocalHp = 0 : rightLocalHp;
-
+      const leftDamageDone = calculateDamage(leftLevel, leftMovePower, leftAttack, leftDefense);
+      $("#info-damage-right").text(`Damage: -${leftDamageDone * DM}`).fadeIn(200);
+      setTimeout(() => {$("#info-damage-right").fadeOut(500, () => {$("#info-damage-right").text(''); }); }, 2000);
+      (rightLocalHp -= (leftDamageDone * DM)) < 0 ? rightLocalHp = 0 : rightLocalHp;
       
       const rightBarPercentage = barPercentage(rightLocalHp, rightCurrHp);
       
@@ -259,10 +302,10 @@ $("#btn-start-battle").click(async () => {
         .css("width", `${rightBarPercentage}%`)
         .text(`${rightLocalHp}/${rightCurrHp} HP`);
 
-      $("#select-move-left").prop('disabled', true) 
-      $("#btn-attack-left").prop('disabled', true) 
-      $("#select-move-right").prop('disabled', false) 
-      $("#btn-attack-right").prop('disabled', false) 
+      $("#select-move-left").prop('disabled', true); 
+      $("#btn-attack-left").prop('disabled', true);
+      $("#select-move-right").prop('disabled', false);
+      $("#btn-attack-right").prop('disabled', false);
       
     }
 
@@ -271,12 +314,16 @@ $("#btn-start-battle").click(async () => {
       leftPocket,
       leftSlot,
       leftLocalHp,
+      leftLevel,
+      leftXp,
       rightTrainer,
       rightPocket,
       rightSlot,
       rightLocalHp,
       leftName,
-      rightName
+      rightName,
+      leftXp,
+      leftLevel
     );
 
   });
@@ -284,7 +331,7 @@ $("#btn-start-battle").click(async () => {
   $("#btn-attack-right").click(() => { 
 
     const rightUsedMove = $("#select-move-right").val();
-    const rightMoveProperties = rightUsedMove.split(',')
+    const rightMoveProperties = rightUsedMove.split(',');
     const rightMovePp = rightMoveProperties[1];
     const rightMovePower = rightMoveProperties[2];
 
@@ -300,9 +347,11 @@ $("#btn-start-battle").click(async () => {
       )
     } else {
     
-      //const rightDamageDone = calculateDamage(rightLevel, rightMovePower, rightAttack, rightDefense)
-      const rightDamageDone = 30;
-      (leftLocalHp -= rightDamageDone) < 0 ? leftLocalHp = 0 : leftLocalHp
+      const rightDamageDone = calculateDamage(rightLevel, rightMovePower, rightAttack, rightDefense);
+      $("#info-damage-left").text(`Damage: -${rightDamageDone * DM}`).fadeIn(200);
+      setTimeout(() => {$("#info-damage-left").fadeOut(500, () => {$("#info-damage-left").text(''); }); }, 2000);
+      (leftLocalHp -= (rightDamageDone * DM)) < 0 ? leftLocalHp = 0 : leftLocalHp
+
 
       const leftBarPercentage = barPercentage(leftLocalHp, leftCurrHp);
       
@@ -310,10 +359,10 @@ $("#btn-start-battle").click(async () => {
         .css("width", `${leftBarPercentage}%`)
         .text(`${leftLocalHp}/${leftCurrHp} HP`);
 
-      $("#select-move-right").prop('disabled', true) 
-      $("#btn-attack-right").prop('disabled', true) 
-      $("#select-move-left").prop('disabled', false) 
-      $("#btn-attack-left").prop('disabled', false) 
+      $("#select-move-right").prop('disabled', true);
+      $("#btn-attack-right").prop('disabled', true); 
+      $("#select-move-left").prop('disabled', false); 
+      $("#btn-attack-left").prop('disabled', false); 
     }
     
     checkBattleEnd(
@@ -321,12 +370,16 @@ $("#btn-start-battle").click(async () => {
       rightPocket, 
       rightSlot,
       rightLocalHp,
+      rightLevel,
+      rightXp,
       leftTrainer,
       leftPocket,
       leftSlot,
       leftLocalHp,
       rightName,
-      leftName
+      leftName,
+      rightXp,
+      rightLevel
     );
 
   });

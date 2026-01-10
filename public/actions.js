@@ -252,6 +252,25 @@ async function revivePokemon(fulldata) {
   }
 }
 
+async function levelUpPokemon(fulldata) {
+  try {
+    const response = await $.ajax({
+      type: "PUT",
+      url: "/battle/upd/lvl",
+      data: JSON.stringify(fulldata),
+      contentType: "application/json",
+    });
+
+    return response
+
+  } catch (error) {
+    return {
+      result: error,
+      status: "error",
+    };
+  }
+}
+
 async function addPokemonInMyPocket(trainerName, pocketName, pokemonName) {
   try {
     const response = await $.ajax({
@@ -468,7 +487,7 @@ function infoChoice(title, message) {
           ${message}
           </div>
             <div class="modal-footer">
-              <button id="btnIgnore" type="button" class="btn btn-secondary" data-bs-dismiss="modal">Dismiss</button>
+              <button id="btnIgnore" type="button" class="btn btn-secondary refresh-on-dismiss" data-bs-dismiss="modal">Dismiss</button>
             </div>
         </div>
       </div>
@@ -508,6 +527,7 @@ function infoCard(trainer, pokemonName, pokemonLevel, pokemonCurrHp, pokemonFull
           <h5 class="card-title mb-0">
             <i class="fas fa-paw me-2"></i>${capFirst(trainer === 'left' ? 'trainer 1' : 'trainer 2')} - Pokémon Details
           </h5>
+            <span id="info-damage-${trainer}" class="badge bg-light text-dark"></span>
         </div>
         
         <!-- Card Body -->
@@ -560,46 +580,3 @@ function infoCard(trainer, pokemonName, pokemonLevel, pokemonCurrHp, pokemonFull
 
 const rollRandom = () => Math.random().toString(36).substring(2, 10);
 const capFirst = (str) => str.charAt(0).toUpperCase() + str.slice(1);
-
-// vai para uma parte separada na gerencia de bolsos
-// const response = await handleDelInMyPocketResult(slotNumber, trainerName, pocketName);
-
-// const { result, status } = response;
-
-// $("#pokemonSelectorTrainer1").prop("selectedIndex", 0);
-
-// switch(status) {
-  
-//   case true:
-//     $("#pocketViewTrainer1").bootstrapTable('refresh');
-//     infoToast(`Ok!!`,`${result}`);
-//     break;
-
-//   case false:
-//     infoToast(`Ops!!`,`${result}`);
-//     break;
-
-//   default:
-//     infoToast(`Erro`,`${result}`)
-
-// }
-// async function removePokemonInMyPocket(slotNumber, trainerName, pocketName) {
-//   try {
-//     const response = await $.ajax({
-//       type: "POST",
-//       url: "/pocket/del",
-//       data: JSON.stringify({ slotNumber, trainerName, pocketName }),
-//       contentType: "application/json",
-//     });
-
-//     return {
-//       result: response.result,
-//       status: response.status,
-//     };
-//   } catch (error) {
-//     return {
-//       result: error,
-//       status: "error",
-//     };
-//   }
-// }

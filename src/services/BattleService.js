@@ -1,4 +1,6 @@
 const BattleModel = require("../models/BattleModel");
+const calculateHp = require("../utils/calculateHp");
+const calculateStat = require("../utils/calculateStat");
 
 class BattleService {
 
@@ -74,6 +76,21 @@ class BattleService {
     const winner = await BattleModel.updWinner(fulldata);
     return winner === 1
   }
+
+  static async updWinnerLevel(fulldata) {
+
+    const getedStats = await BattleModel.getWinnerLevelUpStats(fulldata);
+    const { pokemonFullHp, pokemonAttack, pokemonDefense } = getedStats;
+    const { pokemonLevel, pokemonCurrXp, trainerName, pocketName, slotNumber } = fulldata;
+
+    let newHp = calculateHp(pokemonFullHp, pokemonLevel);    
+    let newAttack = calculateStat(pokemonAttack, pokemonLevel);
+    let newDefense = calculateStat(pokemonDefense, pokemonLevel);
+
+    const winner = await BattleModel.updWinnerLevel({newHp, newAttack, newDefense, pokemonLevel, pokemonCurrXp, trainerName, pocketName, slotNumber});
+    return winner === 1
+  }
+
 
 }
 
