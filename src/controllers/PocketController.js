@@ -62,6 +62,25 @@ class PocketController {
     }
   }
 
+  static async setDeletedMoves(req, res) {
+    try {
+      const result = await PocketService.setDeletedMoves(req.body);
+      if (result > 0) {
+        res.status(200).json({
+          result: "1.2.3 Poff! Move Forgoted",
+          status: true,
+        });
+      } else {
+        res.status(200).json({
+          result: "Problem to save removed move !!",
+          status: false,
+        });
+      }
+    } catch (error) {
+      res.status(500).json({ error: error.message });
+    }
+  }
+
   static async freeSlotInThePocket(req, res) {
     const trainerName = req.params.trainerName;
     const pocketName = req.params.pocketName;

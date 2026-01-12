@@ -4,6 +4,7 @@ const TrainerModel = require("../models/TrainerModel");
 const checkSlots = require("../utils/checkSlots");
 
 class PocketService {
+
   static async allPockets(fulldata) {
     let names = [];
 
@@ -19,17 +20,20 @@ class PocketService {
 
   static async allInThePocket(fulldata) {
     return await PocketModel.allInThePocket(fulldata);
+
   }
 
   static async getConfigedMoves(fulldata) {
     const config = await PocketModel.getConfigedMoves(fulldata);
     const { pokemonMoves } = config;
     return pokemonMoves;
+
   }
 
   static async freeSlotInThePocket(fulldata) {
     const vacancySlots = await checkSlots(fulldata);
-    return vacancySlots.length
+    return vacancySlots.length;
+
   }
   
   static async moveToOtherPocket(fulldata) {
@@ -43,31 +47,28 @@ class PocketService {
     const freeSlots = await this.freeSlotInThePocket({pocketName, trainerName});
 
     if (freeSlots && freeSlots > 0) {
-      return await PocketModel.moveToOtherPocket({newPocketId, trainerName, oldPocketName, slotNumber})
+      return await PocketModel.moveToOtherPocket({newPocketId, trainerName, oldPocketName, slotNumber});
+  
     }
+  
   }
 
   static async addInThePocketSlot(fulldata) {
     const { trainerName, pocketName, pokemonName } = fulldata;
 
-    const pocketId = await PocketModel.findPocketIdByName({
-      pocketName,
-      trainerName,
-    });
+    const pocketId = await PocketModel.findPocketIdByName({ pocketName, trainerName });
     const pokemonId = await PokemonModel.findPokemonIdByName({ pokemonName });
     const trainerId = await TrainerModel.findTrainerIdByName({ trainerName });
-    const stateId = 1; // o estado padrão é normal(id=1)
 
     const vacancySlots = await checkSlots(fulldata);
     const slotNumber = vacancySlots[0];
 
-    let slotData = { pocketId, trainerId, slotNumber, pokemonId, stateId };
+    let slotData = { pocketId, trainerId, slotNumber, pokemonId };
+
     if (vacancySlots && vacancySlots.length > 0) {
       const resultAdd = await PocketModel.addInThePocketSlot(slotData);
-      const resultStat = await PocketModel.setPocketPokemonBaseStats({pocketId, trainerId, slotNumber, pokemonId})
+      const resultStat = await PocketModel.setPocketPokemonBaseStats({pocketId, trainerId, slotNumber, pokemonId});
       return resultAdd  === 1 && resultStat === 1;
-    } else {
-      return false;
     }
   }
 
@@ -77,6 +78,10 @@ class PocketService {
 
   static async delInThePocketSlot(fulldata) {
     return await PocketModel.delInThePocketSlot(fulldata);
+  }
+
+  static async setDeletedMoves(fulldata) {
+    return await PocketModel.setDeletedMoves(fulldata);
   }
 
 }

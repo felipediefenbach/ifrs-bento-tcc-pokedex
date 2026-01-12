@@ -26,7 +26,7 @@ class MoveModel {
         INNER JOIN pokemon ON pokemon_move.pokemon_id = pokemon.id
         WHERE
           pokemon.name = ?
-          AND pokemon_move.level = ?`,
+          AND pokemon_move.level BETWEEN 1 AND ?`,
       [pokemonName, pokemonLevel]
     );
     return rows;

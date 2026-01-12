@@ -54,44 +54,43 @@ async function checkPoketSize(trainers, pockets) {
   return true
 }
 
-async function checkMovesConfig(pokemonName, trainerName, pocketName, slotNumber) {
-
-  const getedConfig = await getConfigedMoves({trainerName, pocketName, slotNumber});
-
-  if ( getedConfig === "none,none,none,none" ) {
+async function addMovesConfig(pokemonName, trainerName, pocketName, slotNumber) {
+  
     const pokemonLevel = 1;
     const resultMoves = await selectPokemonMovesByLevel({pokemonName, pokemonLevel});
-    const moveList = resultMoves.map(m => m.pokemonMoves).join(',');
+
+    const moveList = resultMoves.join(',');
     const addedMoves = await setPokemonMoves({moveList, trainerName, pocketName, slotNumber});
     const { status, result } = addedMoves;
+
     if (status && result === 1) {
+    
       const newMoves = await getConfigedMoves({trainerName, pocketName, slotNumber});
-      const newArrayMoves = newMoves.split(';');
+      const newArrayMoves = newMoves.split(',');
+
       const addedNewMoves = [];
+    
       newArrayMoves.forEach(element => {
+
         addedNewMoves.push(
           { 
-            moveName: element[0], 
-            movePoints: element[1], 
-            movePower: element[2] 
+            moveName: element.split("|")[0], 
+            movePoints: element.split("|")[1], 
+            movePower: element.split("|")[2] 
           }
         );
+      
       });
       return addedNewMoves;
-    }
-  }
 
+    }
 }
 
-async function checkLevelUp(trainerName, pocketName, slotNumber, level, currentXp, gainedXp) {
+async function checkLevelUp(trainerName, pocketName, slotNumber, level, currentXp, gainedXp, pokemonName, pokemonRmMoves) {
 
-  // primeiro quanto de experiencia
+  // calculate actual xp vs next level xp
   const calculatedXpToLevelUp = calculateNextLevel(level);
-  console.log("calc-next", calculatedXpToLevelUp);
-  console.log("curr-xp", currentXp);
-  console.log("recv-xp", gainedXp);
-
-  let totalXpByCycle = currentXp + gainedXp
+  let totalXpByCycle = currentXp + gainedXp;
   
   // when we not level up -- updWinner do the job
   if (totalXpByCycle > calculatedXpToLevelUp) {
@@ -99,12 +98,67 @@ async function checkLevelUp(trainerName, pocketName, slotNumber, level, currentX
     let pokemonLevel = level + 1;
     let pokemonCurrXp = totalXpByCycle - calculatedXpToLevelUp;
 
-    console.log(`level up:`, {trainerName, pocketName, slotNumber, pokemonLevel, pokemonCurrXp});
+    const levelUp = await levelUpPokemon({trainerName, pocketName, slotNumber, pokemonLevel, pokemonCurrXp});
+    console.log("lvlup: ", levelUp['status']);
     
-    await levelUpPokemon({trainerName, pocketName, slotNumber, pokemonLevel, pokemonCurrXp});
+    let arrayCurrentMoves = [];
+    const getedMovesList = await getConfigedMoves({trainerName, pocketName, slotNumber}); // current set o moves in use
+    const separatedMoves = getedMovesList.split(',');
+    separatedMoves.forEach(element => {
+      arrayCurrentMoves.push(element.split('|')[0]);
+    });
 
+    const newLevelMoves = await selectPokemonMovesByLevel({pokemonName, pokemonLevel}); // new moves by level up
+
+    if ( newLevelMoves.length <= 4 ) {
+      //just append new moves
+      const currentMoves = new Set(arrayCurrentMoves);
+      const resultMoves = newLevelMoves.filter(m => !currentMoves.has(m));
+      arrayCurrentMoves = arrayCurrentMoves.concat(resultMoves);
+      const moveList = arrayCurrentMoves.join(',');
+      const addedMoves = await setPokemonMoves({moveList, trainerName, pocketName, slotNumber});
+      console.log("addmov: ", addedMoves['status']);
+
+    } else {
+      //if more then 4 - need to sort
+      let listBoxMoves = '';
+      const cleanedRmMoves = newLevelMoves.filter(m => m && !pokemonRmMoves.split(',').includes(m)).join(',');
+
+      cleanedRmMoves.split(',').forEach(element => {
+        listBoxMoves += `<label class="list-group-item">
+          <input class="form-forget-moves me-1" type="checkbox" value="${element}" />${element}
+        </label>`
+      });
+
+      const FULLBOX = `<div class="list-group">${listBoxMoves}</div>
+        <br /><button id="btnForget" type="button" class="btn btn-sm btn-danger" data-bs-dismiss="modal">Forget Move</button>`
+
+      infoChoice(
+        `Move Forget:`,
+        `${FULLBOX}`
+      );
+
+      $("#btnForget").click(async () => { 
+          const selectedMove = $(".form-forget-moves:checked").map(function() {
+            return $(this).val();
+          }).get();
+
+          pokemonRmMoves === 'none' ? moveList = selectedMove[0] : moveList = `${pokemonRmMoves},${selectedMove[0]}`
+          const moveToDelete = await setPokemonRmMoves({moveList, trainerName, pocketName, slotNumber}); // will define rm-moves
+      
+          if (moveToDelete['status']){
+            infoToast(
+              `Moves Updated !!`,
+              `${moveToDelete['result']}`
+            );
+          };
+      
+      });
+      
+    }
+    return true;
+  
   }
-
 }
 
 async function pokemonByCycle(cycles, trainers, pockets) {    
@@ -132,6 +186,7 @@ async function checkBattleEnd(
   attackerHp,
   attackerLvl,
   attackerXp,
+  attackerRmMoves,
   defenderTrainer, 
   defenderPocket, 
   defenderSlot,
@@ -146,19 +201,32 @@ async function checkBattleEnd(
     let gainedXp = 1;
     gainedXp += calculateXp(currentXp, currentLvl);
 
-    
-
     const winner = await pokemonWinner({attackerTrainer, attackerPocket, attackerSlot, attackerHp, gainedXp});
-    const winnerLevelUp = await checkLevelUp(attackerTrainer, attackerPocket, attackerSlot, attackerLvl, attackerXp, gainedXp);
+    const winnerLevelUp = await checkLevelUp(attackerTrainer, attackerPocket, attackerSlot, attackerLvl, attackerXp, gainedXp, currentAttacker, attackerRmMoves);
     const loser = await pokemonLoser({defenderTrainer, defenderPocket, defenderSlot});
 
     if (loser['status'] && winner['status']) {
 
       battleActive = false;
+
+      let TXT;
+      
+      winTxt = `
+        ${capFirst(currentAttacker)} Wins !!<br \>
+        ${capFirst(currentDefender)} Fainted !!<br \>
+        ${capFirst(currentAttacker)} gained: ${gainedXp} XP`
+      
+      winUpTxt = `
+        ${capFirst(currentAttacker)} Wins !!<br \>
+        ${capFirst(currentAttacker)} grew To Level: ${currentLvl + 1} !!<br \>
+        ${capFirst(currentDefender)} Fainted !!<br \>
+        ${capFirst(currentAttacker)} gained: ${gainedXp} XP`
+      
+      winnerLevelUp ? TXT = winUpTxt : TXT = winTxt;
       
       infoToast(
         `Battle Over!`,
-        `${capFirst(currentAttacker)} Wins !!<br \>${capFirst(currentDefender)} Fainted !!<br \>${capFirst(currentAttacker)} gained: ${gainedXp} XP`
+        `${TXT}`
       );
       
       if ( $("#infoCardleft").length ) { $("#infoCardleft").remove(); };
@@ -211,10 +279,14 @@ $("#btn-start-battle").click(async () => {
   const leftXp = leftPokemon['pokemonCurrXp'];
   const leftAttack = leftPokemon['pokemonAttack'];
   const leftDefense = leftPokemon['pokemonDefense'];
-  const leftMoves = leftPokemon['pokemonMoves'];
+  let leftMoves = leftPokemon['pokemonMoves'];
+  const leftRmMoves = leftPokemon['pokemonRmMoves'];
 
-  const newLeftMoves = await checkMovesConfig(leftName, leftTrainer, leftPocket, battleRoundCycle);
-  newLeftMoves && (leftMoves = newLeftMoves)
+
+  const configedLeftMoves = leftMoves.map(m => m.moveName).join(',');
+  if ( configedLeftMoves === "none,none,none,none" ) {
+    leftMoves = await addMovesConfig(leftName, leftTrainer, leftPocket, battleRoundCycle);
+  }
 
   let leftSelect;
   for (const element of leftMoves) {
@@ -234,10 +306,13 @@ $("#btn-start-battle").click(async () => {
   const rightXp = rightPokemon['pokemonCurrXp'];
   const rightAttack = rightPokemon['pokemonAttack'];
   const rightDefense = rightPokemon['pokemonDefense'];
-  const rightMoves = rightPokemon['pokemonMoves'];
+  let rightMoves = rightPokemon['pokemonMoves'];
+  const rightRmMoves = rightPokemon['pokemonRmMoves'];
   
-  const newRightMoves = await checkMovesConfig(rightName, rightTrainer, rightPocket, battleRoundCycle);
-  newRightMoves && (rightMoves = newRightMoves);
+  const configedRightMoves = rightMoves.map(m => m.moveName).join(',');
+  if ( configedRightMoves === "none,none,none,none" ) {
+    rightMoves = await addMovesConfig(rightName, rightTrainer, rightPocket, battleRoundCycle);
+  }
 
   let rightSelect;
   for (const element of rightMoves) {
@@ -293,7 +368,7 @@ $("#btn-start-battle").click(async () => {
     
       const leftDamageDone = calculateDamage(leftLevel, leftMovePower, leftAttack, leftDefense);
       $("#info-damage-right").text(`Damage: -${leftDamageDone * DM}`).fadeIn(200);
-      setTimeout(() => {$("#info-damage-right").fadeOut(500, () => {$("#info-damage-right").text(''); }); }, 2000);
+      setTimeout(() => {$("#info-damage-right").fadeOut(300, () => {$("#info-damage-right").text(''); }); }, 2000);
       (rightLocalHp -= (leftDamageDone * DM)) < 0 ? rightLocalHp = 0 : rightLocalHp;
       
       const rightBarPercentage = barPercentage(rightLocalHp, rightCurrHp);
@@ -316,6 +391,7 @@ $("#btn-start-battle").click(async () => {
       leftLocalHp,
       leftLevel,
       leftXp,
+      leftRmMoves,
       rightTrainer,
       rightPocket,
       rightSlot,
@@ -349,7 +425,7 @@ $("#btn-start-battle").click(async () => {
     
       const rightDamageDone = calculateDamage(rightLevel, rightMovePower, rightAttack, rightDefense);
       $("#info-damage-left").text(`Damage: -${rightDamageDone * DM}`).fadeIn(200);
-      setTimeout(() => {$("#info-damage-left").fadeOut(500, () => {$("#info-damage-left").text(''); }); }, 2000);
+      setTimeout(() => {$("#info-damage-left").fadeOut(300, () => {$("#info-damage-left").text(''); }); }, 2000);
       (leftLocalHp -= (rightDamageDone * DM)) < 0 ? leftLocalHp = 0 : leftLocalHp
 
 
@@ -372,6 +448,7 @@ $("#btn-start-battle").click(async () => {
       rightLocalHp,
       rightLevel,
       rightXp,
+      rightRmMoves,
       leftTrainer,
       leftPocket,
       leftSlot,

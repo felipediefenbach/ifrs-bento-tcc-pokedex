@@ -1,25 +1,6 @@
 const MoveService = require("../services/MoveService");
 
 class MoveController {
-  static async moveList(req, res) {
-    try {
-      const pokemonName = req.params.pokemonName;
-      const result = await MoveService.moveList({pokemonName});
-      if (result.length > 0) {
-        res.status(200).json({
-          result: result,
-          status: true,
-        });
-      } else {
-        res.status(200).json({
-          result: result,
-          status: false,
-        });
-      }
-    } catch (error) {
-      res.status(500).json({ error: error.message });
-    }
-  }
 
   static async moveListByLevel(req, res) {
     try {

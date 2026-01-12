@@ -171,7 +171,7 @@ $(document).ready(function () {
       `We gonna add: ${pokemonName} to you pocket !!
       <br />
       <br />
-      <button id="btnSuccess" type="button" class="btn btn-success" data-bs-dismiss="modal">Add</button>`
+      <button id="btnSuccess" type="button" class="btn btn-success btn-sm" data-bs-dismiss="modal">Add</button>`
     );
 
     $("#btnIgnore").click(() => { 
@@ -185,7 +185,6 @@ $(document).ready(function () {
       const resultAdd = await addPokemon(pokemonName);
       const resultInfo = await showPokemonInfo(pokemonName);
       const resultStat = await showPokemonStat(pokemonName);
-
       if (
         resultAdd["status"] === 'error'
         && resultInfo["status"]
@@ -233,7 +232,7 @@ $(document).ready(function () {
         ${await listTransferPockets({trainerName, pocketName, pokemonName})}
     </select>
     <br />
-    <button id="btnSuccess" type="button" class="btn btn-primary" data-bs-dismiss="modal">Move</button>`
+    <button id="btnSuccess" type="button" class="btn btn-primary btn-sm" data-bs-dismiss="modal">Move</button>`
 
     infoChoice(
       `Select Destion Pocket`,
@@ -242,6 +241,9 @@ $(document).ready(function () {
 
     $("#btnSuccess").click(async () => { 
       const destinationPocket = $("#pocketSelectorTrainer1").val();
+
+      if ( destinationPocket === "empty" ) return void infoToast(`Ops !!`,`You not select a destination pocket!!`);
+      
       const response = await movePokemonToOtherPocket(
         {
           trainerName,
@@ -324,7 +326,7 @@ $(document).ready(function () {
           ${moveToSelect}
         </select>
       <br />
-      <button id="btnSaveMoves" type="button" class="btn btn-primary" data-bs-dismiss="modal">Save Config</button>`
+      <button id="btnSaveMoves" type="button" class="btn btn-primary btn-sm" data-bs-dismiss="modal">Save Config</button>`
 
     infoChoice(
       `Pokemon Moves`,

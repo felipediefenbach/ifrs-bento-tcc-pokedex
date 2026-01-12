@@ -14,7 +14,8 @@ class BattleModel {
         pocket_content.full_hp AS pokemonFullHp, 
         pocket_content.attack AS pokemonAttack, 
         pocket_content.defense AS pokemonDefense, 
-        pocket_content.moves AS pokemonMoves
+        pocket_content.moves AS pokemonMoves,
+        pocket_content.rm_moves AS pokemonRmMoves
       FROM pocket_content
       INNER JOIN pocket ON pocket_content.pocket_id = pocket.id
       INNER JOIN trainer ON pocket_content.trainer_id = trainer.id

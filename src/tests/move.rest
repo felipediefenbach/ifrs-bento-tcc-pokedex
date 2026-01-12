@@ -1,7 +1,7 @@
 # Configuração
 @baseURL = http://127.0.0.1:3000
-@pokemonName = dratini
-@pokemonLevel = 1
+@pokemonName = charmander
+@pokemonLevel = 31
 
 ### lista de todos os movimentos deste pokemon
 GET {{baseURL}}/move/{{pokemonName}}

@@ -93,11 +93,11 @@ class PocketModel {
   }
 
   static async addInThePocketSlot(fulldata) {
-    const { pocketId, trainerId, slotNumber, pokemonId, stateId } = fulldata;
+    const { pocketId, trainerId, slotNumber, pokemonId } = fulldata;
     const [rows] = await db.query(
       `INSERT INTO pocket_content (pocket_id, trainer_id, slot_number, pokemon_id)
         VALUES (?, ?, ?, ?)`,
-      [pocketId, trainerId, slotNumber, pokemonId, stateId]
+      [pocketId, trainerId, slotNumber, pokemonId]
     );
     return rows.affectedRows;
 
@@ -120,11 +120,28 @@ class PocketModel {
 
   }
 
+  static async setDeletedMoves(fulldata) {
+    const { moveList, trainerName, pocketName, slotNumber } = fulldata;
+    const [rows] = await db.query(
+      `UPDATE pocket_content AS pocket_content
+        JOIN pocket ON pocket_content.pocket_id = pocket.id
+        JOIN trainer ON pocket_content.trainer_id = trainer.id
+        SET pocket_content.rm_moves = ?
+        WHERE 
+          trainer.name = ?
+          AND pocket.name = ?
+          AND pocket_content.slot_number = ?`,
+      [ moveList, trainerName, pocketName, slotNumber ]
+    );
+    return rows.affectedRows
+
+  }
+
   // Insert incial no pocket_content
   // Com o passar do tempo os dados do pocket_content mudam 
   // Conforme o pokemon batalha e evolui
   static async setPocketPokemonBaseStats(fulldata) {
-    const { nextLevelExp, pocketId, trainerId, slotNumber, pokemonId } = fulldata;
+    const { pocketId, trainerId, slotNumber, pokemonId } = fulldata;
 
     const [rows] = await db.query(
       `UPDATE pocket_content AS pocket_content
@@ -135,7 +152,7 @@ class PocketModel {
           pocket_content.curr_hp = pokemon_stat.hp,
           pocket_content.full_hp = pokemon_stat.hp,
           pocket_content.attack = pokemon_stat.attack,
-          pocket_content.defense = pokemon_stat.defense,
+          pocket_content.defense = pokemon_stat.defense
         WHERE
           pocket_content.pocket_id = ?
           AND pocket_content.trainer_id = ?

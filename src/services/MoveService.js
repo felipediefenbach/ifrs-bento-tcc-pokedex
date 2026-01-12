@@ -4,61 +4,49 @@ const pokeMove = require("../utils/pokeMove");
 const movePp = require("../utils/movePp");
 
 class MoveService {
-  static async moveList(fulldata) {
+
+  static async filterMoves(inputMoves){
+    
+    let combinedMoves = [];
+    const fullList = inputMoves.map(m => m.pokemonMoves);
+
+    fullList.forEach(element => {
+      let newSplitedMoves = element.split(',');
+      let clenedMoves = newSplitedMoves.map(i => i.trim());
+      combinedMoves = combinedMoves.concat(clenedMoves);
+    
+    });
+
+    return combinedMoves;
+
+  }
+
+  static async moveListByLevel(fulldata) {
 
     const existingMoves = await MoveModel.findPokemonMoveByName(fulldata);
 
     if (!existingMoves || existingMoves.length === 0) {
 
-      let listSize = 0;
       const pokemonId = await PokemonModel.findPokemonIdByName(fulldata);
       const getedMoves = await pokeMove(fulldata);
 
       for (const element of getedMoves) {
         const { pokemonMoves, pokemonLevel } = element;
         const result = await MoveModel.addPokemonMove({ pokemonId, pokemonMoves, pokemonLevel});
-        listSize += result;
+        result === 1;
       };
-
-      if (listSize === getedMoves.length) {
-        return await MoveModel.findPokemonMoveByName(fulldata);
-      }
+      const moveByLevel = await MoveModel.findPokemonMoveByLevel(fulldata);
+      return this.filterMoves(moveByLevel);
 
     } else {
-      return existingMoves
-   
-    }
-  }
+      const moveByLevel = await MoveModel.findPokemonMoveByLevel(fulldata);
+      return this.filterMoves(moveByLevel);
 
-  static async moveListByLevel(fulldata) {
-
-    const existingMoves = await MoveModel.findPokemonMoveByLevel(fulldata);
-
-    if (!existingMoves || existingMoves.length === 0) {
-
-      let listSize = 0;
-      const pokemonId = await PokemonModel.findPokemonIdByName(fulldata);
-      const getedMoves = await pokeMove(fulldata);
-
-      for (const element of getedMoves) {
-        const { pokemonMoves, pokemonLevel } = element;
-        const result = await MoveModel.addPokemonMove({ pokemonId, pokemonMoves, pokemonLevel });
-        listSize += result;
-      };
-
-      if (listSize === getedMoves.length) {
-        return await MoveModel.findPokemonMoveByLevel(fulldata);
-      }
-
-    } else {
-      return existingMoves
-   
     }
     
   }
 
   static async setAttackConfig(fulldata) {
-    console.log(fulldata);
 
     let moveWithPp = []
     let { moveList } = fulldata;
@@ -66,7 +54,6 @@ class MoveService {
     
     for ( const element of arrayMoves ) {
       const movePpPower = await movePp(element.trim());
-      console.log(movePpPower);
       moveWithPp.push(`${element.trim()}|${movePpPower}`);
     }
 

@@ -168,7 +168,7 @@ $(document).ready(function () {
       `We gonna add: ${pokemonName} to you pocket
       <br />
       <br />
-      <button id="btnSuccess" type="button" class="btn btn-success" data-bs-dismiss="modal">Add</button>`
+      <button id="btnSuccess" type="button" class="btn btn-success btn-sm" data-bs-dismiss="modal">Add</button>`
     );
 
     $("#btnIgnore").click(() => { 
@@ -230,7 +230,7 @@ $(document).ready(function () {
         ${await listTransferPockets({trainerName, pocketName, pokemonName})}
     </select>
     <br />
-    <button id="btnSuccess" type="button" class="btn btn-primary" data-bs-dismiss="modal">Move</button>`
+    <button id="btnSuccess" type="button" class="btn btn-primary btn-sm" data-bs-dismiss="modal">Move</button>`
 
     infoChoice(
       `Select Destion Pocket`,
@@ -321,7 +321,7 @@ $(document).ready(function () {
           ${moveToSelect}
         </select>
       <br />
-      <button id="btnSaveMoves" type="button" class="btn btn-primary" data-bs-dismiss="modal">Save Config</button>`
+      <button id="btnSaveMoves" type="button" class="btn btn-primary btn-sm" data-bs-dismiss="modal">Save Config</button>`
 
     infoChoice(
       `Pokemon Moves`,

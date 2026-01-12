@@ -289,4 +289,49 @@ SELECT
   INNER JOIN pokemon ON pokemon_move.pokemon_id = pokemon.id
   WHERE
     pokemon.name = 'charmander'
-    AND pokemon_move.level = 1;
+    AND pokemon_move.level BETWEEN 1 AND 1;
+
+UPDATE pocket_content AS pocket_content
+  JOIN pocket ON pocket_content.pocket_id = pocket.id
+  JOIN trainer ON pocket_content.trainer_id = trainer.id
+  SET pocket_content.rm_moves = 'growl'
+  WHERE 
+    trainer.name = 'felipedie'
+    AND pocket.name = 'padrao'
+    AND pocket_content.slot_number = 1;
+
+    INSERT INTO pocket_content (pocket_id, trainer_id, slot_number, pokemon_id)
+        VALUES (1, 2, 3, 118);
+
+UPDATE pocket_content AS pocket_content
+        INNER JOIN pokemon_base_info ON pocket_content.pokemon_id = pokemon_base_info.pokemon_id
+        INNER JOIN pokemon_stat ON pocket_content.pokemon_id = pokemon_stat.pokemon_id
+        SET
+          pocket_content.curr_xp = pokemon_base_info.base_exp,
+          pocket_content.curr_hp = pokemon_stat.hp,
+          pocket_content.full_hp = pokemon_stat.hp,
+          pocket_content.attack = pokemon_stat.attack,
+          pocket_content.defense = pokemon_stat.defense
+        WHERE
+          pocket_content.pocket_id = 1
+          AND pocket_content.trainer_id = 1
+          AND pocket_content.slot_number = 1
+          AND pocket_content.pokemon_id = 1;
+
+INSERT INTO `pocket_content_bkp` 
+  (`pocket_id`, `trainer_id`, `pokemon_id`, `slot_number`, 
+   `moves`, `rm_moves`, `full_hp`, `curr_hp`, 
+   `attack`, `defense`, `curr_xp`, `level`) 
+VALUES 
+  (1, 1, 1,  1, 'none,none,none,none', 'none', 45, 45, 49, 49, 7, 1),
+  (1, 1, 4,  2, 'none,none,none,none', 'none', 39, 39, 52, 43, 6, 1),
+  (1, 1, 7,  3, 'none,none,none,none', 'none', 44, 44, 48, 65, 5, 1),
+  (1, 1, 10, 4, 'none,none,none,none', 'none', 45, 45, 30, 35, 3, 1),
+  (1, 1, 16, 5, 'none,none,none,none', 'none', 40, 40, 45, 40, 3, 1),
+  (1, 1, 25, 6, 'none,none,none,none', 'none', 35, 35, 55, 40, 4, 1),
+  (3, 2, 1,  1, 'none,none,none,none', 'none', 45, 45, 49, 49, 7, 1),
+  (3, 2, 4,  2, 'none,none,none,none', 'none', 39, 39, 52, 43, 6, 1),
+  (3, 2, 7,  3, 'none,none,none,none', 'none', 44, 44, 48, 65, 5, 1),
+  (3, 2, 10, 4, 'none,none,none,none', 'none', 45, 45, 30, 35, 3, 1),
+  (3, 2, 16, 5, 'none,none,none,none', 'none', 40, 40, 45, 40, 3, 1),
+  (3, 2, 25, 6, 'none,none,none,none', 'none', 35, 35, 55, 40, 4, 1);

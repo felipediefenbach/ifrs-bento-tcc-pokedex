@@ -89,8 +89,8 @@ class BattleService {
 
     const winner = await BattleModel.updWinnerLevel({newHp, newAttack, newDefense, pokemonLevel, pokemonCurrXp, trainerName, pocketName, slotNumber});
     return winner === 1
-  }
 
+  }
 
 }
 

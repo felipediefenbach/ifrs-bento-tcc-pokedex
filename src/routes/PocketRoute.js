@@ -12,5 +12,6 @@ pocket.post("/pokemon/add", PocketController.addInThePocketSlot);
 pocket.delete("/pokemon/del", PocketController.delInThePocketSlot);
 pocket.put("/pokemon/rev", PocketController.reviveInThePocketSlot);
 pocket.put("/pokemon/move", PocketController.moveToOtherPocket);
+pocket.put("/moves/rm", PocketController.setDeletedMoves);
 
 module.exports = pocket;

@@ -35,6 +35,17 @@ Content-Type: application/json
     "slotNumber": 1
 }
 
+### delete uma habilidade do pokemon q subiu de nível
+PUT {{baseURL}}/pocket/moves/rm
+Content-Type: application/json
+
+{
+    "moveName": "growl",
+    "trainerName": "felipedie",
+    "pocketName": "padrao",
+    "slotNumber": 1
+}
+
 ### Insere um pokemon em um dos espaços no bolso do treinador
 POST {{baseURL}}/pocket/pokemon/add
 Content-Type: application/json

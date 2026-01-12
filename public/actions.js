@@ -68,7 +68,7 @@ async function listTransferPockets(fulldata) {
   
   const allPockets = pocketResponse["result"];
   const skipCurrentPocket = allPockets.filter(i => i !== pocketName);
-  let pocketsToSelect = "<option selected>Select destionation</option>";
+  let pocketsToSelect = `<option value="empty" selected>Select destionation</option>`;
 
   for (const element of skipCurrentPocket) {
     const free = await emptySlotsInMyPockets(trainerName, element);
@@ -82,16 +82,6 @@ async function listTransferPockets(fulldata) {
 async function selectPokemonMoves(fulldata) {
   
   const { pokemonName, pokemonLevel } = fulldata;
-
-  const moveInsertResponse = await $.ajax({
-      type: "GET",
-      url: `/move/${pokemonName}`,
-      dataType: "json",
-  });
-
-  const { result, status } = moveInsertResponse;
-
-  if (status) {
   
     const moveLevelResponse = await $.ajax({
         type: "GET",
@@ -114,10 +104,6 @@ async function selectPokemonMoves(fulldata) {
     } else {
       throw new Error(`${result}`)
     }
-
-  } else {
-    throw new Error(`${result}`)
-  }
   
 }
 
@@ -142,6 +128,22 @@ async function setPokemonMoves(fulldata) {
     const response = await $.ajax({
       type: "PUT",
       url: "/move/set/attack",
+      data: JSON.stringify(fulldata),
+      contentType: "application/json",
+    });
+    return response;
+
+  } catch (error) {
+    return error;
+
+  }
+}
+
+async function setPokemonRmMoves(fulldata) {
+  try {
+    const response = await $.ajax({
+      type: "PUT",
+      url: "/pocket/moves/rm",
       data: JSON.stringify(fulldata),
       contentType: "application/json",
     });
@@ -253,6 +255,7 @@ async function revivePokemon(fulldata) {
 }
 
 async function levelUpPokemon(fulldata) {
+  console.log(fulldata);
   try {
     const response = await $.ajax({
       type: "PUT",
@@ -487,7 +490,7 @@ function infoChoice(title, message) {
           ${message}
           </div>
             <div class="modal-footer">
-              <button id="btnIgnore" type="button" class="btn btn-secondary refresh-on-dismiss" data-bs-dismiss="modal">Dismiss</button>
+              <button id="btnIgnore" type="button" class="btn btn-secondary btn-sm" data-bs-dismiss="modal">Dismiss</button>
             </div>
         </div>
       </div>
