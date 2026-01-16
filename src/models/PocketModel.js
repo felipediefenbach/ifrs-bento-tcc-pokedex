@@ -16,6 +16,44 @@ class PocketModel {
     
   }
 
+    static async allPockets(fulldata) {
+    const { trainerName } = fulldata;
+    const [rows] = await db.query(
+      `SELECT 
+        pocket.name AS pocket_name
+      FROM pocket
+      INNER JOIN trainer ON pocket.trainer_id = trainer.id
+      WHERE trainer.name = ?`,
+      [trainerName]
+    );
+    return rows;
+    
+  }
+  
+  static async createPockets(fulldata) {
+    const { trainerId, pocketName } = fulldata;
+    const [rows] = await db.query(
+      `INSERT INTO pocket (trainer_id, name)
+        VALUES (?, ?)`,
+      [trainerId, pocketName]
+    );
+    return rows.affectedRows;
+    
+  }
+
+  static async deletePockets(fulldata) {
+    const { trainerId, pocketName } = fulldata;
+    const [rows] = await db.query(
+      `DELETE FROM pocket
+        WHERE 
+          trainer_id = ?
+          AND name = ?`,
+      [trainerId, pocketName]
+    );
+    return rows.affectedRows;
+    
+  }
+
   static async allInThePocket(fulldata) {
     const { trainerName, pocketName } = fulldata;
     const [rows] = await db.query(
@@ -45,7 +83,7 @@ class PocketModel {
     const { pocketName, trainerName } = fulldata;
     const [rows] = await db.query(
       `SELECT 
-      pocket.id AS pocket_id
+      pocket.id AS pocketId
     FROM pocket
     INNER JOIN trainer ON pocket.trainer_id = trainer.id
     WHERE
@@ -53,7 +91,7 @@ class PocketModel {
       AND trainer.name = ?`,
       [pocketName, trainerName]
     );
-    return rows[0]["pocket_id"];
+    return rows[0];
 
   }
 

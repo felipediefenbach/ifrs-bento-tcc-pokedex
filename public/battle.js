@@ -206,6 +206,9 @@ async function checkBattleEnd(
     const loser = await pokemonLoser({defenderTrainer, defenderPocket, defenderSlot});
 
     if (loser['status'] && winner['status']) {
+      
+      // so we looking for some bugs - next time
+      //console.log("XP:", trainer, pokemonXp, calculateNextLevel(pokemonLevel))
 
       battleActive = false;
 
@@ -323,8 +326,8 @@ $("#btn-start-battle").click(async () => {
   if ( $("#infoCardleft").length ) { $("#infoCardleft").remove(); };
   if ( $("#infoCardright").length ) { $("#infoCardright").remove(); };
 
-  infoCard("left", leftName, leftLevel, leftCurrHp, leftFullHp);
-  infoCard("right", rightName, rightLevel, rightCurrHp, rightFullHp);
+  infoCard("left", leftName, leftLevel, leftCurrHp, leftFullHp, leftXp);
+  infoCard("right", rightName, rightLevel, rightCurrHp, rightFullHp, rightXp);
 
   $("#select-move-left").append(leftSelect);
   $("#select-move-right").append(rightSelect);

@@ -1,7 +1,7 @@
 $(document).ready(function () {
 
   const trainerName = "machine";
-  const pocketName = "padrao";
+  const pocketName = "default";
   populatePokemonSelector();
 
   async function editTrainerPockets(trainer, pocket) {

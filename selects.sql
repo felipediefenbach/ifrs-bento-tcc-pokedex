@@ -335,3 +335,11 @@ VALUES
   (3, 2, 10, 4, 'none,none,none,none', 'none', 45, 45, 30, 35, 3, 1),
   (3, 2, 16, 5, 'none,none,none,none', 'none', 40, 40, 45, 40, 3, 1),
   (3, 2, 25, 6, 'none,none,none,none', 'none', 35, 35, 55, 40, 4, 1);
+
+SELECT 
+      pocket.id AS pocketId
+    FROM pocket
+    INNER JOIN trainer ON pocket.trainer_id = trainer.id
+    WHERE
+      pocket.name = 'novo'
+      AND trainer.name = 'felipedie';

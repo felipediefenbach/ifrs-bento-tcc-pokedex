@@ -1,7 +1,7 @@
 $(document).ready(function () {
 
   const trainerName = "felipedie";
-  const pocketName = "padrao";
+  const pocketName = "default";
   populatePokemonSelector();
 
 /////////////////////////////////////////////////////////////////////////////////////
@@ -81,14 +81,19 @@ $(document).ready(function () {
   $("#pocketsTrainer1").click(async () => { 
 
     const POCKET_SELECT = `
-    <label for="pocketListTrainer1" class="form-label">Pocket Name</label>
+    <label for="pocketListTrainer1" class="form-label">Select a pocket:</label>
         <select id="pocketListTrainer1" class="form-select form-select-sm" name="pocketListTrainer1">
         ${await listAllMyPockets({trainerName})}
     </select>`
+    const POCKET_ADD = `<button type="button" class="btn btn-success btn-sm btn-create-pockets" data-trainer="${trainerName}">Create</button>`
+    const POCKET_DEL = `<button type="button" class="btn btn-primary btn-sm btn-delete-pockets" data-trainer="${trainerName}">Remove</button>`
+    
 
     infoChoice(
       `Pocket Management:`,
-      `${POCKET_SELECT}
+      `${POCKET_ADD} ${POCKET_DEL}
+      <br /><div class="pocket-manage-trainer1"></div>
+      <br />${POCKET_SELECT}
       <br />
       <div class="pocket-div-trainer1"></div>`
     );
@@ -97,6 +102,121 @@ $(document).ready(function () {
       $("#pocketViewTrainer1").bootstrapTable('refresh');
     });
   
+  });
+
+  $(document).on("click", ".btn-create-pockets", function () {
+
+    $(".pocket-manage-trainer1").empty();
+    
+    const POCKET_NAME = `
+      <br />
+      <div class="mb-3">
+        <div class="input-group has-validation">
+          <input id="inputNewPocket" type="text" class="form-control form-control-sm" placeholder=""/>
+          <button id="btnConfirmNewPocket" type="button" class="btn btn-success btn-sm">Create</button>
+          <div class="invalid-feedback">
+            Accept only lowercase letters and numbers !!
+          </div>
+        </div>
+      </div>`
+
+    $(".pocket-manage-trainer1").append(POCKET_NAME);
+
+    $("#inputNewPocket").focus(() => {  
+      $("#inputNewPocket").removeClass("is-valid is-invalid");
+    });
+
+    $("#btnConfirmNewPocket").click(async () => { 
+          
+      const trainer = $(this).data("trainer");
+      const pocket = await $("#inputNewPocket").val();
+
+      if (!validName(pocket)) {
+        $("#inputNewPocket").addClass("is-invalid").removeClass("is-valid");
+
+      } else {
+        
+        const response = await addPocket({trainer, pocket});
+        const { result, status } = response;
+
+        switch(status) {
+
+          case true:
+            $('.modal').modal('hide');
+            infoToast(`Ok!!`,`${result}`);
+            break;
+
+          case false:
+            infoToast(`Ops!!`,`${result}`);
+            break;
+
+          default:
+            infoToast(`Erro`,`${result}`);
+
+        } 
+      }
+
+    });
+
+  });
+
+  $(document).on("click", ".btn-delete-pockets", function () {
+
+    const trainer = $(this).data("trainer");
+    const pocket = $("#pocketListTrainer1").val();
+    $(".pocket-manage-trainer1").empty();
+
+    if ( pocket === 'empty' ) { return void infoToast(`Ops!!`, `Select a pocket to remove !!`); }
+    
+    const POCKET_DEL_CONFIRM = `
+      <br />
+      <div class="mb-3">
+        <div class="input-group has-validation">
+          <input id="inputConfirmDelPocket" type="text" class="form-control form-control-sm" placeholder="Type pocket name here to remove..."/>
+          <button id="btnConfirmDelPocket" type="button" class="btn btn-primary btn-sm"><strong>Remove</strong></button>
+          <div class="invalid-feedback">
+            The informed name is different !!
+          </div>
+        </div>
+      </div>`
+
+    $(".pocket-manage-trainer1").append(POCKET_DEL_CONFIRM);
+
+    $("#inputConfirmDelPocket").focus(() => { 
+      $("#inputConfirmDelPocket").removeClass("is-invalid is-valid");
+    });
+    
+    $("#btnConfirmDelPocket").click(async () => {     
+      
+      const pocketConfirm = await $("#inputConfirmDelPocket").val();
+
+      if ( pocket !== pocketConfirm ) { 
+        $("#inputConfirmDelPocket").addClass("is-invalid").removeClass("is-valid");
+
+      } else {
+
+        const response = await delPocket({trainer, pocket});
+        const { result, status } = response;
+
+        switch(status) {
+
+          case true:
+            $('.modal').modal('hide');
+            infoToast(`Ok!!`,`${result}`);
+            break;
+
+          case false:
+            infoToast(`Ops!!`,`${result}`);
+            break;
+
+          default:
+            infoToast(`Erro`,`${result}`);
+
+        }
+      }
+ 
+    });
+
   });
 
   $(document).on("click", ".btn-revive-Trainer1", async function () {
@@ -121,7 +241,7 @@ $(document).ready(function () {
           break;
 
         default:
-          infoToast(`Erro`,`${result}`)
+          infoToast(`Erro`,`${result}`);
 
       }
   });
@@ -154,7 +274,7 @@ $(document).ready(function () {
   });
 
   $(document).on("change", "#pocketListTrainer1", async function () {
-    $("#pocketEditTrainer1").remove();
+    $(".pocket-div-trainer1").empty();
     $(".pocket-div-trainer1").append(`<table id="pocketEditTrainer1"></table>`); 
     await editTrainerPockets(trainerName, $(this).val());
   });
@@ -179,7 +299,7 @@ $(document).ready(function () {
       $("#pocketViewTrainer1").bootstrapTable('refresh');
     });
     
-    $("#btnSuccess").click(async () => {
+    $("#btnSuccess").click(async () => {select
     
       // Primeiro criamos o pokemon na tabela pokemon
       const resultAdd = await addPokemon(pokemonName);

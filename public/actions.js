@@ -43,7 +43,7 @@ async function listAllMyPockets(fulldata) {
     const { result, status } = response;
     
     if (status) {
-      let pocketsToSelect = "<option selected>Select pocket</option>";
+      let pocketsToSelect = `<option value="empty" selected>Select pocket</option>`;
       result.forEach(element => {
         pocketsToSelect += `<option value="${element}">${element}</option>`;
       });
@@ -53,6 +53,59 @@ async function listAllMyPockets(fulldata) {
   } catch (error) {
     return error;
 
+  }
+}
+
+async function delPocket(fulldata) {
+  const { trainer, pocket } = fulldata
+
+  let translateData = {
+    trainerName: trainer,
+    pocketName: pocket
+  }
+
+  try {
+    const response = await $.ajax({
+      type: "DELETE",
+      url: "/pocket/delete",
+      data: JSON.stringify(translateData),
+      contentType: "application/json",
+    });
+
+    return response;
+
+  } catch (error) {
+    return {
+      result: error,
+      status: "error",
+    };
+  }
+}
+
+
+async function addPocket(fulldata) {
+  const { trainer, pocket } = fulldata
+
+  let translateData = {
+    trainerName: trainer,
+    pocketName: pocket
+  }
+
+  try {
+    const response = await $.ajax({
+      type: "POST",
+      url: "/pocket/create",
+      data: JSON.stringify(translateData),
+      contentType: "application/json",
+    });
+
+    return response;
+
+  } catch (error) {
+    return {
+      result: error,
+      status: "error",
+    };
   }
 }
 
@@ -522,7 +575,7 @@ function infoToast(title, message) {
   $("#infoToast").toast("show");
 }
 
-function infoCard(trainer, pokemonName, pokemonLevel, pokemonCurrHp, pokemonFullHp) {
+function infoCard(trainer, pokemonName, pokemonLevel, pokemonCurrHp, pokemonFullHp, pokemonXp) {
   const CARD = `
       <div id="infoCard${trainer}" class="card border-primary shadow">
         <!-- Card Header -->
@@ -556,6 +609,11 @@ function infoCard(trainer, pokemonName, pokemonLevel, pokemonCurrHp, pokemonFull
                   </select>
                   <button id="btn-attack-${trainer}" class="btn btn-danger">Attack!</button>
                 </div>
+                <p class="mb-1"><strong>XP:</strong></p>
+                <div id="xp-bar-${trainer}" 
+                  class="progress" role="progressbar" style="height: 5px">
+                  <div class="progress-bar bg-secondary" style="width: ${pokemonXp}%"></div>
+                </div>
               </div>
             </div>
             <div class="col-md-6">
@@ -583,3 +641,4 @@ function infoCard(trainer, pokemonName, pokemonLevel, pokemonCurrHp, pokemonFull
 
 const rollRandom = () => Math.random().toString(36).substring(2, 10);
 const capFirst = (str) => str.charAt(0).toUpperCase() + str.slice(1);
+const validName = (str) => /^[a-z0-9]+$/.test(str);

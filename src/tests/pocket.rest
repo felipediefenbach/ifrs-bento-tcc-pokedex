@@ -8,6 +8,24 @@
 GET {{baseURL}}/pocket/list/{{trainerName}}
 Accept: application/json
 
+### cria novos bolsos
+POST {{baseURL}}/pocket/create
+Content-Type: application/json
+
+{
+    "trainerName": "felipedie",
+    "pocketName": "novo"
+}
+
+### Remove Bolsos
+DELETE {{baseURL}}/pocket/delete
+Content-Type: application/json
+
+{
+    "trainerName": "felipedie",
+    "pocketName": "novo"
+}
+
 ### lista o numero de slots nos bolsos do treinador
 GET {{baseURL}}/pocket/slots/{{trainerName}}/{{pocketName}}
 Accept: application/json

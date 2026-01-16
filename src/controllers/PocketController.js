@@ -13,9 +13,69 @@ class PocketController {
         });
       } else {
         res.status(200).json({
-          result: "The pocket is empty ?!",
+          result: "Can't list your pockets !!",
           status: false,
         });
+      }
+    } catch (error) {
+      res.status(500).json({ error: error.message });
+    }
+  }
+
+  static async createPockets(req, res) {
+    try {
+      const { pocketName } = req.body;
+      
+      if ( pocketName === 'default' ) {
+        res.status(200).json({
+          result: "Default pocket cannot be modified !!",
+          status: false,
+        });
+      
+      } else {
+        const result = await PocketService.createPockets(req.body);
+
+        if (result) {
+          res.status(200).json({
+            result: "Pocket created successfully !!",
+            status: true,
+          });
+        } else {
+          res.status(200).json({
+            result: "This pocket exists!!",
+            status: false,
+          });
+        }
+      }
+    } catch (error) {
+      res.status(500).json({ error: error.message });
+    }
+  }
+
+  static async deletePockets(req, res) {
+    try {
+      const { pocketName } = req.body;
+      
+      if ( pocketName === 'default' ) {
+        res.status(200).json({
+          result: "Default pocket cannot be modified !!",
+          status: false,
+        });
+      
+      } else {
+        const result = await PocketService.deletePockets(req.body);
+
+        if (result) {
+          res.status(200).json({
+            result: "Pocket removed successfully !!",
+            status: true,
+          });
+        } else {
+          res.status(200).json({
+            result: "Pocket does'n exists !!",
+            status: false,
+          });
+        }
       }
     } catch (error) {
       res.status(500).json({ error: error.message });

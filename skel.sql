@@ -101,10 +101,10 @@ INSERT INTO trainer (name) VALUES
 ('machine');
 
 INSERT INTO pocket (trainer_id, name) VALUES 
-(1,'padrao'),
-(1,'laboratorio'),
-(2,'padrao'),
-(2,'laboratorio');
+(1,'default'),
+(1,'laboratory'),
+(2,'default'),
+(2,'laboratory');
 
 INSERT INTO pokemon_names (name) VALUES
 ('bulbasaur'),
