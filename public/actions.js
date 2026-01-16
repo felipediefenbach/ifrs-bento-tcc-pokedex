@@ -532,7 +532,7 @@ function infoChoice(title, message) {
       aria-labelledby="staticBackdropLabel" 
       aria-hidden="true"
     >
-      <div class="modal-dialog">
+      <div class="modal-dialog modal-lg">
         <div class="modal-content">
           <div class="modal-header">
             <img src="favicon.png" class="rounded me-2" style="width: 32px; height: 32px;" alt="">

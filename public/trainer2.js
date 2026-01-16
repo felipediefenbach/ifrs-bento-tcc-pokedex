@@ -4,6 +4,9 @@ $(document).ready(function () {
   const pocketName = "default";
   populatePokemonSelector();
 
+/////////////////////////////////////////////////////////////////////////////////////
+// Pocket                                                                          //
+/////////////////////////////////////////////////////////////////////////////////////
   async function editTrainerPockets(trainer, pocket) {
 
     function pocketEditFormatter(value, row){
@@ -14,18 +17,24 @@ $(document).ready(function () {
           data-slot="${row['slotNumber']}"
           data-trainer="${row['trainerName']}"
           data-pocket="${row['pocketName']}"
-          data-pokemon="${row['pokemonName']}"
         >Restore</button>
+        <button 
+          type="button" 
+          class="btn btn-sm btn-secondary g-3 btn-move-Trainer2"
+          data-slot="${row['slotNumber']}"
+          data-trainer="${row['trainerName']}"
+          data-pocket="${row['pocketName']}"
+          data-pokemon="${row['pokemonName']}"
+        >Move</button>
         <button 
           type="button" 
           class="btn btn-sm btn-danger g-3 btn-delete-Trainer2"
           data-slot="${row['slotNumber']}"
           data-trainer="${row['trainerName']}"
           data-pocket="${row['pocketName']}"
-          data-pokemon="${row['pokemonName']}"
         >Delete</button>`
       }
-     
+
       function lifeFormatter(value, row){
         const pokemonCurrHp = row['pokemonCurrHp']
         const pokemonFullHp = row['pokemonFullHp']
@@ -80,14 +89,19 @@ $(document).ready(function () {
   $("#pocketsTrainer2").click(async () => { 
 
     const POCKET_SELECT = `
-    <label for="pocketListTrainer2" class="form-label">Pocket Name</label>
+    <label for="pocketListTrainer2" class="form-label">Select a pocket:</label>
         <select id="pocketListTrainer2" class="form-select form-select-sm" name="pocketListTrainer2">
         ${await listAllMyPockets({trainerName})}
     </select>`
+    const POCKET_ADD = `<button type="button" class="btn btn-success btn-sm btn-create-pockets-Trainer2" data-trainer="${trainerName}">Create</button>`
+    const POCKET_DEL = `<button type="button" class="btn btn-primary btn-sm btn-delete-pockets-Trainer2" data-trainer="${trainerName}">Remove</button>`
+    
 
     infoChoice(
       `Pocket Management:`,
-      `${POCKET_SELECT}
+      `${POCKET_ADD} ${POCKET_DEL}
+      <br /><div class="pocket-manage-trainer2"></div>
+      <br />${POCKET_SELECT}
       <br />
       <div class="pocket-div-trainer2"></div>`
     );
@@ -96,6 +110,121 @@ $(document).ready(function () {
       $("#pocketViewTrainer2").bootstrapTable('refresh');
     });
   
+  });
+
+  $(document).on("click", ".btn-create-pockets-Trainer2", function () {
+
+    $(".pocket-manage-trainer2").empty();
+    
+    const POCKET_NAME = `
+      <br />
+      <div class="mb-3">
+        <div class="input-group has-validation">
+          <input id="inputNewPocket" type="text" class="form-control form-control-sm" placeholder=""/>
+          <button id="btnConfirmNewPocket" type="button" class="btn btn-success btn-sm">Create</button>
+          <div class="invalid-feedback">
+            Accept only lowercase letters and numbers !!
+          </div>
+        </div>
+      </div>`
+
+    $(".pocket-manage-trainer2").append(POCKET_NAME);
+
+    $("#inputNewPocket").focus(() => {  
+      $("#inputNewPocket").removeClass("is-valid is-invalid");
+    });
+
+    $("#btnConfirmNewPocket").click(async () => { 
+          
+      const trainer = $(this).data("trainer");
+      const pocket = await $("#inputNewPocket").val();
+
+      if (!validName(pocket)) {
+        $("#inputNewPocket").addClass("is-invalid").removeClass("is-valid");
+
+      } else {
+        
+        const response = await addPocket({trainer, pocket});
+        const { result, status } = response;
+
+        switch(status) {
+
+          case true:
+            $('.modal').modal('hide');
+            infoToast(`Ok!!`,`${result}`);
+            break;
+
+          case false:
+            infoToast(`Ops!!`,`${result}`);
+            break;
+
+          default:
+            infoToast(`Erro`,`${result}`);
+
+        } 
+      }
+
+    });
+
+  });
+
+  $(document).on("click", ".btn-delete-pockets-Trainer2", function () {
+
+    const trainer = $(this).data("trainer");
+    const pocket = $("#pocketListTrainer2").val();
+    $(".pocket-manage-trainer2").empty();
+
+    if ( pocket === 'empty' ) { return void infoToast(`Ops!!`, `Select a pocket to remove !!`); }
+    
+    const POCKET_DEL_CONFIRM = `
+      <br />
+      <div class="mb-3">
+        <div class="input-group has-validation">
+          <input id="inputConfirmDelPocket" type="text" class="form-control form-control-sm" placeholder="Type pocket name here to remove..."/>
+          <button id="btnConfirmDelPocket" type="button" class="btn btn-primary btn-sm"><strong>Remove</strong></button>
+          <div class="invalid-feedback">
+            The informed name is different !!
+          </div>
+        </div>
+      </div>`
+
+    $(".pocket-manage-trainer2").append(POCKET_DEL_CONFIRM);
+
+    $("#inputConfirmDelPocket").focus(() => { 
+      $("#inputConfirmDelPocket").removeClass("is-invalid is-valid");
+    });
+    
+    $("#btnConfirmDelPocket").click(async () => {     
+      
+      const pocketConfirm = await $("#inputConfirmDelPocket").val();
+
+      if ( pocket !== pocketConfirm ) { 
+        $("#inputConfirmDelPocket").addClass("is-invalid").removeClass("is-valid");
+
+      } else {
+
+        const response = await delPocket({trainer, pocket});
+        const { result, status } = response;
+
+        switch(status) {
+
+          case true:
+            $('.modal').modal('hide');
+            infoToast(`Ok!!`,`${result}`);
+            break;
+
+          case false:
+            infoToast(`Ops!!`,`${result}`);
+            break;
+
+          default:
+            infoToast(`Erro`,`${result}`);
+
+        }
+      }
+ 
+    });
+
   });
 
   $(document).on("click", ".btn-revive-Trainer2", async function () {
@@ -120,7 +249,7 @@ $(document).ready(function () {
           break;
 
         default:
-          infoToast(`Erro`,`${result}`)
+          infoToast(`Erro`,`${result}`);
 
       }
   });
@@ -152,20 +281,78 @@ $(document).ready(function () {
       }
   });
 
+  $(document).on("click", ".btn-move-Trainer2", async function() {
+
+    $(".pocket-manage-trainer2").empty();
+
+    let slotNumber = $(this).data("slot");
+    let trainerName = $(this).data("trainer");
+    let pocketName = $(this).data("pocket");
+    let pokemonName = $(this).data("pokemon");
+        
+    const POCKET_SELECT = `
+    <br />
+    <label for="pocketSelectorTrainer2" class="form-label">${pokemonName}</label>
+        <select id="pocketSelectorTrainer2" class="form-select form-select-sm" name="pocketSelectorTrainer2">
+        ${await listTransferPockets({trainerName, pocketName, pokemonName})}
+    </select>
+    <br />
+    <button id="btnSuccess" type="button" class="btn btn-primary btn-sm" data-bs-dismiss="modal">Move</button>`
+
+    $(".pocket-manage-trainer2").append(POCKET_SELECT);
+
+    $("#btnSuccess").click(async () => { 
+
+      const destinationPocket = $("#pocketSelectorTrainer2").val();
+
+      if ( destinationPocket === "empty" ) return void infoToast(`Ops !!`,`You not select a destination pocket!!`);
+      
+      const response = await movePokemonToOtherPocket(
+        {
+          trainerName,
+          pocketName,
+          slotNumber,
+          destinationPocket
+        }
+      );
+
+      const { result, status } = response;
+
+        switch(status) {
+          
+          case true:
+            $("#pocketViewTrainer2").bootstrapTable('refresh');
+            infoToast(`Ok!!`,`${result}`);
+            break;
+
+          case false:
+            infoToast(`Ops!!`,`${result}`);
+            break;
+
+          default:
+            infoToast(`Erro`,`${result}`)
+            
+        }
+    });
+
+  });
+
   $(document).on("change", "#pocketListTrainer2", async function () {
-    $("#pocketEditTrainer2").remove();
+    $(".pocket-div-trainer2").empty();
     $(".pocket-div-trainer2").append(`<table id="pocketEditTrainer2"></table>`); 
     await editTrainerPockets(trainerName, $(this).val());
   });
 
-/////////////////////////////////////////////////////////////////////////////////////
 
+/////////////////////////////////////////////////////////////////////////////////////
+// Front                                                                           //
+/////////////////////////////////////////////////////////////////////////////////////
   $("#pokemonSelectorTrainer2").change(() => {
     const pokemonName = $("#pokemonSelectorTrainer2").val();
 
     infoChoice(
-      `Confirm you Selection`,
-      `We gonna add: ${pokemonName} to you pocket
+      `Confirm you Selection !!`,
+      `We gonna add: ${pokemonName} to you pocket !!
       <br />
       <br />
       <button id="btnSuccess" type="button" class="btn btn-success btn-sm" data-bs-dismiss="modal">Add</button>`
@@ -182,7 +369,6 @@ $(document).ready(function () {
       const resultAdd = await addPokemon(pokemonName);
       const resultInfo = await showPokemonInfo(pokemonName);
       const resultStat = await showPokemonStat(pokemonName);
-
       if (
         resultAdd["status"] === 'error'
         && resultInfo["status"]
@@ -215,58 +401,6 @@ $(document).ready(function () {
         }
       }
     });
-  });
-
-  $(document).on("click", ".btn-move-Trainer2", async function() {
-
-    let slotNumber = $(this).data("slot");
-    let trainerName = $(this).data("trainer");
-    let pocketName = $(this).data("pocket");
-    let pokemonName = $(this).data("pokemon");
-    
-    const POCKET_SELECT = `
-    <label for="pocketSelectorTrainer2" class="form-label">${pokemonName}</label>
-        <select id="pocketSelectorTrainer2" class="form-select form-select-sm" name="pocketSelectorTrainer2">
-        ${await listTransferPockets({trainerName, pocketName, pokemonName})}
-    </select>
-    <br />
-    <button id="btnSuccess" type="button" class="btn btn-primary btn-sm" data-bs-dismiss="modal">Move</button>`
-
-    infoChoice(
-      `Select Destion Pocket`,
-      `${POCKET_SELECT}`
-    )
-
-    $("#btnSuccess").click(async () => { 
-      const destinationPocket = $("#pocketSelectorTrainer2").val();
-      const response = await movePokemonToOtherPocket(
-        {
-          trainerName,
-          pocketName,
-          slotNumber,
-          destinationPocket
-        }
-      );
-
-      const { result, status } = response;
-
-        switch(status) {
-          
-          case true:
-            $("#pocketViewTrainer2").bootstrapTable('refresh');
-            infoToast(`Ok!!`,`${result}`);
-            break;
-
-          case false:
-            infoToast(`Ops!!`,`${result}`);
-            break;
-
-          default:
-            infoToast(`Erro`,`${result}`)
-            
-        }
-    });
-
   });
 
   $(document).on("click", ".btn-inform-Trainer2", async function() {
@@ -369,28 +503,20 @@ $(document).ready(function () {
 
   function actionsPocketFormatter(value, row){
     return `
-    <button 
-      type="button" 
-      class="btn btn-sm btn-danger g-3 btn-move-Trainer2"
-      data-slot="${row['slotNumber']}"
-      data-trainer="${row['trainerName']}"
-      data-pocket="${row['pocketName']}"
-      data-pokemon="${row['pokemonName']}"
-    >Move</button>
-    <button 
-      type="button" 
-      class="btn btn-sm btn-secondary g-3 btn-inform-Trainer2"
-      data-pokemon="${row['pokemonName']}"
-    >Info</button>
-    <button 
-      type="button" 
-      class="btn btn-sm btn-primary g-3 btn-attack-Trainer2"
-      data-pokemon="${row['pokemonName']}"
-      data-level="${row['pokemonLevel']}"
-      data-slot="${row['slotNumber']}"
-      data-trainer="${row['trainerName']}"
-      data-pocket="${row['pocketName']}"
-    >Attack</button>`
+      <button 
+        type="button" 
+        class="btn btn-sm btn-secondary g-3 btn-inform-Trainer2"
+        data-pokemon="${row['pokemonName']}"
+      >Info</button>
+      <button 
+        type="button" 
+        class="btn btn-sm btn-primary g-3 btn-attack-Trainer2"
+        data-pokemon="${row['pokemonName']}"
+        data-level="${row['pokemonLevel']}"
+        data-slot="${row['slotNumber']}"
+        data-trainer="${row['trainerName']}"
+        data-pocket="${row['pocketName']}"
+      >Attack</button>`
   }
 
   function lifeFormatter(value, row){

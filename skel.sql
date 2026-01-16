@@ -93,7 +93,7 @@ CREATE TABLE pocket_content (
     level INT DEFAULT 1,
     FOREIGN KEY (trainer_id) REFERENCES trainer(id),
     FOREIGN KEY (pokemon_id) REFERENCES pokemon(id),
-    FOREIGN KEY (pocket_id) REFERENCES pocket(id)
+    FOREIGN KEY (pocket_id) REFERENCES pocket(id) ON DELETE CASCADE
 );
 
 INSERT INTO trainer (name) VALUES 

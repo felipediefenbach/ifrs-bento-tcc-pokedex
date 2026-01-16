@@ -318,7 +318,7 @@ UPDATE pocket_content AS pocket_content
           AND pocket_content.slot_number = 1
           AND pocket_content.pokemon_id = 1;
 
-INSERT INTO `pocket_content_bkp` 
+INSERT INTO `pocket_content` 
   (`pocket_id`, `trainer_id`, `pokemon_id`, `slot_number`, 
    `moves`, `rm_moves`, `full_hp`, `curr_hp`, 
    `attack`, `defense`, `curr_xp`, `level`) 

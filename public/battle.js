@@ -251,8 +251,9 @@ async function checkBattleEnd(
 $("#btn-start-battle").click(async () => { 
 
   const DM = 5; // Damage multiplier, default is 0
+  const XM = 5; // Experience multiplier, default is 0
   const battleTrainers = ["felipedie", "machine"];
-  const battlePockets = ["padrao", "padrao"];
+  const battlePockets = ["default", "default"];
   let battleActive = true;
   let battleRoundCycle = await checkFirstTurn(battleTrainers, battlePockets);
   if (!battleRoundCycle) {
@@ -285,7 +286,9 @@ $("#btn-start-battle").click(async () => {
   let leftMoves = leftPokemon['pokemonMoves'];
   const leftRmMoves = leftPokemon['pokemonRmMoves'];
 
-
+  const leftNextXp = calculateNextLevel(leftLevel);
+  const leftXpPorc = Math.floor((leftXp/leftNextXp) * 100);
+  
   const configedLeftMoves = leftMoves.map(m => m.moveName).join(',');
   if ( configedLeftMoves === "none,none,none,none" ) {
     leftMoves = await addMovesConfig(leftName, leftTrainer, leftPocket, battleRoundCycle);
@@ -311,6 +314,9 @@ $("#btn-start-battle").click(async () => {
   const rightDefense = rightPokemon['pokemonDefense'];
   let rightMoves = rightPokemon['pokemonMoves'];
   const rightRmMoves = rightPokemon['pokemonRmMoves'];
+
+  const rightNextXp = calculateNextLevel(rightLevel);
+  const rightXpPorc = Math.floor((rightXp/rightNextXp) * 100);
   
   const configedRightMoves = rightMoves.map(m => m.moveName).join(',');
   if ( configedRightMoves === "none,none,none,none" ) {
@@ -326,8 +332,11 @@ $("#btn-start-battle").click(async () => {
   if ( $("#infoCardleft").length ) { $("#infoCardleft").remove(); };
   if ( $("#infoCardright").length ) { $("#infoCardright").remove(); };
 
-  infoCard("left", leftName, leftLevel, leftCurrHp, leftFullHp, leftXp);
-  infoCard("right", rightName, rightLevel, rightCurrHp, rightFullHp, rightXp);
+  // console.log('left - pokemon:', leftName, '- actxp: ', leftXp, 'ntxp: ', leftNextXp, '%', leftXpPorc);
+  // console.log('right - pokemon:', rightName, 'actxp: ', rightXp, 'ntxp: ', rightNextXp, '%', rightXpPorc);
+
+  infoCard("left", leftName, leftLevel, leftCurrHp, leftFullHp, leftXpPorc);
+  infoCard("right", rightName, rightLevel, rightCurrHp, rightFullHp, rightXpPorc);
 
   $("#select-move-left").append(leftSelect);
   $("#select-move-right").append(rightSelect);
