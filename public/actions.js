@@ -308,7 +308,6 @@ async function revivePokemon(fulldata) {
 }
 
 async function levelUpPokemon(fulldata) {
-  console.log(fulldata);
   try {
     const response = await $.ajax({
       type: "PUT",

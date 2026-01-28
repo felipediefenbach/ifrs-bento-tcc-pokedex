@@ -343,3 +343,8 @@ SELECT
     WHERE
       pocket.name = 'novo'
       AND trainer.name = 'felipedie';
+
+update pocket_content set moves = 'razor-leaf|25|55,acid|30|40,stun-spore|30|1,sleep-powder|15|1' where pokemon_id = 71;
+update pocket_content set level = 12 where pokemon_id = 71;
+update pocket_content set rm_moves = 'none' where pokemon_id = 71;
+update pocket_content set curr_xp = 100000 where pokemon_id = 71;

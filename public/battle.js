@@ -1,6 +1,8 @@
-const calculateDamage = (level, power, attack, defense) => Math.floor((((2 * level / 5 + 2) * power * attack / defense) / 50) + 2);
+const DM = 5; // Damage multiplier, default is 0
+const XM = 5; // Experience multiplier, default is 0
+const calculateDamage = (level, power, attack, defense) => Math.floor(((((2 * level / 5 + 2) * power * attack / defense) / 50) + 2) * DM);
+const calculateXp = (xp, level) => Math.floor(((xp * level) / 5) * XM);
 const barPercentage = (actHp, maxHp) => Math.floor((actHp/maxHp) * 100);
-const calculateXp = (xp, level) => Math.floor((xp * level) / 5);
 const calculateNextLevel = (level) => Math.floor(((level + 1) ** 3) - (level ** 3));
 
 async function checkFirstTurn(trainers, pockets) {    
@@ -99,7 +101,6 @@ async function checkLevelUp(trainerName, pocketName, slotNumber, level, currentX
     let pokemonCurrXp = totalXpByCycle - calculatedXpToLevelUp;
 
     const levelUp = await levelUpPokemon({trainerName, pocketName, slotNumber, pokemonLevel, pokemonCurrXp});
-    console.log("lvlup: ", levelUp['status']);
     
     let arrayCurrentMoves = [];
     const getedMovesList = await getConfigedMoves({trainerName, pocketName, slotNumber}); // current set o moves in use
@@ -116,15 +117,14 @@ async function checkLevelUp(trainerName, pocketName, slotNumber, level, currentX
       const resultMoves = newLevelMoves.filter(m => !currentMoves.has(m));
       arrayCurrentMoves = arrayCurrentMoves.concat(resultMoves);
       const moveList = arrayCurrentMoves.join(',');
-      const addedMoves = await setPokemonMoves({moveList, trainerName, pocketName, slotNumber});
-      console.log("addmov: ", addedMoves['status']);
+      const addedMoves = await setPokemonMoves({moveList, trainerName, pocketName, slotNumber}); // output not used
 
     } else {
+
       //if more then 4 - need to sort
       let listBoxMoves = '';
-      const cleanedRmMoves = newLevelMoves.filter(m => m && !pokemonRmMoves.split(',').includes(m)).join(',');
 
-      cleanedRmMoves.split(',').forEach(element => {
+      arrayCurrentMoves.forEach(element => {
         listBoxMoves += `<label class="list-group-item">
           <input class="form-forget-moves me-1" type="checkbox" value="${element}" />${element}
         </label>`
@@ -138,19 +138,42 @@ async function checkLevelUp(trainerName, pocketName, slotNumber, level, currentX
         `${FULLBOX}`
       );
 
-      $("#btnForget").click(async () => { 
+      $(".form-forget-moves").change(() => {   
+        const selectedCount = $(".form-forget-moves:checked").length;
+        $(".btn-close").prop('disabled', selectedCount !== 1);
+        $("#btnForget").prop('disabled', selectedCount !== 1);
+        $("#btnIgnore").prop('disabled', selectedCount !== 1);
+
+      });
+
+      $("#btnForget").click(async () => {
+          
           const selectedMove = $(".form-forget-moves:checked").map(function() {
             return $(this).val();
           }).get();
 
-          pokemonRmMoves === 'none' ? moveList = selectedMove[0] : moveList = `${pokemonRmMoves},${selectedMove[0]}`
-          const moveToDelete = await setPokemonRmMoves({moveList, trainerName, pocketName, slotNumber}); // will define rm-moves
+          let moveList = pokemonRmMoves;
+          moveList === 'none' ? moveList = selectedMove[0] : moveList = moveList += `,${selectedMove[0]}`;
+          const moveToDelete = await setPokemonRmMoves({moveList, trainerName, pocketName, slotNumber});
       
-          if (moveToDelete['status']){
+          if ( moveToDelete['status'] ) {
+            
             infoToast(
               `Moves Updated !!`,
               `${moveToDelete['result']}`
             );
+
+            let arrayRmMove = []; 
+            pokemonRmMoves !== 'none' && (arrayRmMove = pokemonRmMoves.split(','));
+
+            const filterSelected = newLevelMoves.filter(item => !selectedMove.includes(item));
+            const filterDeleted = filterSelected.filter(item => !arrayRmMove.includes(item));       
+
+            const moveList = filterDeleted.join(',');
+            const addedMoves = await setPokemonMoves({moveList, trainerName, pocketName, slotNumber});
+
+            console.log('2ins:', filterDeleted, 'ret:', addedMoves['status']); //added movs no output
+
           };
       
       });
@@ -207,9 +230,6 @@ async function checkBattleEnd(
 
     if (loser['status'] && winner['status']) {
       
-      // so we looking for some bugs - next time
-      //console.log("XP:", trainer, pokemonXp, calculateNextLevel(pokemonLevel))
-
       battleActive = false;
 
       let TXT;
@@ -250,8 +270,6 @@ async function checkBattleEnd(
 
 $("#btn-start-battle").click(async () => { 
 
-  const DM = 5; // Damage multiplier, default is 0
-  const XM = 5; // Experience multiplier, default is 0
   const battleTrainers = ["felipedie", "machine"];
   const battlePockets = ["default", "default"];
   let battleActive = true;
@@ -267,7 +285,6 @@ $("#btn-start-battle").click(async () => {
   if (!await checkPoketSize(battleTrainers, battlePockets)) { return };
 
   const givenPokemons = await pokemonByCycle(battleRoundCycle, battleTrainers, battlePockets);
-  //console.log(givenPokemons);
   let leftPokemon = givenPokemons[0];
   let rightPokemon = givenPokemons[1];
 
@@ -332,9 +349,6 @@ $("#btn-start-battle").click(async () => {
   if ( $("#infoCardleft").length ) { $("#infoCardleft").remove(); };
   if ( $("#infoCardright").length ) { $("#infoCardright").remove(); };
 
-  // console.log('left - pokemon:', leftName, '- actxp: ', leftXp, 'ntxp: ', leftNextXp, '%', leftXpPorc);
-  // console.log('right - pokemon:', rightName, 'actxp: ', rightXp, 'ntxp: ', rightNextXp, '%', rightXpPorc);
-
   infoCard("left", leftName, leftLevel, leftCurrHp, leftFullHp, leftXpPorc);
   infoCard("right", rightName, rightLevel, rightCurrHp, rightFullHp, rightXpPorc);
 
@@ -379,9 +393,9 @@ $("#btn-start-battle").click(async () => {
     } else {
     
       const leftDamageDone = calculateDamage(leftLevel, leftMovePower, leftAttack, leftDefense);
-      $("#info-damage-right").text(`Damage: -${leftDamageDone * DM}`).fadeIn(200);
+      $("#info-damage-right").text(`Damage: -${leftDamageDone}`).fadeIn(200);
       setTimeout(() => {$("#info-damage-right").fadeOut(300, () => {$("#info-damage-right").text(''); }); }, 2000);
-      (rightLocalHp -= (leftDamageDone * DM)) < 0 ? rightLocalHp = 0 : rightLocalHp;
+      (rightLocalHp -= leftDamageDone) < 0 ? rightLocalHp = 0 : rightLocalHp;
       
       const rightBarPercentage = barPercentage(rightLocalHp, rightCurrHp);
       
@@ -436,9 +450,9 @@ $("#btn-start-battle").click(async () => {
     } else {
     
       const rightDamageDone = calculateDamage(rightLevel, rightMovePower, rightAttack, rightDefense);
-      $("#info-damage-left").text(`Damage: -${rightDamageDone * DM}`).fadeIn(200);
+      $("#info-damage-left").text(`Damage: -${rightDamageDone}`).fadeIn(200);
       setTimeout(() => {$("#info-damage-left").fadeOut(300, () => {$("#info-damage-left").text(''); }); }, 2000);
-      (leftLocalHp -= (rightDamageDone * DM)) < 0 ? leftLocalHp = 0 : leftLocalHp
+      (leftLocalHp -= rightDamageDone) < 0 ? leftLocalHp = 0 : leftLocalHp
 
 
       const leftBarPercentage = barPercentage(leftLocalHp, leftCurrHp);

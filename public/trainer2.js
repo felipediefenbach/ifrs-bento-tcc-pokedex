@@ -431,9 +431,24 @@ $(document).ready(function () {
     let trainerName = $(this).data("trainer");
     let pocketName = $(this).data("pocket");
     let pokemonName = $(this).data("pokemon");
-    let pokemonLevel = $(this).data("level");
 
-    const moveToSelect = await selectPokemonMoves({pokemonName, pokemonLevel})
+    if ( await getConfigedMoves({trainerName, pocketName, slotNumber}) === "none,none,none,none" ) {
+      const addedMoves = await addMovesConfig(pokemonName, trainerName, pocketName, slotNumber); // output not use
+      console.log(addedMoves);
+    }
+
+    let arrayCurrentMoves = [];
+    let getedMovesList = await getConfigedMoves({trainerName, pocketName, slotNumber}); // current set o moves in use
+    const separatedMoves = getedMovesList.split(',');
+    separatedMoves.forEach(element => {
+      arrayCurrentMoves.push(element.split('|')[0]);
+    });
+
+    let moveToSelect = `<option value="empty" selected>Select Attack</option>`;
+    for (const element of arrayCurrentMoves) {
+        moveToSelect += `<option value="${element}">${element}</option>`;
+    }
+    
     const MOVES_SELECT = `
       <label for="moveSlot1Trainer2" class="form-label">Slot 1</label>
         <select id="moveSlot1Trainer2" class="form-select form-select-sm" name="moveSlot1Trainer2">
