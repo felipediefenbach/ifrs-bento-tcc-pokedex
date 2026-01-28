@@ -1,5 +1,5 @@
 <!DOCTYPE html>
-<html lang="pt-BR">
+<html lang="en">
   <head>
     <meta charset="utf-8" />
     <meta
@@ -8,81 +8,68 @@
     />
     <title>Pokedex</title>
     <link href="bootstrap/dist/css/bootstrap.min.css" rel="stylesheet" />
-    <link
-      href="bootstrap-table/dist/bootstrap-table.min.css"
-      rel="stylesheet"
-    />
-    <link rel="stylesheet" href="pokesprite-spritesheet/assets/pokesprite-pokemon-gen8.css" />
-    <link rel="stylesheet" href="pokesprite-spritesheet/assets/pokesprite-inventory.css" />
-    <link rel="stylesheet" href="pokesprite-spritesheet/assets/pokesprite-misc.css" />
     <link rel="icon" href="favicon.ico" type="image/x-icon" />
   </head>
-
   <body>
-    <div class="toast-container position-fixed bottom-0 end-0 p-3"></div>
+    <!-- Navbar -->
+    <nav class="navbar navbar-expand-lg bg-body-tertiary">
+      <div class="container">
+        <div class="collapse navbar-collapse">
+          <div class="d-flex align-items-center">
+            <a href="/" class="btn btn-primary px-3 me-2" role="button">
+              Login
+            </a>
+            <a href="/register" class="btn btn-secondary me-3" role="button">
+              Sign up
+            </a>
+          </div>
+        </div>
+      </div>
+    </nav>
+    <!-- Navbar -->
 
-    <div class="container-fluid w-75">
-      <br />
-      <div class="row row-cols-1 row-cols-md-2 g-3 justify-content-center align-items-center">
-        <div class="col">
-          <div class="mb-3">
-            <button id="pocketsTrainer1" type="button" class="btn btn-outline-primary">Pockets</button>
-          </div>
-          <div class="mb-3">
-            <label for="pokemonSelectorTrainer1" class="form-label"><strong>Trainer 1</strong></label>
-            <select
-              class="form-select form-select-sm"
-              name="pokemonSelectorTrainer1"
-              id="pokemonSelectorTrainer1"
-            ></select>
-            <br />
-            <br />
-            <table id="pocketViewTrainer1"></table>
-          </div>
-        </div>
-        <div class="col">
-          <div class="mb-3">
-            <button id="pocketsTrainer2" type="button" class="btn btn-outline-primary">Pockets</button>
-          </div>
-          <div class="mb-3">
-            <label for="pokemonSelectorTrainer2" class="form-label"><strong>Trainer 2</strong></label>
-            <select
-              class="form-select form-select-sm"
-              name="pokemonSelectorTrainer2"
-              id="pokemonSelectorTrainer2"
-            ></select>
-            <br />
-            <br />
-            <table id="pocketViewTrainer2"></table>
-          </div>
-        </div>
-      </div>
-      <div class="row row-cols-1 row-cols-md-2 g-3 justify-content-center align-items-center">
-        <button id="btn-start-battle" type="button" class="btn btn-danger"><strong>!! Let's Battle Begin !!</strong></button>
-      </div>
-      <br /> 
-      <div class="row row-cols-1 row-cols-md-2 g-3 justify-content-center align-items-center">
-        <div class="col">
-          <div class="mb-3">
-            <div class="card-container-left"></div>
-          </div>
-        </div>
-        <div class="col">
-          <div class="mb-3">
-            <div class="card-container-right"></div>
+<section class="vh-100 gradient-custom">
+  <div class="container py-5 h-100">
+    <div class="row d-flex justify-content-center align-items-center h-100">
+      <div class="col-12 col-md-8 col-lg-6 col-xl-5">
+        <div class="card bg-dark text-white" style="border-radius: 1rem;">
+          <div class="card-body p-5 text-center">
+
+            <div class="mb-md-5 mt-md-4 pb-5">
+
+              <h2 class="fw-bold mb-2 text-uppercase">Login</h2>
+              <p class="text-white-50 mb-5">Please enter your login and password!</p>
+
+              <div data-mdb-input-init class="form-outline form-white mb-4">
+                <input type="email" id="typeEmailX" class="form-control form-control-lg" />
+                <label class="form-label" for="typeEmailX">Email</label>
+              </div>
+
+              <div data-mdb-input-init class="form-outline form-white mb-4">
+                <input type="password" id="typePasswordX" class="form-control form-control-lg" />
+                <label class="form-label" for="typePasswordX">Password</label>
+              </div>
+
+              <button data-mdb-button-init data-mdb-ripple-init class="btn btn-outline-light btn-lg px-5" type="submit">Login</button>
+
+              <div class="d-flex justify-content-center text-center mt-4 pt-1">
+                <a href="#!" class="text-white"><i class="fab fa-facebook-f fa-lg"></i></a>
+                <a href="#!" class="text-white"><i class="fab fa-twitter fa-lg mx-4 px-2"></i></a>
+                <a href="#!" class="text-white"><i class="fab fa-google fa-lg"></i></a>
+              </div>
+
+            </div>
+
           </div>
         </div>
       </div>
     </div>
-
-
-    <script src="jquery/dist/jquery.min.js"></script>
-    <script src="bootstrap/dist/js/bootstrap.bundle.min.js"></script>
-    <script src="bootstrap-table/dist/bootstrap-table.min.js"></script>
-    <script src="bootstrap-table/dist/locale/bootstrap-table-pt-BR.min.js"></script>
-    <script src="actions.js"></script>
-    <script src="trainer1.js"></script>
-    <script src="trainer2.js"></script>
-    <script src="battle.js"></script>
-  </body>
+  </div>
+</section>
+</form>
+  <script src="jquery/dist/jquery.min.js"></script>
+  <script src="bootstrap/dist/js/bootstrap.bundle.min.js"></script>
+  <script src="bootstrap-table/dist/bootstrap-table.min.js"></script>
+  <script src="bootstrap-table/dist/locale/bootstrap-table-pt-BR.min.js"></script>
+</body>
 </html>

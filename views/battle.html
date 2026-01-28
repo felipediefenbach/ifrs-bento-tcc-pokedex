@@ -1,0 +1,99 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+  <head>
+    <meta charset="utf-8" />
+    <meta
+      name="viewport"
+      content="width=device-width, initial-scale=1, shrink-to-fit=no"
+    />
+    <title>Pokedex</title>
+    <link href="bootstrap/dist/css/bootstrap.min.css" rel="stylesheet" />
+    <link
+      href="bootstrap-table/dist/bootstrap-table.min.css"
+      rel="stylesheet"
+    />
+    <link rel="stylesheet" href="pokesprite-spritesheet/assets/pokesprite-pokemon-gen8.css" />
+    <link rel="stylesheet" href="pokesprite-spritesheet/assets/pokesprite-inventory.css" />
+    <link rel="stylesheet" href="pokesprite-spritesheet/assets/pokesprite-misc.css" />
+    <link rel="icon" href="favicon.ico" type="image/x-icon" />
+  </head>
+
+  <body>
+    <!-- Navbar -->
+    <nav class="navbar navbar-expand-lg bg-body-tertiary">
+      <div class="container">
+        <div class="collapse navbar-collapse">
+          <div class="d-flex align-items-center">
+            <a href="/logout" class="btn btn-secondary me-3" role="button">
+              Logout
+            </a>
+          </div>
+        </div>
+      </div>
+    </nav>
+    <!-- Navbar -->
+    <div class="toast-container position-fixed bottom-0 end-0 p-3"></div>
+    <div class="container-fluid w-75">
+      <br />
+      <div class="row row-cols-1 row-cols-md-2 g-3 justify-content-center align-items-center">
+        <div class="col">
+          <div class="mb-3">
+            <button id="pocketsTrainer1" type="button" class="btn btn-outline-primary">Pockets</button>
+          </div>
+          <div class="mb-3">
+            <label for="pokemonSelectorTrainer1" class="form-label"><strong>Trainer 1</strong></label>
+            <select
+              class="form-select form-select-sm"
+              name="pokemonSelectorTrainer1"
+              id="pokemonSelectorTrainer1"
+            ></select>
+            <br />
+            <br />
+            <table id="pocketViewTrainer1"></table>
+          </div>
+        </div>
+        <div class="col">
+          <div class="mb-3">
+            <button id="pocketsTrainer2" type="button" class="btn btn-outline-primary">Pockets</button>
+          </div>
+          <div class="mb-3">
+            <label for="pokemonSelectorTrainer2" class="form-label"><strong>Trainer 2</strong></label>
+            <select
+              class="form-select form-select-sm"
+              name="pokemonSelectorTrainer2"
+              id="pokemonSelectorTrainer2"
+            ></select>
+            <br />
+            <br />
+            <table id="pocketViewTrainer2"></table>
+          </div>
+        </div>
+      </div>
+      <div class="row row-cols-1 row-cols-md-2 g-3 justify-content-center align-items-center">
+        <button id="btn-start-battle" type="button" class="btn btn-danger"><strong>!! Let's Battle Begin !!</strong></button>
+      </div>
+      <br /> 
+      <div class="row row-cols-1 row-cols-md-2 g-3 justify-content-center align-items-center">
+        <div class="col">
+          <div class="mb-3">
+            <div class="card-container-left"></div>
+          </div>
+        </div>
+        <div class="col">
+          <div class="mb-3">
+            <div class="card-container-right"></div>
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <script src="jquery/dist/jquery.min.js"></script>
+    <script src="bootstrap/dist/js/bootstrap.bundle.min.js"></script>
+    <script src="bootstrap-table/dist/bootstrap-table.min.js"></script>
+    <script src="bootstrap-table/dist/locale/bootstrap-table-pt-BR.min.js"></script>
+    <script src="actions.js"></script>
+    <script src="trainer1.js"></script>
+    <script src="trainer2.js"></script>
+    <script src="battle.js"></script>
+  </body>
+</html>
