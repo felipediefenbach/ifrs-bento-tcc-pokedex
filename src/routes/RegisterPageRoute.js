@@ -1,10 +1,10 @@
 const express = require("express");
 const path = require('path');
-const front = express.Router();
+const register = express.Router();
 
 // Route for the homepage
-front.get('/', (req, res) => {
+register.get('/', (req, res) => {
     res.sendFile(path.join(__dirname, '../../views', 'register.html'));
 });
 
-module.exports = front;
+module.exports = register;

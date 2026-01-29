@@ -12,6 +12,7 @@
   "author": "",
   "license": "ISC",
   "dependencies": {
+    "bcryptjs": "^3.0.3",
     "bootstrap": "^5.3.8",
     "bootstrap-table": "^1.26.0",
     "cors": "^2.8.5",
@@ -19,6 +20,7 @@
     "express": "^5.2.0",
     "helmet": "^8.1.0",
     "jquery": "^3.7.1",
+    "jsonwebtoken": "^9.0.3",
     "mysql2": "^3.15.3",
     "nodemon": "^3.1.11",
     "pokedex-promise-v2": "^4.2.1",

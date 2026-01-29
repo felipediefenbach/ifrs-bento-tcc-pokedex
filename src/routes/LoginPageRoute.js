@@ -1,10 +1,10 @@
 const express = require("express");
 const path = require('path');
-const front = express.Router();
+const login = express.Router();
 
 // Route for the homepage
-front.get('/', (req, res) => {
+login.get('/', (req, res) => {
     res.sendFile(path.join(__dirname, '../../views', 'login.html'));
 });
 
-module.exports = front;
+module.exports = login;

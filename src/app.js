@@ -6,6 +6,7 @@ const helmet = require("helmet");
 const frontPageRoute = require("./routes/FrontPageRoute")
 const loginPageRoute = require("./routes/LoginPageRoute")
 const registerPageRoute = require("./routes/RegisterPageRoute")
+const authRoute = require("./routes/AuthRoute")
 const battlePageRoute = require("./routes/BattlePageRoute")
 const pokemonRoute = require("./routes/PokemonRoute");
 const pocketRoute = require("./routes/PocketRoute");
@@ -28,6 +29,7 @@ app.use(express.static('views'));
 app.use("/", frontPageRoute);
 app.use("/login", loginPageRoute);
 app.use("/register", registerPageRoute);
+app.use("/auth", authRoute);
 app.use("/battle", battlePageRoute);
 app.use("/pokemon", pokemonRoute);
 app.use("/pocket", pocketRoute);
