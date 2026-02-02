@@ -1,8 +1,10 @@
 const express = require("express");
+const authenticateToken = require("../middlewares/jwtMiddleware");
 const path = require('path');
 const battle = express.Router();
 
-// Route for the homepage
+battle.use(authenticateToken);
+
 battle.get('/', (req, res) => {
     res.sendFile(path.join(__dirname, '../../views', 'battle.html'));
 });

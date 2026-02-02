@@ -1,8 +1,8 @@
--- MySQL dump 10.13  Distrib 8.0.43, for Linux (x86_64)
+-- MySQL dump 10.13  Distrib 8.0.44, for Linux (x86_64)
 --
 -- Host: 127.0.0.1    Database: pokedex
 -- ------------------------------------------------------
--- Server version	9.5.0
+-- Server version	9.6.0
 
 /*!40101 SET @OLD_CHARACTER_SET_CLIENT=@@CHARACTER_SET_CLIENT */;
 /*!40101 SET @OLD_CHARACTER_SET_RESULTS=@@CHARACTER_SET_RESULTS */;
@@ -14,14 +14,6 @@
 /*!40014 SET @OLD_FOREIGN_KEY_CHECKS=@@FOREIGN_KEY_CHECKS, FOREIGN_KEY_CHECKS=0 */;
 /*!40101 SET @OLD_SQL_MODE=@@SQL_MODE, SQL_MODE='NO_AUTO_VALUE_ON_ZERO' */;
 /*!40111 SET @OLD_SQL_NOTES=@@SQL_NOTES, SQL_NOTES=0 */;
-SET @MYSQLDUMP_TEMP_LOG_BIN = @@SESSION.SQL_LOG_BIN;
-SET @@SESSION.SQL_LOG_BIN= 0;
-
---
--- GTID state at the beginning of the backup 
---
-
--- SET @@GLOBAL.GTID_PURGED=/*!80000 '+'*/ 'ad424999-f23a-11f0-b9f8-3e0d920c07a8:1-365';
 
 --
 -- Table structure for table `pocket`
@@ -33,7 +25,7 @@ DROP TABLE IF EXISTS `pocket`;
 CREATE TABLE `pocket` (
   `id` int NOT NULL AUTO_INCREMENT,
   `trainer_id` int DEFAULT NULL,
-  `name` varchar(255) COLLATE utf8mb4_unicode_ci DEFAULT NULL,
+  `name` varchar(255) CHARACTER SET utf8mb4 COLLATE utf8mb4_unicode_ci DEFAULT NULL,
   PRIMARY KEY (`id`),
   KEY `trainer_id` (`trainer_id`),
   CONSTRAINT `pocket_ibfk_1` FOREIGN KEY (`trainer_id`) REFERENCES `trainer` (`id`)
@@ -62,8 +54,8 @@ CREATE TABLE `pocket_content` (
   `trainer_id` int DEFAULT NULL,
   `pokemon_id` int DEFAULT NULL,
   `slot_number` int DEFAULT NULL,
-  `moves` varchar(200) COLLATE utf8mb4_unicode_ci DEFAULT 'none,none,none,none',
-  `rm_moves` varchar(200) COLLATE utf8mb4_unicode_ci DEFAULT 'none',
+  `moves` varchar(200) CHARACTER SET utf8mb4 COLLATE utf8mb4_unicode_ci DEFAULT 'none,none,none,none',
+  `rm_moves` varchar(200) CHARACTER SET utf8mb4 COLLATE utf8mb4_unicode_ci DEFAULT 'none',
   `full_hp` int DEFAULT '0',
   `curr_hp` int DEFAULT '0',
   `attack` int DEFAULT '0',
@@ -98,7 +90,7 @@ DROP TABLE IF EXISTS `pokemon`;
 /*!50503 SET character_set_client = utf8mb4 */;
 CREATE TABLE `pokemon` (
   `id` int NOT NULL,
-  `name` varchar(255) COLLATE utf8mb4_unicode_ci DEFAULT NULL,
+  `name` varchar(255) CHARACTER SET utf8mb4 COLLATE utf8mb4_unicode_ci DEFAULT NULL,
   PRIMARY KEY (`id`)
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_unicode_ci;
 /*!40101 SET character_set_client = @saved_cs_client */;
@@ -149,7 +141,7 @@ DROP TABLE IF EXISTS `pokemon_evolution`;
 /*!50503 SET character_set_client = utf8mb4 */;
 CREATE TABLE `pokemon_evolution` (
   `pokemon_id` int DEFAULT NULL,
-  `evolutions` varchar(200) COLLATE utf8mb4_unicode_ci DEFAULT NULL,
+  `evolutions` varchar(200) CHARACTER SET utf8mb4 COLLATE utf8mb4_unicode_ci DEFAULT NULL,
   KEY `pokemon_id` (`pokemon_id`),
   CONSTRAINT `pokemon_evolution_ibfk_1` FOREIGN KEY (`pokemon_id`) REFERENCES `pokemon` (`id`)
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_unicode_ci;
@@ -174,7 +166,7 @@ DROP TABLE IF EXISTS `pokemon_move`;
 CREATE TABLE `pokemon_move` (
   `pokemon_id` int DEFAULT NULL,
   `level` int DEFAULT NULL,
-  `moves` varchar(200) COLLATE utf8mb4_unicode_ci DEFAULT NULL,
+  `moves` varchar(200) CHARACTER SET utf8mb4 COLLATE utf8mb4_unicode_ci DEFAULT NULL,
   KEY `pokemon_id` (`pokemon_id`),
   CONSTRAINT `pokemon_move_ibfk_1` FOREIGN KEY (`pokemon_id`) REFERENCES `pokemon` (`id`)
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_unicode_ci;
@@ -198,7 +190,7 @@ DROP TABLE IF EXISTS `pokemon_names`;
 /*!50503 SET character_set_client = utf8mb4 */;
 CREATE TABLE `pokemon_names` (
   `id` int NOT NULL AUTO_INCREMENT,
-  `name` varchar(255) COLLATE utf8mb4_unicode_ci NOT NULL,
+  `name` varchar(255) CHARACTER SET utf8mb4 COLLATE utf8mb4_unicode_ci NOT NULL,
   PRIMARY KEY (`id`)
 ) ENGINE=InnoDB AUTO_INCREMENT=152 DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_unicode_ci;
 /*!40101 SET character_set_client = @saved_cs_client */;
@@ -249,7 +241,7 @@ DROP TABLE IF EXISTS `pokemon_state`;
 /*!50503 SET character_set_client = utf8mb4 */;
 CREATE TABLE `pokemon_state` (
   `id` int NOT NULL,
-  `name` varchar(255) COLLATE utf8mb4_unicode_ci DEFAULT NULL,
+  `name` varchar(255) CHARACTER SET utf8mb4 COLLATE utf8mb4_unicode_ci DEFAULT NULL,
   PRIMARY KEY (`id`)
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_unicode_ci;
 /*!40101 SET character_set_client = @saved_cs_client */;
@@ -272,7 +264,7 @@ DROP TABLE IF EXISTS `pokemon_type`;
 /*!50503 SET character_set_client = utf8mb4 */;
 CREATE TABLE `pokemon_type` (
   `pokemon_id` int DEFAULT NULL,
-  `type` varchar(200) COLLATE utf8mb4_unicode_ci DEFAULT NULL,
+  `type` varchar(200) CHARACTER SET utf8mb4 COLLATE utf8mb4_unicode_ci DEFAULT NULL,
   KEY `pokemon_id` (`pokemon_id`),
   CONSTRAINT `pokemon_type_ibfk_1` FOREIGN KEY (`pokemon_id`) REFERENCES `pokemon` (`id`)
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_unicode_ci;
@@ -296,7 +288,8 @@ DROP TABLE IF EXISTS `trainer`;
 /*!50503 SET character_set_client = utf8mb4 */;
 CREATE TABLE `trainer` (
   `id` int NOT NULL AUTO_INCREMENT,
-  `name` varchar(255) COLLATE utf8mb4_unicode_ci DEFAULT NULL,
+  `name` varchar(255) CHARACTER SET utf8mb4 COLLATE utf8mb4_unicode_ci DEFAULT NULL,
+  `password` varchar(255) COLLATE utf8mb4_unicode_ci NOT NULL,
   PRIMARY KEY (`id`)
 ) ENGINE=InnoDB AUTO_INCREMENT=3 DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_unicode_ci;
 /*!40101 SET character_set_client = @saved_cs_client */;
@@ -307,10 +300,9 @@ CREATE TABLE `trainer` (
 
 LOCK TABLES `trainer` WRITE;
 /*!40000 ALTER TABLE `trainer` DISABLE KEYS */;
-INSERT INTO `trainer` VALUES (1,'felipedie'),(2,'machine');
+INSERT INTO `trainer` VALUES (1,'felipedie',''),(2,'machine','');
 /*!40000 ALTER TABLE `trainer` ENABLE KEYS */;
 UNLOCK TABLES;
-SET @@SESSION.SQL_LOG_BIN = @MYSQLDUMP_TEMP_LOG_BIN;
 /*!40103 SET TIME_ZONE=@OLD_TIME_ZONE */;
 
 /*!40101 SET SQL_MODE=@OLD_SQL_MODE */;
@@ -321,4 +313,4 @@ SET @@SESSION.SQL_LOG_BIN = @MYSQLDUMP_TEMP_LOG_BIN;
 /*!40101 SET COLLATION_CONNECTION=@OLD_COLLATION_CONNECTION */;
 /*!40111 SET SQL_NOTES=@OLD_SQL_NOTES */;
 
--- Dump completed on 2026-01-16 21:03:33
+-- Dump completed on 2026-01-31 21:55:50

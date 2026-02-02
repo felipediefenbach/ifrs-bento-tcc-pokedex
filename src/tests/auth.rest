@@ -1,0 +1,11 @@
+# Configuração
+@baseURL = http://127.0.0.1:3000
+
+### lista todos os pokemons no bolso do treinador
+POST {{baseURL}}/auth/login
+Content-Type: application/json
+
+{
+  "username": "felipedie",
+  "password": "qwer1234"
+}

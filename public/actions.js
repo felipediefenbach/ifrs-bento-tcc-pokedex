@@ -1,3 +1,21 @@
+function logout() {
+  localStorage.removeItem('accessToken');
+  localStorage.removeItem('refreshToken');
+  localStorage.removeItem('user');
+  
+  if (typeof $ !== 'undefined') {
+    $.ajaxSetup({
+      headers: {
+        'Authorization': ''
+      }
+    });
+  }
+  
+  window.location.href = "/";
+}
+
+$(document).on('click', '#logoutButton', logout);
+
 function populatePokemonSelector() {
   let pokemonsToSelect = ["<option selected>Select one Pokemon</option>"];
 

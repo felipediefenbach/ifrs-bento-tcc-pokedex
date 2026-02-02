@@ -1,6 +1,5 @@
 $(document).ready(function () {
-
-  const trainerName = "felipedie";
+  const trainerName = localStorage.getItem("username");
   const pocketName = "default";
   populatePokemonSelector();
 

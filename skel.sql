@@ -97,9 +97,9 @@ CREATE TABLE pocket_content (
     FOREIGN KEY (pocket_id) REFERENCES pocket(id) ON DELETE CASCADE
 );
 
-INSERT INTO trainer (name) VALUES 
-('felipedie'),
-('machine');
+INSERT INTO trainer (name, password) VALUES 
+('felipedie', '$2b$08$g14nwwOBl3eH2p5uYHqGjOV2NC8nm6tN3lmgjk14jc.yVhB4sZQuG'),
+('machine', '$2b$08$g14nwwOBl3eH2p5uYHqGjOV2NC8nm6tN3lmgjk14jc.yVhB4sZQuG');
 
 INSERT INTO pocket (trainer_id, name) VALUES 
 (1,'default'),

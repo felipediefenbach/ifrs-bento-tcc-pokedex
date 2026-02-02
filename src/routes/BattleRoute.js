@@ -1,8 +1,10 @@
 const express = require("express");
-
+const authenticateToken = require("../middlewares/jwtMiddleware");
 const BattleController = require("../controllers/BattleController");
 
 const battle = express.Router();
+
+battle.use(authenticateToken);
 
 battle.get("/check/:trainerName/:pocketName", BattleController.checkFirstCombatblePokemons);
 battle.get("/load/:trainerName/:pocketName", BattleController.loadAdversaries);
