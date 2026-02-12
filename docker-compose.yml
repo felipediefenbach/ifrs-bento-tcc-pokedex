@@ -16,6 +16,8 @@ services:
     build:
       context: .
       dockerfile: ./Dockerfile
+    depends_on:
+      - pokedex_mysql
     ports:
       - "0.0.0.0:3000:3000/tcp"
     networks:
@@ -27,6 +29,7 @@ services:
       - ./views:/srv/views
       - ./server.js:/srv/server.js
       - ./.env:/srv/.env
+      - ./.sequelizerc:/srv/.sequelizerc
       - ./package-lock.json:/srv/package-lock.json
       - ./package.json:/srv/package.json
 

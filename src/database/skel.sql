@@ -1,7 +1,3 @@
--- Drop and Create
-DROP DATABASE IF EXISTS pokedex;
-CREATE DATABASE IF NOT EXISTS pokedex CHARACTER SET utf8mb4 COLLATE utf8mb4_unicode_ci;
-
 -- Select DB
 USE pokedex;
 
@@ -70,12 +66,6 @@ CREATE TABLE pokemon_evolution (
     pokemon_id INT,
     evolutions VARCHAR(200),
     FOREIGN KEY (pokemon_id) REFERENCES pokemon(id)
-);
-
--- create table states
-CREATE TABLE pokemon_state (
-    id INT PRIMARY KEY,
-    name VARCHAR(255)
 );
 
 -- create table pocket_content

@@ -4,6 +4,7 @@ LICENSE
 README.md
 skel.png
 skel.sql
+bkp-skel.sql
 selects.sql
 executa.yml
 .ansible

@@ -1,0 +1,23 @@
+{
+  "development": {
+    "username": "root",
+    "password": "pokedex",
+    "database": "pokedex",
+    "host": "pokedex_mysql",
+    "dialect": "mysql"
+  },
+  "test": {
+    "username": "root",
+    "password": "pokedex",
+    "database": "pokedex",
+    "host": "pokedex_mysql",
+    "dialect": "mysql"
+  },
+  "production": {
+    "username": "root",
+    "password": "pokedex",
+    "database": "pokedex",
+    "host": "pokedex_mysql",
+    "dialect": "mysql"
+  }
+}
