@@ -1,8 +1,11 @@
 const express = require("express");
+const authenticateToken = require("../middlewares/jwtMiddleware");
 
 const PocketController = require("../controllers/PocketController");
 
 const pocket = express.Router();
+
+pocket.use(authenticateToken);
 
 pocket.get("/list/:trainerName", PocketController.allPockets);
 pocket.post("/create", PocketController.createPockets);

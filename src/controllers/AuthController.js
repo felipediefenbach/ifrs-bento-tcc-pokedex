@@ -36,18 +36,11 @@ class AuthController {
           expiresIn: '15m'
         });
 
-        const refreshToken = jwt.sign(
-          { sub: fullUser["id"] },
-          process.env.JWT_REFRESH,
-          { expiresIn: '7d' }
-        );
-
         return res.status(200).json(
           {
             status: true,
             result: "Access Granted",
             accessToken: token,
-            refreshToken: refreshToken,
             username: fullUser["name"]            
           }
         );
@@ -100,45 +93,6 @@ class AuthController {
           }
         );
       
-      }
-
-    } catch (error) {
-      res.status(500).json({ error: error.message });
-
-    }
-  }
-
-  static async refresh(req, res) {
-    
-    try {
-      const { refreshToken } = req.body;
-      
-      if(refreshToken) {
-        jwt.verify(refreshToken, process.env.JWT_REFRESH_TOKEN, (err, decoded) => {
-          if (err) {
-            return res.status(400).json({
-              error: "Invalid Refresh token !!"
-            });    
-          }
-
-          const payload = {
-            sub: decoded.sub,
-          }
-
-          const newAccessToken = jwt.sign(payload, process.env.JWT_SECRET, {
-            expiresIn: '15m'
-          });
-
-          res.json({
-            accessToken: newAccessToken
-          });
-
-        });
-
-      } else {
-        return res.status(400).json({
-          error: "Refresh token required !!"
-        });
       }
 
     } catch (error) {
