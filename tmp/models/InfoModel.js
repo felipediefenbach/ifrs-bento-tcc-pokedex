@@ -6,11 +6,11 @@ class InfoModel {
     const { pokemonName } = fulldata;
     const [rows] = await db.query(
       `SELECT
-        PokemonBaseInfos.base_exp AS base_exp,
-        PokemonBaseInfos.height AS height,
-        PokemonBaseInfos.weight AS weight
-      FROM PokemonBaseInfos
-      INNER JOIN pokemon ON PokemonBaseInfos.pokemon_id = pokemon.id
+        pokemon_base_info.base_exp AS base_exp,
+        pokemon_base_info.height AS height,
+        pokemon_base_info.weight AS weight
+      FROM pokemon_base_info
+      INNER JOIN pokemon ON pokemon_base_info.pokemon_id = pokemon.id
       WHERE 
         pokemon.name = ?`,
       [pokemonName]
@@ -21,7 +21,7 @@ class InfoModel {
   static async addPokemonBasicInfo(fulldata) {
     const { pokemonId, pokemonHeight, pokemonWeight, pokemonBaseExp } = fulldata;
     const [rows] = await db.query(
-      `INSERT INTO PokemonBaseInfos 
+      `INSERT INTO pokemon_base_info 
         VALUES (?, ?, ?, ?)`,
       [pokemonId,pokemonHeight,pokemonWeight,pokemonBaseExp]
     );

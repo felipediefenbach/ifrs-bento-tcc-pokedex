@@ -9,12 +9,9 @@ ENV EDITOR='vim'
 COPY . /srv/
 WORKDIR /srv
 
+RUN dnf install -y vim jq htop
 RUN dnf module -y install nodejs:24/common 
 
 RUN npm i
-
-RUN npx sequelize-cli db:create
-RUN npx sequelize-cli db:migrate
-RUN npx sequelize-cli db:seed:all
 
 CMD ["npm", "run", "dev"]

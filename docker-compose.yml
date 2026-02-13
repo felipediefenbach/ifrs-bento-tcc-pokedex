@@ -6,6 +6,11 @@ services:
       - "0.0.0.0:3306:3306/tcp"
     networks:
       - pokenet
+    healthcheck:
+      test: ["CMD", "mysqladmin", "ping", "-h", "localhost"]
+      timeout: 20s
+      retries: 10
+      interval: 10s
     environment:
       MYSQL_DATABASE: pokedex
       MYSQL_ROOT_PASSWORD: pokedex
@@ -17,7 +22,8 @@ services:
       context: .
       dockerfile: ./Dockerfile
     depends_on:
-      - pokedex_mysql
+      pokedex_mysql:
+        condition: service_healthy
     ports:
       - "0.0.0.0:3000:3000/tcp"
     networks:

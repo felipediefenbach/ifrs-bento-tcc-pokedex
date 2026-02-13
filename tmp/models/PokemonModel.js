@@ -5,7 +5,7 @@ class PokemonModel {
     const [rows] = await db.query(
       `SELECT 
         name 
-      FROM PokemonNames`
+      FROM pokemon_names`
     );
     return rows;
   }
@@ -15,7 +15,7 @@ class PokemonModel {
     const [rows] = await db.query(
       `SELECT 
         name
-      FROM Pokemons 
+      FROM pokemon 
       WHERE 
         name = ?`,
       [pokemonName]
@@ -28,7 +28,7 @@ class PokemonModel {
     const [rows] = await db.query(
       `SELECT 
         id 
-      FROM Pokemons
+      FROM pokemon
       WHERE 
         name = ?`,
       [pokemonName]
@@ -39,7 +39,7 @@ class PokemonModel {
   static async addPokemon(fulldata) {
     const { pokemonId, pokemonName } = fulldata;
     const [rows] = await db.query(
-      `INSERT INTO Pokemons (id, name) 
+      `INSERT INTO pokemon (id, name) 
         VALUES (?, ?)`,
       [pokemonId, pokemonName]
     );

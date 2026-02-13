@@ -7,25 +7,25 @@ module.exports = {
     
     const hashedPassword = await bcrypt.hash('qwer12334', 8);
 
-    await queryInterface.bulkInsert('trainer', [
+    await queryInterface.bulkInsert('Trainers', [
       {
         name: 'felipedie',
         password: hashedPassword,
-        created_at: new Date(),
-        updated_at: new Date()
+        createdAt: new Date(),
+        updatedAt: new Date()
       },
       {
         name: 'machine',
         password: hashedPassword,
-        created_at: new Date(),
-        updated_at: new Date()
+        createdAt: new Date(),
+        updatedAt: new Date()
       }
     ], {});
 
   },
 
   async down (queryInterface, Sequelize) {
-    await queryInterface.bulkDelete('trainer', null, {});
+    await queryInterface.bulkDelete('Trainers', null, {});
   }
 
 };

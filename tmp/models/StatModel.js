@@ -6,11 +6,11 @@ class StatModel {
     const { pokemonName } = fulldata;
     const [rows] = await db.query(
       `SELECT
-        PokemonStats.hp AS hp,
-        PokemonStats.attack AS attack,
-        PokemonStats.defense AS defense
-      FROM PokemonStats
-      INNER JOIN pokemon ON PokemonStats.pokemon_id = pokemon.id
+        pokemon_stat.hp AS hp,
+        pokemon_stat.attack AS attack,
+        pokemon_stat.defense AS defense
+      FROM pokemon_stat
+      INNER JOIN pokemon ON pokemon_stat.pokemon_id = pokemon.id
       WHERE
         pokemon.name = ?`,
       [pokemonName]
@@ -21,7 +21,7 @@ class StatModel {
   static async addPokemonStat(fulldata) {
     const { pokemonId, pokemonHp, pokemonAttack, pokemonDefense } = fulldata;
     const [rows] = await db.query(
-      `INSERT INTO PokemonStats 
+      `INSERT INTO pokemon_stat 
         VALUES (?, ?, ?, ?)`,
       [pokemonId, pokemonHp, pokemonAttack, pokemonDefense]
     );

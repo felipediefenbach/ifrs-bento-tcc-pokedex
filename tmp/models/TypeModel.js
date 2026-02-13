@@ -6,9 +6,9 @@ class TypeModel {
     const { pokemonName } = fulldata;
     const [rows] = await db.query(
       `SELECT
-        PokemonTypes.type
-      FROM PokemonTypes
-      INNER JOIN pokemon ON PokemonTypes.pokemon_id = pokemon.id
+        pokemon_type.type
+      FROM pokemon_type
+      INNER JOIN pokemon ON pokemon_type.pokemon_id = pokemon.id
       WHERE
         pokemon.name = ?`,
       [pokemonName]
@@ -19,7 +19,7 @@ class TypeModel {
   static async addPokemonType(fulldata) {
     const { pokemonId, pokemonTypes } = fulldata;
     const [rows] = await db.query(
-      `INSERT INTO PokemonTypes 
+      `INSERT INTO pokemon_type 
         VALUES (?, ?)`,
       [pokemonId, pokemonTypes]
     );

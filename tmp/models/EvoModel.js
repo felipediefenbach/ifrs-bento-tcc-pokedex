@@ -6,9 +6,9 @@ class EvoModel {
     const { pokemonName } = fulldata;
     const [rows] = await db.query(
       `SELECT
-        PokemonEvolutions.evolutions
-      FROM PokemonEvolutions
-      INNER JOIN pokemon ON PokemonEvolutions.pokemon_id = pokemon.id
+        pokemon_evolution.evolutions
+      FROM pokemon_evolution
+      INNER JOIN pokemon ON pokemon_evolution.pokemon_id = pokemon.id
       WHERE
         pokemon.name = ?`,
       [pokemonName]
@@ -19,7 +19,7 @@ class EvoModel {
   static async addPokemonEvo(fulldata) {
     const { pokemonId, pokemonEvos } = fulldata;
     const [rows] = await db.query(
-      `INSERT INTO PokemonEvolutions 
+      `INSERT INTO pokemon_evolution 
         VALUES (?, ?)`,
       [pokemonId, pokemonEvos]
     );

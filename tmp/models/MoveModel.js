@@ -6,10 +6,10 @@ class MoveModel {
     const { pokemonName } = fulldata;
     const [rows] = await db.query(
       `SELECT
-          PokemonMoves.moves AS moves,
-          PokemonMoves.level AS level
-        FROM PokemonMoves
-        INNER JOIN pokemon ON PokemonMoves.pokemon_id = pokemon.id
+          pokemon_move.moves AS moves,
+          pokemon_move.level AS level
+        FROM pokemon_move
+        INNER JOIN pokemon ON pokemon_move.pokemon_id = pokemon.id
         WHERE
           pokemon.name = ?`,
       [pokemonName]
@@ -21,12 +21,12 @@ class MoveModel {
     const { pokemonName, pokemonLevel } = fulldata;
     const [rows] = await db.query(
       `SELECT
-          PokemonMoves.moves AS pokemonMoves
-        FROM PokemonMoves
-        INNER JOIN pokemon ON PokemonMoves.pokemon_id = pokemon.id
+          pokemon_move.moves AS pokemonMoves
+        FROM pokemon_move
+        INNER JOIN pokemon ON pokemon_move.pokemon_id = pokemon.id
         WHERE
           pokemon.name = ?
-          AND PokemonMoves.level BETWEEN 1 AND ?`,
+          AND pokemon_move.level BETWEEN 1 AND ?`,
       [pokemonName, pokemonLevel]
     );
     return rows;
@@ -35,7 +35,7 @@ class MoveModel {
   static async addPokemonMove(fulldata) {
     const { pokemonId, pokemonLevel, pokemonMoves } = fulldata;
     const [rows] = await db.query(
-      `INSERT INTO PokemonMoves 
+      `INSERT INTO pokemon_move 
         VALUES (?, ?, ?)`,
       [pokemonId, pokemonLevel, pokemonMoves]
     );
@@ -45,14 +45,14 @@ class MoveModel {
   static async setAttackConfig(fulldata) {
     const { moveList, trainerName, pocketName, slotNumber } = fulldata
     const [rows] = await db.query(
-    `UPDATE PocketContents AS pocket_contents
-      JOIN pocket ON PocketContents.pocket_id = pocket.id
-      JOIN trainer ON PocketContents.trainer_id = trainer.id
-      SET PocketContents.moves = ?
+    `UPDATE pocket_content AS pocket_content
+      JOIN pocket ON pocket_content.pocket_id = pocket.id
+      JOIN trainer ON pocket_content.trainer_id = trainer.id
+      SET pocket_content.moves = ?
       WHERE 
         trainer.name = ?
         AND pocket.name = ?
-        AND PocketContents.slot_number = ?`,
+        AND pocket_content.slot_number = ?`,
     [moveList, trainerName, pocketName, slotNumber]
     );
     return rows.affectedRows;

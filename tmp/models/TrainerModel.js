@@ -5,7 +5,7 @@ class TrainerModel {
     const [rows] = await db.query(
       `SELECT
         name 
-      FROM Trainers`
+      FROM trainer`
     );
     return rows;
   }
@@ -15,7 +15,7 @@ class TrainerModel {
     const [rows] = await db.query(
       `SELECT 
         name 
-      FROM Trainers 
+      FROM trainer 
       WHERE 
         name = ?`,
       [trainerName]
@@ -28,7 +28,7 @@ class TrainerModel {
     const [rows] = await db.query(
       `SELECT 
         id 
-      FROM Trainers 
+      FROM trainer 
       WHERE 
         name = ?`,
       [trainerName]
@@ -39,7 +39,7 @@ class TrainerModel {
   static async addTrainer(fulldata) {
     const { trainerName } = fulldata;
     const [rows] = await db.query(
-      `INSERT INTO Trainers (name)
+      `INSERT INTO trainer (name)
           VALUES (?)`,
       [trainerName]
     );

@@ -9,7 +9,7 @@ class AuthModel {
           id as trainerId,
           name as userName, 
           password as userPass
-        FROM Trainers
+        FROM trainer
         WHERE
           name = ?`,
       [username]
@@ -23,7 +23,7 @@ class AuthModel {
     const [rows] = await db.query(
       `SELECT 
           id, name
-        FROM Trainers
+        FROM trainer
         WHERE
           name = ?`,
       [username]
@@ -35,7 +35,7 @@ class AuthModel {
   static async register(fulldata) {
     const { username, password } = fulldata;
     const [rows] = await db.query(
-      `INSERT INTO Trainers (name, password) 
+      `INSERT INTO trainer (name, password) 
         VALUES (?, ?)`,
       [username, password]
     );
@@ -46,7 +46,7 @@ class AuthModel {
   static async registerPockets(fulldata) {
     const { trainerId, pocketName } = fulldata;
     const [rows] = await db.query(
-      `INSERT INTO Pockets (trainer_id, name) 
+      `INSERT INTO pocket (trainer_id, name) 
         VALUES (?, ?)`,
       [trainerId, pocketName]
     );

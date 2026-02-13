@@ -6,9 +6,9 @@ class PocketModel {
     const { trainerName } = fulldata;
     const [rows] = await db.query(
       `SELECT 
-        pocket.name AS pocket_name
-      FROM pocket
-      INNER JOIN trainer ON pocket.trainer_id = trainer.id
+        Pockets.name AS pocket_name
+      FROM Pockets
+      INNER JOIN trainer ON Pockets.trainer_id = trainer.id
       WHERE trainer.name = ?`,
       [trainerName]
     );
@@ -20,9 +20,9 @@ class PocketModel {
     const { trainerName } = fulldata;
     const [rows] = await db.query(
       `SELECT 
-        pocket.name AS pocket_name
-      FROM pocket
-      INNER JOIN trainer ON pocket.trainer_id = trainer.id
+        Pockets.name AS pocket_name
+      FROM Pockets
+      INNER JOIN trainer ON Pockets.trainer_id = trainer.id
       WHERE trainer.name = ?`,
       [trainerName]
     );
@@ -31,111 +31,111 @@ class PocketModel {
   }
   
   static async createPockets(fulldata) {
-    const { trainerId, pocketName } = fulldata;
+    const { trainerId, PocketsName } = fulldata;
     const [rows] = await db.query(
-      `INSERT INTO pocket (trainer_id, name)
+      `INSERT INTO Pockets (trainer_id, name)
         VALUES (?, ?)`,
-      [trainerId, pocketName]
+      [trainerId, PocketsName]
     );
     return rows.affectedRows;
     
   }
 
   static async deletePockets(fulldata) {
-    const { trainerId, pocketName } = fulldata;
+    const { trainerId, PocketsName } = fulldata;
     const [rows] = await db.query(
-      `DELETE FROM pocket
+      `DELETE FROM Pockets
         WHERE 
           trainer_id = ?
           AND name = ?`,
-      [trainerId, pocketName]
+      [trainerId, PocketsName]
     );
     return rows.affectedRows;
     
   }
 
   static async allInThePocket(fulldata) {
-    const { trainerName, pocketName } = fulldata;
+    const { trainerName, PocketsName } = fulldata;
     const [rows] = await db.query(
       `SELECT
-          pocket.name AS pocketName,
+          Pockets.name AS PocketsName,
           trainer.name AS trainerName,
           pokemon.name AS pokemonName,
-          pocket_content.slot_number AS slotNumber,
-          pocket_content.curr_hp AS pokemonCurrHp,
-          pocket_content.full_hp AS pokemonFullHp,
-          pocket_content.level AS pokemonLevel
-        FROM pocket_content
-        INNER JOIN pocket ON pocket_content.pocket_id = pocket.id
-        INNER JOIN trainer ON pocket_content.trainer_id = trainer.id
-        INNER JOIN pokemon ON pocket_content.pokemon_id = pokemon.id
+          PocketContents.slot_number AS slotNumber,
+          PocketContents.curr_hp AS pokemonCurrHp,
+          PocketContents.full_hp AS pokemonFullHp,
+          PocketContents.level AS pokemonLevel
+        FROM PocketContents
+        INNER JOIN Pockets ON PocketContents.Pockets_id = Pockets.id
+        INNER JOIN trainer ON PocketContents.trainer_id = trainer.id
+        INNER JOIN pokemon ON PocketContents.pokemon_id = pokemon.id
         WHERE 
           trainer.name = ?
-          AND pocket.name = ?
-        ORDER BY pocket_content.slot_number ASC`,
-      [trainerName, pocketName]
+          AND Pockets.name = ?
+        ORDER BY PocketContents.slot_number ASC`,
+      [trainerName, PocketsName]
     );
     return rows;
     
   }
 
   static async findPocketIdByName(fulldata) {
-    const { pocketName, trainerName } = fulldata;
+    const { PocketsName, trainerName } = fulldata;
     const [rows] = await db.query(
       `SELECT 
-      pocket.id AS pocketId
-    FROM pocket
-    INNER JOIN trainer ON pocket.trainer_id = trainer.id
+      Pockets.id AS PocketsId
+    FROM Pockets
+    INNER JOIN trainer ON Pockets.trainer_id = trainer.id
     WHERE
-      pocket.name = ?
+      Pockets.name = ?
       AND trainer.name = ?`,
-      [pocketName, trainerName]
+      [PocketsName, trainerName]
     );
     return rows[0];
 
   }
 
   static async getUsedSlots(fulldata) {
-    const { trainerName, pocketName } = fulldata;
+    const { trainerName, PocketsName } = fulldata;
     const [rows] = await db.query(
       `SELECT
-        pocket_content.slot_number AS slot_number
-      FROM pocket_content
-      INNER JOIN pocket ON pocket_content.pocket_id = pocket.id
-      INNER JOIN trainer ON pocket_content.trainer_id = trainer.id
+        PocketContents.slot_number AS slot_number
+      FROM PocketContents
+      INNER JOIN Pockets ON PocketContents.Pockets_id = Pockets.id
+      INNER JOIN trainer ON PocketContents.trainer_id = trainer.id
       WHERE 
         trainer.name = ?
-        AND pocket.name = ?`,
-      [trainerName, pocketName]
+        AND Pockets.name = ?`,
+      [trainerName, PocketsName]
     );
     return rows;
 
   }
 
   static async getConfigedMoves(fulldata) {
-    const { trainerName, pocketName, slotNumber } = fulldata;
+    const { trainerName, PocketsName, slotNumber } = fulldata;
     const [rows] = await db.query(
       `SELECT
-        pocket_content.moves AS pokemonMoves
-      FROM pocket_content
-      INNER JOIN pocket ON pocket_content.pocket_id = pocket.id
-      INNER JOIN trainer ON pocket_content.trainer_id = trainer.id
+        PocketContents.moves AS pokemonMoves
+      FROM PocketContents
+      INNER JOIN Pockets ON PocketContents.Pockets_id = Pockets.id
+      INNER JOIN trainer ON PocketContents.trainer_id = trainer.id
       WHERE 
         trainer.name = ?
-        AND pocket.name = ?
-        AND pocket_content.slot_number = ?`,
-      [trainerName, pocketName, slotNumber]
+        AND Pockets.name = ?
+        AND PocketContents.slot_number = ?`,
+      [trainerName, PocketsName, slotNumber]
     );
     return rows[0];
 
   }
 
   static async addInThePocketSlot(fulldata) {
-    const { pocketId, trainerId, slotNumber, pokemonId } = fulldata;
+    const { PocketsId, trainerId, slotNumber, pokemonId } = fulldata;
     const [rows] = await db.query(
-      `INSERT INTO pocket_content (pocket_id, trainer_id, slot_number, pokemon_id)
+      `INSERT INTO PocketContents (Pockets_id, trainer_id, slot_number, pokemon_id)
         VALUES (?, ?, ?, ?)`,
-      [pocketId, trainerId, slotNumber, pokemonId]
+      [PocketsId, trainerId, slotNumber, pokemonId]
     );
     return rows.affectedRows;
 
@@ -144,14 +144,14 @@ class PocketModel {
   static async moveToOtherPocket(fulldata) {
     const { newPocketId, trainerName, oldPocketName, slotNumber } = fulldata;
     const [rows] = await db.query(
-      `UPDATE pocket_content AS pocket_content
-        JOIN pocket ON pocket_content.pocket_id = pocket.id
-        JOIN trainer ON pocket_content.trainer_id = trainer.id
-        SET pocket_content.pocket_id = ?
+      `UPDATE PocketContents AS PocketContents
+        JOIN Pockets ON PocketContents.Pockets_id = Pockets.id
+        JOIN trainer ON PocketContents.trainer_id = trainer.id
+        SET PocketContents.Pockets_id = ?
         WHERE 
           trainer.name = ?
-          AND pocket.name = ?
-          AND pocket_content.slot_number = ?`,
+          AND Pockets.name = ?
+          AND PocketContents.slot_number = ?`,
       [newPocketId, trainerName, oldPocketName, slotNumber]
     );
     return rows.affectedRows
@@ -159,79 +159,79 @@ class PocketModel {
   }
 
   static async setDeletedMoves(fulldata) {
-    const { moveList, trainerName, pocketName, slotNumber } = fulldata;
+    const { moveList, trainerName, PocketsName, slotNumber } = fulldata;
     const [rows] = await db.query(
-      `UPDATE pocket_content AS pocket_content
-        JOIN pocket ON pocket_content.pocket_id = pocket.id
-        JOIN trainer ON pocket_content.trainer_id = trainer.id
-        SET pocket_content.rm_moves = ?
+      `UPDATE PocketContents AS PocketContents
+        JOIN Pockets ON PocketContents.Pockets_id = Pockets.id
+        JOIN trainer ON PocketContents.trainer_id = trainer.id
+        SET PocketContents.rm_moves = ?
         WHERE 
           trainer.name = ?
-          AND pocket.name = ?
-          AND pocket_content.slot_number = ?`,
-      [ moveList, trainerName, pocketName, slotNumber ]
+          AND Pockets.name = ?
+          AND PocketContents.slot_number = ?`,
+      [ moveList, trainerName, PocketsName, slotNumber ]
     );
     return rows.affectedRows
 
   }
 
-  // Insert incial no pocket_content
-  // Com o passar do tempo os dados do pocket_content mudam 
+  // Insert incial no PocketContents
+  // Com o passar do tempo os dados do PocketContents mudam 
   // Conforme o pokemon batalha e evolui
   static async setPocketPokemonBaseStats(fulldata) {
-    const { pocketId, trainerId, slotNumber, pokemonId } = fulldata;
+    const { PocketsId, trainerId, slotNumber, pokemonId } = fulldata;
 
     const [rows] = await db.query(
-      `UPDATE pocket_content AS pocket_content
-        INNER JOIN pokemon_base_info ON pocket_content.pokemon_id = pokemon_base_info.pokemon_id
-        INNER JOIN pokemon_stat ON pocket_content.pokemon_id = pokemon_stat.pokemon_id
+      `UPDATE PocketContents AS PocketContents
+        INNER JOIN pokemon_base_info ON PocketContents.pokemon_id = pokemon_base_info.pokemon_id
+        INNER JOIN pokemon_stat ON PocketContents.pokemon_id = pokemon_stat.pokemon_id
         SET
-          pocket_content.curr_xp = pokemon_base_info.base_exp,
-          pocket_content.curr_hp = pokemon_stat.hp,
-          pocket_content.full_hp = pokemon_stat.hp,
-          pocket_content.attack = pokemon_stat.attack,
-          pocket_content.defense = pokemon_stat.defense
+          PocketContents.curr_xp = pokemon_base_info.base_exp,
+          PocketContents.curr_hp = pokemon_stat.hp,
+          PocketContents.full_hp = pokemon_stat.hp,
+          PocketContents.attack = pokemon_stat.attack,
+          PocketContents.defense = pokemon_stat.defense
         WHERE
-          pocket_content.pocket_id = ?
-          AND pocket_content.trainer_id = ?
-          AND pocket_content.slot_number = ?
-          AND pocket_content.pokemon_id = ?`,
-      [ pocketId, trainerId, slotNumber, pokemonId ]
+          PocketContents.Pockets_id = ?
+          AND PocketContents.trainer_id = ?
+          AND PocketContents.slot_number = ?
+          AND PocketContents.pokemon_id = ?`,
+      [ PocketsId, trainerId, slotNumber, pokemonId ]
     );
     return rows.affectedRows;
 
   }
 
   static async reviveInThePocketSlot(fulldata) {
-    const { trainerName, pocketName, slotNumber } = fulldata;
+    const { trainerName, PocketsName, slotNumber } = fulldata;
     const [rows] = await db.query(
-      `UPDATE pocket_content AS pocket_content
-        JOIN pocket ON pocket_content.pocket_id = pocket.id
-        JOIN trainer ON pocket_content.trainer_id = trainer.id
+      `UPDATE PocketContents AS PocketContents
+        JOIN Pockets ON PocketContents.Pockets_id = Pockets.id
+        JOIN trainer ON PocketContents.trainer_id = trainer.id
         SET 
-          pocket_content.curr_hp = pocket_content.full_hp
+          PocketContents.curr_hp = PocketContents.full_hp
         WHERE 
           trainer.name = ?
-          AND pocket.name = ?
-          AND pocket_content.slot_number = ?`,
-      [trainerName, pocketName, slotNumber]
+          AND Pockets.name = ?
+          AND PocketContents.slot_number = ?`,
+      [trainerName, PocketsName, slotNumber]
     );
     return rows.affectedRows;
 
   }
 
   static async delInThePocketSlot(fulldata) {
-    const { trainerName, pocketName, slotNumber } = fulldata;
+    const { trainerName, PocketsName, slotNumber } = fulldata;
     const [rows] = await db.query(
-      `DELETE pocket_content
-        FROM pocket_content AS pocket_content
-        INNER JOIN pocket ON pocket_content.pocket_id = pocket.id
-        INNER JOIN trainer ON pocket_content.trainer_id = trainer.id
+      `DELETE PocketContents
+        FROM PocketContents AS PocketContents
+        INNER JOIN Pockets ON PocketContents.Pockets_id = Pockets.id
+        INNER JOIN trainer ON PocketContents.trainer_id = trainer.id
         WHERE 
           trainer.name = ?
-          AND pocket.name = ?
-          AND pocket_content.slot_number = ?`,
-      [trainerName, pocketName, slotNumber]
+          AND Pockets.name = ?
+          AND PocketContents.slot_number = ?`,
+      [trainerName, PocketsName, slotNumber]
     );
     return rows.affectedRows;
 
