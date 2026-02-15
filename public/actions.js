@@ -1,3 +1,13 @@
+// Set up global AJAX settings
+$.ajaxSetup({
+    beforeSend: function(xhr) {
+        const token = localStorage.getItem("accessToken");
+        if (token) {
+            xhr.setRequestHeader('Authorization', 'Bearer ' + token);
+        }
+    }
+});
+
 function logout() {
   localStorage.removeItem('accessToken');
   localStorage.removeItem('refreshToken');
@@ -16,25 +26,20 @@ function logout() {
 
 $(document).on('click', '#logoutButton', logout);
 
-function populatePokemonSelector() {
-  let pokemonsToSelect = ["<option selected>Select one Pokemon</option>"];
-
-  $.ajax({
-    type: "GET",
-    url: "/pokemon",
-    dataType: "json",
-    async: false,
-    success: (response) => {
-      response.forEach((element) => {
-        pokemonsToSelect.push(
-          `<option value="${element["name"]}">${element["name"]}</option>`
-        );
-      });
-    },
+async function populatePokemonSelector() {
+  
+  const pokemons = await $.ajax({
+      type: "GET",
+      url: `/pokemon`,
+      dataType: "json",
   });
 
-  $("#pokemonSelectorTrainer1").append(pokemonsToSelect);
-  $("#pokemonSelectorTrainer2").append(pokemonsToSelect);
+  let pokemonsToSelect = `<option value="empty" selected>Select one Pokemon</option>`;
+  for (element of pokemons) {
+    pokemonsToSelect += `<option value="${element["name"]}">${element["name"]}</option>`;
+  }
+
+  return pokemonsToSelect;
 }
 
 async function emptySlotsInMyPockets(trainerName, pocketName) {

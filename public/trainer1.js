@@ -1,7 +1,9 @@
-$(document).ready(function () {
+$(document).ready(async function () {
   const trainerName = localStorage.getItem("username");
+  const token = localStorage.getItem("accessToken");
   const pocketName = "default";
-  populatePokemonSelector();
+  const pokemonsTrainer1 = await populatePokemonSelector();
+  $("#pokemonSelectorTrainer1").append(pokemonsTrainer1);
 
 /////////////////////////////////////////////////////////////////////////////////////
 // Pocket                                                                          //
@@ -51,6 +53,9 @@ $(document).ready(function () {
       ajax: function(params) {
         $.ajax({
           url: `/pocket/content/${trainer}/${pocket}`,
+          headers: {
+            'Authorization': 'Bearer ' + token
+          },
           data: "json",
           success: function (response) {
             params.success(response['result']);
@@ -550,6 +555,9 @@ $(document).ready(function () {
     ajax: function(params) {
       $.ajax({
         url: `/pocket/content/${trainerName}/${pocketName}`,
+        headers: {
+          'Authorization': 'Bearer ' + token
+        },
         data: "json",
         success: function (response) {
           params.success(response['result']);

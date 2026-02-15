@@ -3,7 +3,7 @@
 /** @type {import('sequelize-cli').Migration} */
 module.exports = {
   async up(queryInterface, Sequelize) {
-    await queryInterface.bulkInsert('PokemonNames', [
+    await queryInterface.bulkInsert('pokemon_names', [
       { name: 'bulbasaur', createdAt: new Date(), updatedAt: new Date() },
       { name: 'ivysaur', createdAt: new Date(), updatedAt: new Date() },
       { name: 'venusaur', createdAt: new Date(), updatedAt: new Date() },
