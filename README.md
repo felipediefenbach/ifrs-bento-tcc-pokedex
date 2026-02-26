@@ -28,8 +28,12 @@ O usuário pode:
 ### Público-alvo
 Treinadores pokemon em evolução.
 
+<video src="./press.mp4" controls width="600"></video>
+![Diagrama ER](./skell.png)
+
 ### DISCLAIMER:
 *Pokemon é uma marca registrada da The Pokémon Company
 que detém os direitos da marca, licenciamento, marketing e franquia em geral, sendo uma subsidiária da Nintendo e outras entidades;
-O objetivo deste projeto é demonstrar a aplicação dos conhecimentos obtidos através do programa: Curso Back-End - Programa Bolsa Futuro Digital - # BFD RS 2 Bento Gonçalves 1
+O objetivo deste projeto é demonstrar a aplicação dos conhecimentos obtidos através do programa:
+Curso Back-End - Programa Bolsa Futuro Digital - # BFD RS 2 Bento Gonçalves 1
 Este repositório não tem nenhum caracter comercial e é exclusivamente de cunho "didático".*
